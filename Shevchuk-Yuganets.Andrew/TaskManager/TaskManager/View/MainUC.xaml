@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="TaskManager.View.MainUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TaskManager.View"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="525" Loaded="UserControl_Loaded">
+	<DataGrid Name="ProcessDataGrid"
+	          AutoGenerateColumns="False"
+	          ItemsSource="{Binding}">
+		<DataGrid.ContextMenu>
+			<ContextMenu Opened="ContextMenu_Opening">
+				<MenuItem Header="End Proces" Click="EndProces_Click" />
+				<MenuItem Header="Set Priority">
+					<!--<MenuItem Header="RealTime" Click="RealTimePriority_Click" IsCheckable="true" Name="RealtimeMenuItem" />
+					<MenuItem Header="High" Click="HighPriority_Click" IsCheckable="true" Name="HighMenuItem" />
+					<MenuItem Header="Above Normal" Click="AboveNormalPriority_Click" IsCheckable="true" Name="AboveNormalMenuItem" />
+					<MenuItem Header="Normal" Click="NormalPriority_Click" IsCheckable="true" Name="NormalMenuItem" />
+					<MenuItem Header="Below Normal" Click="BelowNormalPriority_Click" IsCheckable="true" Name="BelowNormalMenuItem" />
+					<MenuItem Header="Low" Click="LowPriority_Click" IsCheckable="true" Name="LowMenuItem" />-->
+
+					<MenuItem Header="RealTime" Click="Priority_Click" IsCheckable="true" Name="RealtimeMenuItem" />
+					<MenuItem Header="High" Click="Priority_Click" IsCheckable="true" Name="HighMenuItem" />
+					<MenuItem Header="Above Normal" Click="Priority_Click" IsCheckable="true" Name="AboveNormalMenuItem" />
+					<MenuItem Header="Normal" Click="Priority_Click" IsCheckable="true" Name="NormalMenuItem" />
+					<MenuItem Header="Below Normal" Click="Priority_Click" IsCheckable="true" Name="BelowNormalMenuItem" />
+					<MenuItem Header="Low" Click="Priority_Click" IsCheckable="true" Name="LowMenuItem" />
+				</MenuItem>
+			</ContextMenu>
+		</DataGrid.ContextMenu>
+		<DataGrid.Columns>
+			<DataGridTextColumn Width="3*" Header="Name"
+			                    IsReadOnly="True"
+			                    Binding="{Binding Name}"/>
+			<DataGridTextColumn Width="3*" Header="# Threads"
+			                    IsReadOnly="True"
+			                    Binding="{Binding Threads}" />
+			<DataGridTextColumn Width="3*" Header="Memory"
+			                    IsReadOnly="True"
+			                    Binding="{Binding Memory}" />
+			<DataGridTextColumn Width="2*" Header="CPU"
+			                    IsReadOnly="True"
+			                    Binding="{Binding Cpu}" />
+		</DataGrid.Columns>
+    </DataGrid>
+</UserControl>
