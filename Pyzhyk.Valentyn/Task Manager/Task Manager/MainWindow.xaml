@@ -1,0 +1,23 @@
+﻿<Window x:Class="Task_Manager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Task Manager" Height="500" Width="750">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DataGrid Name="ListProcesses" VerticalAlignment="Top" AutoGenerateColumns="False" CanUserResizeColumns="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="200" Header="Name" Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Width="100" Header="Thread" Binding="{Binding Path=Thread}"/>
+                <DataGridTextColumn Width="100" Header="Memory" Binding="{Binding Path=Memory}"/>
+                <DataGridTextColumn Width="100" Header="CPU" Binding="{Binding Path=Cpu}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Margin="10,0" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="200" Margin="8" Click="Refresh">Refresh</Button>
+            <Button Width="200" Margin="8" Click="CloseProcess_Button_OnClick">Close Process</Button>
+        </StackPanel>
+    </Grid>
+</Window>
