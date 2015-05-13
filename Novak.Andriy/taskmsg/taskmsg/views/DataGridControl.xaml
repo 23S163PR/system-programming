@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="taskmsg.views.DataGridControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+	<Grid>
+	<Grid.RowDefinitions>
+		<RowDefinition></RowDefinition>
+		<RowDefinition Height="30"></RowDefinition>
+	</Grid.RowDefinitions>
+		
+	<DataGrid Grid.Row="0" Name="ProcessGrid"  Margin="5" VerticalAlignment="Top"
+			  HorizontalAlignment="Stretch" 
+              AutoGenerateColumns="False"
+              CanUserAddRows="False"
+			  CanUserSortColumns="True"
+              CanUserDeleteRows="False"			  
+              ItemsSource="{Binding}" FontWeight="Bold"  Background="Silver">
+			<DataGrid.Columns>
+				<DataGridTextColumn Width="*" Header="Name" IsReadOnly="True"
+                                Binding="{Binding Name}" />
+				<DataGridTextColumn  Width="*"  IsReadOnly="True"
+								Header="Treads"
+                                Binding="{Binding Treads}" />
+				<DataGridTextColumn  Width="*"  Header="Memory" IsReadOnly="True"
+                                Binding="{Binding Memory}" CanUserSort="True" />
+				<DataGridTextColumn  Width="*" Header="CPU Time" IsReadOnly="True"
+                                Binding="{Binding CpuTime}" />
+			</DataGrid.Columns>
+		<DataGrid.ContextMenu>
+				<ContextMenu Name="TaskContextMenu" Opened="TaskContextMenu_OnOpened">
+					<MenuItem Header="Kill Process"/>
+					<MenuItem Header="Change Priority">
+						<MenuItem Header="Idle"/>
+						<MenuItem Header="Normal"/>
+						<MenuItem Header="High"/>
+						<MenuItem Header="RealTime"/>
+					</MenuItem>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+		</DataGrid>
+		<StatusBar FontWeight="Bold" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="30">
+			<Label Name="LbCount" />
+		</StatusBar>
+	</Grid>
+</UserControl>
