@@ -9,11 +9,11 @@ namespace TaskManager.Control
 {
 	public static class MainControl
 	{
-		public static List<SystemProcess> GetProcessList()
+		public static List<SystemProcessModel> GetProcessList()
 		{
 			var processes = Process.GetProcesses();
 
-			return processes.Select(process => new SystemProcess
+			return processes.Select(process => new SystemProcessModel
 			{
 				Name = process.ProcessName,
 				Threads = process.Threads.Count,

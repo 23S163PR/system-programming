@@ -1,6 +1,6 @@
 ﻿namespace TaskManager.Model
 {
-	public class SystemProcess
+	public class SystemProcessModel
 	{
 		public string Name { set; get; }
 		public int Threads { set; get; }

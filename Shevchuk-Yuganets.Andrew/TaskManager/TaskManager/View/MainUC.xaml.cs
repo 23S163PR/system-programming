@@ -58,71 +58,48 @@ namespace TaskManager.View
 
 		private void EndProces_Click(object sender, RoutedEventArgs e)
 		{
-			if (MessageBox.Show("Kill Process?", "Kill Process", MessageBoxButton.OKCancel, MessageBoxImage.Warning) ==
-			    MessageBoxResult.OK)
+			if (MessageBox.Show("Kill Process?", "Kill Process", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
 			{
 				MainControl.KillProcess(ProcessDataGrid.GetSelectedProcessId());
             }
 		}
 
-		private void Priority_Click(object sender, RoutedEventArgs e)
+		private void ChangePriority_Click(object sender, RoutedEventArgs e)
 		{
-			var processPriorityClass = ProcessPriorityClass.Normal;
-			// need better idea
-			switch ((sender as MenuItem).Name)
-			{
-				case "RealTime":
-					processPriorityClass = ProcessPriorityClass.RealTime;
-					break;
-				case "High":
-					processPriorityClass = ProcessPriorityClass.High;
-					break;
-				case "Above Normal":
-					processPriorityClass = ProcessPriorityClass.AboveNormal;
-					break;
-				case "Normal":
-					processPriorityClass = ProcessPriorityClass.Normal;
-					break;
-				case "Below Normal":
-					processPriorityClass = ProcessPriorityClass.BelowNormal;
-					break;
-				case "Low":
-					processPriorityClass = ProcessPriorityClass.Idle;
-					break;
-			}
+			string priorityName = (sender as MenuItem).Name;
+			ProcessPriorityClass res;
+			priorityName = priorityName.Replace("PriorityMenuItem", "");
+			Enum.TryParse(priorityName, out res);
 
-			MainControl.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), processPriorityClass);
+			MainControl.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
 		}
 
 		private void ContextMenu_Opening(object sender, RoutedEventArgs e)
 		{
-			// xaml default value false
-			RealtimeMenuItem.IsChecked = false;
-			HighMenuItem.IsChecked = false;
-			AboveNormalMenuItem.IsChecked = false;
-			NormalMenuItem.IsChecked = false;
-			BelowNormalMenuItem.IsChecked = false;
-			LowMenuItem.IsChecked = false;
+			foreach (MenuItem menuItem in PriorityMenuItem.Items)
+			{
+				menuItem.IsChecked = false;
+			}
 
 			switch (MainControl.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
 			{
 				case ProcessPriorityClass.RealTime:
-					RealtimeMenuItem.IsChecked = true;
+					RealtimePriorityMenuItem.IsChecked = true;
 					break;
 				case ProcessPriorityClass.High:
-					HighMenuItem.IsChecked = true;
+					HighPriorityMenuItem.IsChecked = true;
 					break;
 				case ProcessPriorityClass.AboveNormal:
-					AboveNormalMenuItem.IsChecked = true;
+					AboveNormalPriorityMenuItem.IsChecked = true;
 					break;
 				case ProcessPriorityClass.Normal:
-					NormalMenuItem.IsChecked = true;
+					NormalPriorityMenuItem.IsChecked = true;
 					break;
 				case ProcessPriorityClass.BelowNormal:
-					BelowNormalMenuItem.IsChecked = true;
+					BelowNormalPriorityMenuItem.IsChecked = true;
 					break;
 				case ProcessPriorityClass.Idle:
-					LowMenuItem.IsChecked = true;
+					LowPriorityMenuItem.IsChecked = true;
 					break;
 			}
 		}
