@@ -18,38 +18,46 @@ namespace Task_Manager
         {
             InitializeComponent();
             ListProcesses.ItemsSource = Manager.GetProcess();
+            InitializeTimer();
+        }
+        public void InitializeTimer()
+        {
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
             timer.Interval = TimeSpan.FromMilliseconds(1000);
             timer.Start();
-            //ListProcesses.Items.SortDescriptions.Add(new SortDescription());
-            // Add items to ItemsSource in ListView
-            //CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListProcesses.ItemsSource);
-            //view.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-            // Add sorting by ascending with field "Name"
         }
-
         private void Timer_Tick(object sender, EventArgs e)
         {
-            ListProcesses.ItemsSource = Manager.GetProcess();
+            Manager.UpdateProcessesInfo(ListProcesses);
+            if (Manager.CheckToAddNewProcess(ListProcesses))
+            {
+                ListProcesses.ItemsSource = Manager.GetProcess();
+            }
+            ListProcesses.Items.Refresh();
         }
-
-
         private void CloseProcess_Button_OnClick(object sender, RoutedEventArgs e)
         {
-            if (ListProcesses.SelectedItem is ProcessModel)
+            var process = ListProcesses.SelectedItem as ProcessModel;
+            if (process != null)
             {
-                var a = Process.GetProcessById((ListProcesses.SelectedItem as ProcessModel).ProcID);
-                a.Kill();
+                var a = Process.GetProcessById(process.ProcessId);
+                try
+                {
+                    a.Kill();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+                ListProcesses.ItemsSource = Manager.GetProcess();
             }
         }
 
-        public void Refresh(object o, RoutedEventArgs e)
+        private void MainWindow_OnActivated(object sender, EventArgs e)
         {
-            var selectedproc = ListProcesses.SelectedItems;
             ListProcesses.ItemsSource = Manager.GetProcess();
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListProcesses.ItemsSource);
-            view.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+            ListProcesses.Items.Refresh();
         }
     }
 }
