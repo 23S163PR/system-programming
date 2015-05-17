@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Management;
 using TaskManager.Model;
 
 namespace TaskManager.Control
@@ -10,39 +11,45 @@ namespace TaskManager.Control
 	{
 		public static List<ProcessModel> GetProcessList()
 		{
-			var processes = Process.GetProcesses();
+			var searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfProc_Process");
 
-			return (from process in processes
-					where process.ProcessName != "Idle"
-					select new ProcessModel
-					{
-						ProcessId = process.Id,
-						Name = GetProcessName(process),
-						Threads = GetThreads(process),
-						MemoryUsage = GetMemoryUsage(process),
-						CpuUsage = GetCpuUsage(process)
-					}).ToList();
+			return (searcher.Get()
+				.Cast<ManagementObject>()
+				.Where(obj => ConvertObjToName(obj["Name"]) != "Idle")
+				.Where(obj => ConvertObjToName(obj["Name"]) != "_Total")
+				.Select(obj => new ProcessModel
+				{
+					ProcessId = ConvertObjToId(obj["IDProcess"]),
+					Name = ConvertObjToName(obj["Name"]),
+					Threads = ConvertObjToThreads(obj["ThreadCount"]),
+					CpuUsage = ConvertObjToCpuUsage(obj["PercentProcessorTime"]),
+					MemoryUsage = ConvertObjToMemoryUsage(obj["WorkingSet"])
+				})).ToList();
 		}
 
-		private static string GetProcessName(Process process)
+		private static int ConvertObjToId(object obj)
 		{
-			return process.ProcessName + ".exe";
+			return int.Parse(obj.ToString());
 		}
 
-		private static string GetThreads(Process process)
+		private static string ConvertObjToName(object obj)
 		{
-			return process.Threads.Count.ToString();
+			return obj.ToString();
 		}
 
-		private static string GetMemoryUsage(Process process)
+		private static string ConvertObjToThreads(object obj)
 		{
-			return ((process.WorkingSet64 / 1024F) / 1024F).ToString("F3") + " K";
+			return obj.ToString();
 		}
 
-		private static string GetCpuUsage(Process process)
+		private static string ConvertObjToCpuUsage(object obj)
 		{
-			// TODO: need solution how to get process cpu usage
-			return "none";
+			return obj.ToString();
+		}
+
+		private static string ConvertObjToMemoryUsage(object obj)
+		{
+			return ((int.Parse(obj.ToString()) / 1024F) / 1024F).ToString("F3") + " K";
 		}
 
 		private static Process GetProcess(int id)
