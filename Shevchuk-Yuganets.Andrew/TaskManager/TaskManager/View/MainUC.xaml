@@ -10,7 +10,7 @@
 	          ItemsSource="{Binding}">
 		<DataGrid.ContextMenu>
 			<ContextMenu Opened="ContextMenu_Opening">
-				<MenuItem Header="End Proces" Click="EndProces_Click" />
+				<MenuItem Header="End Proces" Click="EndProcess_Click" />
 				<MenuItem Header="Set Priority" Name="PriorityMenuItem">
 					<MenuItem Header="RealTime" Click="ChangePriority_Click" IsCheckable="true" Name="RealtimePriorityMenuItem" />
 					<MenuItem Header="High" Click="ChangePriority_Click" IsCheckable="true" Name="HighPriorityMenuItem" />
@@ -24,16 +24,34 @@
 		<DataGrid.Columns>
 			<DataGridTextColumn Width="3*" Header="Name"
 			                    IsReadOnly="True"
-			                    Binding="{Binding Name}"/>
+			                    Binding="{Binding Path=Name}"/>
 			<DataGridTextColumn Width="3*" Header="# Threads"
 			                    IsReadOnly="True"
-			                    Binding="{Binding Threads}" />
+			                    Binding="{Binding Path=Threads}">
+				<DataGridTextColumn.CellStyle>
+					<Style>
+						<Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+					</Style>
+				</DataGridTextColumn.CellStyle>
+			</DataGridTextColumn>
 			<DataGridTextColumn Width="3*" Header="Memory"
 			                    IsReadOnly="True"
-			                    Binding="{Binding Memory}" />
-			<DataGridTextColumn Width="2*" Header="CPU"
+			                    Binding="{Binding Path=MemoryUsage}">
+				<DataGridTextColumn.CellStyle>
+					<Style>
+						<Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+					</Style>
+				</DataGridTextColumn.CellStyle>
+			</DataGridTextColumn>
+				<DataGridTextColumn Width="2*" Header="CPU"
 			                    IsReadOnly="True"
-			                    Binding="{Binding Cpu}" />
+			                    Binding="{Binding Path=CpuUsage}">
+				<DataGridTextColumn.CellStyle>
+					<Style>
+						<Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+					</Style>
+				</DataGridTextColumn.CellStyle>
+			</DataGridTextColumn>
 		</DataGrid.Columns>
 	</DataGrid>
 </UserControl>

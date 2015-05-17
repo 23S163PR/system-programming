@@ -2,38 +2,47 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows;
 using TaskManager.Model;
 
 namespace TaskManager.Control
 {
 	public static class MainControl
 	{
-		public static List<SystemProcessModel> GetProcessList()
+		public static List<ProcessModel> GetProcessList()
 		{
 			var processes = Process.GetProcesses();
 
-			return processes.Select(process => new SystemProcessModel
-			{
-				Name = process.ProcessName,
-				Threads = process.Threads.Count,
-				Memory = GetMemory(process),
-				Cpu = GetCpu(process),
-				ProcessId = process.Id
-			}).ToList();
+			return (from process in processes
+					where process.ProcessName != "Idle"
+					select new ProcessModel
+					{
+						ProcessId = process.Id,
+						Name = GetProcessName(process),
+						Threads = GetThreads(process),
+						MemoryUsage = GetMemoryUsage(process),
+						CpuUsage = GetCpuUsage(process)
+					}).ToList();
 		}
 
-		private static float GetMemory(Process process)
+		private static string GetProcessName(Process process)
 		{
-			return process.WorkingSet64/1024f;
+			return process.ProcessName + ".exe";
 		}
 
-		private static float GetCpu(Process process)
+		private static string GetThreads(Process process)
 		{
-			// var performanceCounters = new PerformanceCounter("Process", "% Processor Time", process.ProcessName);
-			// return new PerformanceCounter("Process", "% Processor Time", process.ProcessName).NextValue();
+			return process.Threads.Count.ToString();
+		}
 
-			return 0;
+		private static string GetMemoryUsage(Process process)
+		{
+			return ((process.WorkingSet64 / 1024F) / 1024F).ToString("F3") + " K";
+		}
+
+		private static string GetCpuUsage(Process process)
+		{
+			// TODO: need solution how to get process cpu usage
+			return "none";
 		}
 
 		private static Process GetProcess(int id)
@@ -48,7 +57,14 @@ namespace TaskManager.Control
 
 		public static void SetProcessPriority(int id, ProcessPriorityClass priority)
 		{
-			GetProcess(id).PriorityClass = priority;
+			try
+			{
+				GetProcess(id).PriorityClass = priority;
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
 		}
 
 		public static void KillProcess(int id)
@@ -57,9 +73,9 @@ namespace TaskManager.Control
 			{
 				GetProcess(id).Kill();
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				MessageBox.Show(ex.Message);
+				// ignored
 			}
 		}
 	}

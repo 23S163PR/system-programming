@@ -47,6 +47,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Management.Instrumentation" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -66,7 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="Model\SystemProcessModel.cs" />
+    <Compile Include="Model\ProcessModel.cs" />
     <Compile Include="Control\MainControl.cs" />
     <Compile Include="View\MainUC.xaml.cs">
       <DependentUpon>MainUC.xaml</DependentUpon>
