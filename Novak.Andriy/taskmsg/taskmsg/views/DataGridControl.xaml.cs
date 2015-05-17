@@ -45,22 +45,22 @@ namespace taskmsg.views
 				switch (_tmsg.GetProcesPriorityClass(_tmsg.CurentProcessId))
 				{
 					case ProcessPriorityClass.RealTime:
-						RealtimePriorityMenuItem.IsChecked = true;
+						Realtime.IsChecked = true;
 						break;
 					case ProcessPriorityClass.High:
-						HighPriorityMenuItem.IsChecked = true;
+						High.IsChecked = true;
 						break;
 					case ProcessPriorityClass.AboveNormal:
-						AboveNormalPriorityMenuItem.IsChecked = true;
+						AboveNormal.IsChecked = true;
 						break;
 					case ProcessPriorityClass.Normal:
-						NormalPriorityMenuItem.IsChecked = true;
+						Normal.IsChecked = true;
 						break;
 					case ProcessPriorityClass.BelowNormal:
-						BelowNormalPriorityMenuItem.IsChecked = true;
+						BelowNormal.IsChecked = true;
 						break;
 					case ProcessPriorityClass.Idle:
-						LowPriorityMenuItem.IsChecked = true;
+						Low.IsChecked = true;
 						break;
 				}
 			}
