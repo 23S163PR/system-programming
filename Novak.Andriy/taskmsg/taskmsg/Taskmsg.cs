@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using taskmsg.Annotations;
 
 namespace taskmsg
 {
@@ -15,7 +16,6 @@ namespace taskmsg
 		public Taskmsg()
 		{
 			_procs = new ObservableCollection<ProcessModel>();
-			//_procs.
 			RefreshProcesses();
 		}
 
@@ -41,8 +41,9 @@ namespace taskmsg
 				, p.ProcessName
 				, (p.WorkingSet64 / 1024f) / 1024f
 				, p.Threads.Count
-				//, p.UserProcessorTime))
-				,new TimeSpan()))
+				//, p.UserProcessorTime
+				,new TimeSpan()
+				))
 				.OrderBy(a => a.Name).ThenBy(i => i.Id);
 			foreach (var pr in res)
 			{
@@ -50,10 +51,32 @@ namespace taskmsg
 			}
 		}
 
-		public void ChangePriority(int id, ProcessPriorityClass priority)
+		private static Process GetProcess(int id)
 		{
-			var process = Process.GetProcessById(id);
-			process.PriorityClass = priority;
+			return Process.GetProcessById(id);
+		}
+
+		public ProcessPriorityClass GetProcesPriorityClass(int id)
+		{
+			return GetProcess(id).PriorityClass;
+		}
+
+		public static void SetProcessPrioruty(int id, ProcessPriorityClass priority)
+		{
+			try
+			{
+				GetProcess(id).PriorityClass = priority;
+			}
+			catch (Exception){}
+		}
+
+		public static void CloseProcess(int id)
+		{
+			try
+			{
+				GetProcess(id).Kill();
+			}
+			catch(Exception){}
 		}
 	}
 }

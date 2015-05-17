@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Security.Principal;
+﻿using System.Security.Principal;
 using System.Windows;
 using taskmsg.views;
 
