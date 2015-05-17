@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using taskmsg.Annotations;
+using System.Runtime.InteropServices;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace taskmsg
 {
@@ -19,12 +19,44 @@ namespace taskmsg
 			RefreshProcesses();
 		}
 
-		public IEnumerable<ProcessModel> Processes
+		public ObservableCollection<ProcessModel> Processes
 		{
 			get
 			{
 				return _procs;
 			}
+		}
+
+		[DllImport("kernel32.dll")]
+		static extern bool GetProcessTimes(IntPtr hProcess,
+			out FILETIME lpCreationTime,
+			out FILETIME lpExitTime,
+			out FILETIME lpKernelTime,
+			out FILETIME lpUserTime);
+		
+		
+		public static TimeSpan FiletimeToTimeSpan(FILETIME fileTime)
+		{
+			var hFT2 = unchecked((((ulong)(uint)fileTime.dwHighDateTime) << 32) | (uint)fileTime.dwLowDateTime);
+			return TimeSpan.FromTicks((long)hFT2);
+		}
+
+		//(увеличение CPU time за минуту)/(1 минута)*100% = средняя загрузка CPU процессом за последнюю минуту.
+		private static TimeSpan GetProcessTime(int id, ref int cpu)
+		{
+			FILETIME ftCreation, ftExit, ftKernel, ftUser;
+			try
+			{
+				var ip = Process.GetProcessById(id).Handle;
+				GetProcessTimes(ip, out ftCreation, out ftExit, out ftKernel, out ftUser);
+			}
+			catch (Exception)
+			{
+				cpu = 0;
+				return new TimeSpan();
+			}
+			cpu = (int)(FiletimeToTimeSpan(ftUser).TotalMilliseconds / (1000 * 60)) * 100;
+			return FiletimeToTimeSpan(ftUser);
 		}
 
 		public void RefreshProcesses()
@@ -33,21 +65,23 @@ namespace taskmsg
 			{
 				_procs.Clear();
 			}
+
 			var proc = Process.GetProcesses();
-			var res = proc.Where(t => t.ProcessName != "Idle").Select(p => 
+			var cputime = 0;
+			var res = proc.Where(t => t.ProcessName != "Idle").Select(p =>
 				new ProcessModel
 				(
 				p.Id
 				, p.ProcessName
 				, (p.WorkingSet64 / 1024f) / 1024f
 				, p.Threads.Count
-				//, p.UserProcessorTime
-				,new TimeSpan()
+				, GetProcessTime(p.Id, ref cputime)
+				, cputime
 				))
 				.OrderBy(a => a.Name).ThenBy(i => i.Id);
-			foreach (var pr in res)
+			foreach (var p in res)
 			{
-				_procs.Add(pr);
+				_procs.Add(p);
 			}
 		}
 

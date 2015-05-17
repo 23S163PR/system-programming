@@ -31,20 +31,22 @@
 								Header="Treads"
                                 Binding="{Binding Treads}" />
 				<DataGridTextColumn  Width="*"  Header="Memory" IsReadOnly="True" CellStyle="{StaticResource CStyle}"
-                                Binding="{Binding Memory}" CanUserSort="True" />
+                                Binding="{Binding Memory}" />
 				<DataGridTextColumn  Width="*" Header="CPU Time" IsReadOnly="True"  CellStyle="{StaticResource CStyle}"
                                 Binding="{Binding CpuTime}" />
+				<DataGridTextColumn  Width="*" Header="CPU Time %" IsReadOnly="True"  CellStyle="{StaticResource CStyle}"
+                                Binding="{Binding CpuTimePersent}" />
 			</DataGrid.Columns>
 		<DataGrid.ContextMenu>
 				<ContextMenu Name="TaskContextMenu" Opened="TaskContextMenu_OnOpened">
 					<MenuItem Header="Kill Process" Click="KillProcessClick"/>
 					<MenuItem Header="Change Priority" Name="PriorityMenu">
-						<MenuItem Header="RealTime" Click="ChangePriorityClick" IsCheckable="true" Name="RealtimePriorityMenuItem" />
-						<MenuItem Header="High" Click="ChangePriorityClick" IsCheckable="true" Name="HighPriorityMenuItem" />
-						<MenuItem Header="Above Normal" Click="ChangePriorityClick" IsCheckable="true" Name="AboveNormalPriorityMenuItem" />
-						<MenuItem Header="Normal" Click="ChangePriorityClick" IsCheckable="true" Name="NormalPriorityMenuItem" />
-						<MenuItem Header="Below Normal" Click="ChangePriorityClick" IsCheckable="true" Name="BelowNormalPriorityMenuItem" />
-						<MenuItem Header="Low" Click="ChangePriorityClick" IsCheckable="true" Name="LowPriorityMenuItem" />
+						<MenuItem Header="RealTime" Click="ChangePriorityClick" IsCheckable="true" Name="Realtime" />
+						<MenuItem Header="High" Click="ChangePriorityClick" IsCheckable="true" Name="High" />
+						<MenuItem Header="Above Normal" Click="ChangePriorityClick" IsCheckable="true" Name="AboveNormal" />
+						<MenuItem Header="Normal" Click="ChangePriorityClick" IsCheckable="true" Name="Normal" />
+						<MenuItem Header="Below Normal" Click="ChangePriorityClick" IsCheckable="true" Name="BelowNormal" />
+						<MenuItem Header="Low" Click="ChangePriorityClick" IsCheckable="true" Name="Low" />
 					</MenuItem>
 				</ContextMenu>
 			</DataGrid.ContextMenu>
