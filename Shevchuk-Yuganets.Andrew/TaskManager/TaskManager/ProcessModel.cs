@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Model
+﻿namespace TaskManager
 {
 	public class ProcessModel
 	{

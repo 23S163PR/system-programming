@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using TaskManager.Model;
 
 namespace TaskManager
 {
