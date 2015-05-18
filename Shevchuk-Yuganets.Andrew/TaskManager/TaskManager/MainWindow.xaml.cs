@@ -15,7 +15,6 @@ namespace TaskManager
 	public partial class MainWindow : Window
 	{
 		private readonly DispatcherTimer _timer;
-		private int _selectedProcessId;
 
 		public MainWindow()
 		{
@@ -63,51 +62,33 @@ namespace TaskManager
 
 		private void EndProcess_Click(object sender, RoutedEventArgs e)
 		{
-			_selectedProcessId = ProcessDataGrid.GetSelectedProcessId();
-			if (_selectedProcessId < 0)
-			{
-				return;
-			}
-
 			if (MessageBox.Show("Kill Process?", "Kill Process", MessageBoxButton.OKCancel, MessageBoxImage.Warning) ==
 				MessageBoxResult.OK)
 			{
-				Manager.KillProcess(_selectedProcessId);
+				Manager.KillProcess(ProcessDataGrid.GetSelectedProcessId());
 			}
 		}
 
 		private void ChangePriority_Click(object sender, RoutedEventArgs e)
 		{
-			_selectedProcessId = ProcessDataGrid.GetSelectedProcessId();
-			if (_selectedProcessId < 0)
-			{
-				return;
-			}
-
 			var priorityName = (sender as MenuItem).Name;
 			ProcessPriorityClass res;
 			priorityName = priorityName.Replace("PriorityMenuItem", "");
 			Enum.TryParse(priorityName, out res);
 
-			Manager.SetProcessPriority(_selectedProcessId, res);
+			Manager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
 		}
 
 		private void ContextMenu_Opening(object sender, RoutedEventArgs e)
 		{
 			_timer.Stop();
 
-			_selectedProcessId = ProcessDataGrid.GetSelectedProcessId();
-			if (_selectedProcessId < 0)
-			{
-				return;
-			}
-
 			foreach (MenuItem menuItem in PriorityMenuItem.Items)
 			{
 				menuItem.IsChecked = false;
 			}
 
-			switch (Manager.GetProcessPriority(_selectedProcessId))
+			switch (Manager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
 			{
 				case ProcessPriorityClass.RealTime:
 					RealtimePriorityMenuItem.IsChecked = true;
