@@ -1,0 +1,24 @@
+﻿<Window x:Class="TaskManeger.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="650"
+        Loaded="Window_Loaded_1"
+        >
+    
+    <Grid>
+        <DataGrid Name="ProcessDataGrid" AutoGenerateColumns="False" GridLinesVisibility="None" ItemsSource="{Binding}">
+            <DataGrid.Columns >
+                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="*" Header="Threads" Binding="{Binding Threads}" />
+                <DataGridTextColumn Width="*" Header="Memory" Binding="{Binding Memory}" />
+                <DataGridTextColumn Width="*" Header="CPU" Binding="{Binding CPU}" />
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu Opened="ContextMenu_Opened_1" Closed="ContextMenu_Closed_1">
+                    <MenuItem Header="End Process" Click="EndProcess_Click_1"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+        
+    </Grid>
+</Window>
