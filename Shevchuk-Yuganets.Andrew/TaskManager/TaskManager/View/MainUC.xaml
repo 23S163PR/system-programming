@@ -7,9 +7,35 @@
              d:DesignHeight="600" d:DesignWidth="525" Loaded="UserControl_Loaded">
 	<DataGrid Name="ProcessDataGrid"
 	          AutoGenerateColumns="False"
-	          ItemsSource="{Binding}">
+	          ItemsSource="{Binding}" SelectedValuePath="ProcessId" IsReadOnly="True">
+
+		<DataGrid.Resources>
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue"/>
+			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
+			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="DodgerBlue"/>
+			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+		</DataGrid.Resources>
+		
+		<DataGrid.RowStyle>
+			<Style TargetType="DataGridRow">
+				<Setter Property="Height" Value="24" />
+
+				<Setter Property="BorderThickness" Value="0,1,0,0" />
+				<Setter Property="BorderBrush" Value="Black" />
+
+				<Style.Triggers>
+					<Trigger Property="IsSelected" Value="True" >
+						<Setter Property="Background" Value="DodgerBlue"/>
+					</Trigger>
+					<Trigger Property="IsFocused" Value="True">
+						<Setter Property="Background" Value="DodgerBlue" />
+					</Trigger>
+				</Style.Triggers>
+			</Style>
+		</DataGrid.RowStyle>
+		
 		<DataGrid.ContextMenu>
-			<ContextMenu Opened="ContextMenu_Opening">
+			<ContextMenu Opened="ContextMenu_Opening" Closed="ContextMenu_OnClosed">
 				<MenuItem Header="End Proces" Click="EndProcess_Click" />
 				<MenuItem Header="Set Priority" Name="PriorityMenuItem">
 					<MenuItem Header="RealTime" Click="ChangePriority_Click" IsCheckable="true" Name="RealtimePriorityMenuItem" />

@@ -7,7 +7,8 @@ namespace TaskManager
 	{
 		public static int GetSelectedProcessId(this DataGrid dataGrid)
 		{
-			return (dataGrid.SelectedItem as ProcessModel).ProcessId;
+			var process = dataGrid.SelectedItem as ProcessModel;
+            return (process == null)? -1  : process.ProcessId;
 		}
 	}
 }

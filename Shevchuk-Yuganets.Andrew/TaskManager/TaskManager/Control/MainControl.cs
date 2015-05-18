@@ -44,7 +44,7 @@ namespace TaskManager.Control
 
 		private static string ConvertObjToCpuUsage(object obj)
 		{
-			return obj.ToString();
+			return obj + "%";
 		}
 
 		private static string ConvertObjToMemoryUsage(object obj)
@@ -70,7 +70,7 @@ namespace TaskManager.Control
 			}
 			catch (Exception)
 			{
-				// ignored
+
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace TaskManager.Control
 			}
 			catch (Exception)
 			{
-				// ignored
+
 			}
 		}
 	}
