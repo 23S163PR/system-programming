@@ -6,8 +6,8 @@
         mc:Ignorable="d"
         Title="Task Manager" Height="600" Width="525" WindowStartupLocation="CenterScreen" Loaded="MainWindow_OnLoaded">
 	<DataGrid Name="ProcessDataGrid"
-	          AutoGenerateColumns="False"
-	          ItemsSource="{Binding}" SelectedValuePath="ProcessId" IsReadOnly="True">
+	          AutoGenerateColumns="False" ItemsSource="{Binding}" 
+			  SelectedValuePath="ProcessId" IsReadOnly="True">
 
 		<DataGrid.Resources>
 			<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue"/>

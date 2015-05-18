@@ -21,7 +21,7 @@ namespace TaskManager
 			InitializeComponent();
 			_timer = new DispatcherTimer();
 			_timer.Tick += timer_Tick;
-			_timer.Interval = new TimeSpan(0, 0, 1);
+			_timer.Interval = new TimeSpan(0, 0, 1); // 1s
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -44,7 +44,7 @@ namespace TaskManager
 				columnIndex = activeColumn.DisplayIndex;
 			}
 
-			ProcessDataGrid.DataContext = Manager.GetProcessList();
+			ProcessDataGrid.DataContext = ProcessManager.GetProcessList();
 
 			if (dataGridSortDirection != null)
 			{
@@ -65,7 +65,7 @@ namespace TaskManager
 			if (MessageBox.Show("Kill Process?", "Kill Process", MessageBoxButton.OKCancel, MessageBoxImage.Warning) ==
 				MessageBoxResult.OK)
 			{
-				Manager.KillProcess(ProcessDataGrid.GetSelectedProcessId());
+				ProcessManager.KillProcess(ProcessDataGrid.GetSelectedProcessId());
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace TaskManager
 			priorityName = priorityName.Replace("PriorityMenuItem", "");
 			Enum.TryParse(priorityName, out res);
 
-			Manager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
+			ProcessManager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
 		}
 
 		private void ContextMenu_Opening(object sender, RoutedEventArgs e)
@@ -88,7 +88,7 @@ namespace TaskManager
 				menuItem.IsChecked = false;
 			}
 
-			switch (Manager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
+			switch (ProcessManager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
 			{
 				case ProcessPriorityClass.RealTime:
 					RealtimePriorityMenuItem.IsChecked = true;

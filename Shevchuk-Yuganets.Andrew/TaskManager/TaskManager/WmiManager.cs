@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Management;
-using System.Windows;
 
 namespace TaskManager
 {
-	public static class Manager
+	public class WmiManager
 	{
 		public static List<ProcessModel> GetProcessList()
 		{
@@ -25,40 +22,6 @@ namespace TaskManager
 					CpuUsage = string.Format("{0} %", obj["PercentProcessorTime"]),
 					MemoryUsage = string.Format("{0:f} K", (int.Parse(obj["WorkingSet"].ToString()) / 1024F) / 1024F)
 				})).ToList();
-		}
-
-		private static Process GetProcess(int id)
-		{
-			return Process.GetProcessById(id);
-		}
-
-		public static ProcessPriorityClass GetProcessPriority(int id)
-		{
-			return GetProcess(id).PriorityClass;
-		}
-
-		public static void SetProcessPriority(int id, ProcessPriorityClass priority)
-		{
-			try
-			{
-				GetProcess(id).PriorityClass = priority;
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
-		}
-
-		public static void KillProcess(int id)
-		{
-			try
-			{
-				GetProcess(id).Kill();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
 		}
 	}
 }

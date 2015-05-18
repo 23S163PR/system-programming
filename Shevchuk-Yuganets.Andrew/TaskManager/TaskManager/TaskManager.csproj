@@ -69,7 +69,8 @@
     </ApplicationDefinition>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ProcessModel.cs" />
-    <Compile Include="Manager.cs" />
+    <Compile Include="ProcessManager.cs" />
+    <Compile Include="WmiManager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
