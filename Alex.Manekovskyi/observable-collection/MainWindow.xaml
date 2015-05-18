@@ -1,0 +1,31 @@
+﻿<Window x:Class="observable_collection.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="35"></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+
+		<StackPanel Orientation="Horizontal"
+					Grid.Row="0">
+			<Button Click="AddRandomItem" Margin="5">Add random item</Button>
+			<Button Click="RemoveRandomItem" Margin="5">Remove random item</Button>
+			<Button Click="UpdateRandomItem" Margin="5">Update random item</Button>
+		</StackPanel>
+
+		<ItemsControl x:Name="fooList"
+					  ItemsSource="{Binding Path=Foos}"
+					  Grid.Row="1">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<TextBlock>
+					<Run>Id = </Run><Run Text="{Binding Id}"></Run>
+					<Run>Name = </Run><Run Text="{Binding Name}"></Run>
+					</TextBlock>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</Grid>
+</Window>
