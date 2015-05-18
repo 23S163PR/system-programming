@@ -29,7 +29,7 @@ namespace TaskManager.View
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{
 			_timer.Start();
-        }
+		}
 
 		private void timer_Tick(object sender, EventArgs e)
 		{
@@ -45,13 +45,13 @@ namespace TaskManager.View
 				dataGridSortDescription = activeColumn.SortMemberPath;
 				columnIndex = activeColumn.DisplayIndex;
 			}
-			
+
 			ProcessDataGrid.DataContext = MainControl.GetProcessList();
 
 			if (dataGridSortDirection != null)
 			{
 				var sortDescription = new SortDescription(dataGridSortDescription, dataGridSortDirection.Value);
-				var collectionView = (CollectionView)CollectionViewSource.GetDefaultView(ProcessDataGrid.ItemsSource);
+				var collectionView = (CollectionView) CollectionViewSource.GetDefaultView(ProcessDataGrid.ItemsSource);
 				collectionView.SortDescriptions.Add(sortDescription);
 				ProcessDataGrid.Columns[columnIndex].SortDirection = dataGridSortDirection;
 			}
@@ -71,7 +71,7 @@ namespace TaskManager.View
 			}
 
 			if (MessageBox.Show("Kill Process?", "Kill Process", MessageBoxButton.OKCancel, MessageBoxImage.Warning) ==
-				MessageBoxResult.OK)
+			    MessageBoxResult.OK)
 			{
 				MainControl.KillProcess(_selectedProcessId);
 			}
@@ -85,7 +85,7 @@ namespace TaskManager.View
 				return;
 			}
 
-			string priorityName = (sender as MenuItem).Name;
+			var priorityName = (sender as MenuItem).Name;
 			ProcessPriorityClass res;
 			priorityName = priorityName.Replace("PriorityMenuItem", "");
 			Enum.TryParse(priorityName, out res);
