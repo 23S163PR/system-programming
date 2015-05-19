@@ -26,9 +26,7 @@ namespace taskmsg.views
 		private void OnDispatcherTimerOnTick(object sender, EventArgs args)
 		{
 			_tmsg.RefreshProcesses();
-			ProcessGrid.DataContext = _tmsg.Processes;
 			LbCount.Content = string.Format("Processes: {0}", _tmsg.Processes.Count());
-			ProcessGrid.Items.Refresh();
 		}
 
 		private void TaskContextMenu_OnOpened(object sender, RoutedEventArgs e)
@@ -85,7 +83,7 @@ namespace taskmsg.views
 		private void KillProcessClick(object sender, RoutedEventArgs e)
 		{
 			if (_tmsg.CurentProcessId < 0) return;
-			Taskmsg.CloseProcess(_tmsg.CurentProcessId);
+			_tmsg.CloseProcess(_tmsg.CurentProcessId);
 		}
 	}
 }
