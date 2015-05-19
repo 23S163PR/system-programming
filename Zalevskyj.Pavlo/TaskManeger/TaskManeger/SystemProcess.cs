@@ -10,12 +10,12 @@ namespace TaskManeger
     {
         public int Id { private set; get; }
         public string Name {private set; get; }
-        public int Threads {private set; get; }
-        public int Memory  {private set; get; }
-        public int CPU     {private set; get; }
+        public string Threads { private set; get; }
+        public string Memory { private set; get; }
+        public string CPU { private set; get; }
 
 
-        public SystemProcess(int id,string name, int threads, int memory, int cpu)
+        public SystemProcess(int id, string name, string threads, string memory, string cpu)
         {
             Id = id;
             Name = name;
