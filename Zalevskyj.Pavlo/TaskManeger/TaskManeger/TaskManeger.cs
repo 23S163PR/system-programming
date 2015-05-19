@@ -11,17 +11,10 @@ namespace TaskManeger
     public class TaskManager
     {
         List<SystemProcess> _items;
-     //   List<PerformanceCounter> _performanceCounters;
 
         public TaskManager()
         {
             _items = new List<SystemProcess>();
-           //_performanceCounters = new List<PerformanceCounter>();
-
-           // foreach (var process in Process.GetProcesses())
-           // {
-           //     _performanceCounters.Add(new PerformanceCounter("Process", "% Processor Time", process.ProcessName));
-           // }
         }
 
         public List<SystemProcess> GetProcessList()
@@ -35,10 +28,19 @@ namespace TaskManeger
             return _items;
         }
 
-
         public void EndProcess(int id)
         {
            Process.GetProcessById(id).Kill();
+        }
+
+        public void ChangepPriority(int id, ProcessPriorityClass priority)
+        {
+            Process.GetProcessById(id).PriorityClass = priority;
+        }
+
+        public ProcessPriorityClass GetPrioruteProcess(int id)
+        {
+            return Process.GetProcessById(id).PriorityClass;
         }
     }
 }

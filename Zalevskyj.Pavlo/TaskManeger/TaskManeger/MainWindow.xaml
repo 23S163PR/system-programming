@@ -14,8 +14,16 @@
                 <DataGridTextColumn Width="*" Header="CPU" Binding="{Binding CPU}" />
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
-                <ContextMenu Opened="ContextMenu_Opened_1" Closed="ContextMenu_Closed_1">
+                <ContextMenu Name="contextMenu" Opened="ContextMenu_Opened_1" Closed="ContextMenu_Closed_1">
                     <MenuItem Header="End Process" Click="EndProcess_Click_1"/>
+                    <MenuItem Header="priority" Name="menuPriority" >
+                        <MenuItem Header="Realtime" Name="RealTime" Click="priority_Click"/>
+                        <MenuItem Header="High" Click="priority_Click"/>
+                        <MenuItem Header="Above Normal" Click="priority_Click"/>
+                        <MenuItem Header="Hormal" Click="priority_Click"/>
+                        <MenuItem Header="Below Normal" Click="priority_Click"/>
+                        <MenuItem Header="Low" Click="priority_Click"/>
+                    </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

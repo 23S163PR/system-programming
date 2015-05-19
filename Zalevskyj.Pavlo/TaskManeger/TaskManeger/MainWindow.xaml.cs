@@ -29,7 +29,7 @@ namespace TaskManeger
 
         public MainWindow()
         {
-            InitializeComponent();  
+            InitializeComponent();
         }
 
 
@@ -60,11 +60,76 @@ namespace TaskManeger
         private void ContextMenu_Opened_1(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer.Stop();
+
+            string nameMenuItem = "";
+            switch (_taskManaker.GetPrioruteProcess((ProcessDataGrid.SelectedItem as SystemProcess).Id))
+            {
+                case ProcessPriorityClass.RealTime:
+                    nameMenuItem = "Realtime";
+                    break;
+                case ProcessPriorityClass.High:
+                    nameMenuItem = "High";
+                    break;
+                case ProcessPriorityClass.AboveNormal:
+                    nameMenuItem = "Above Normal";
+                    break;
+                case ProcessPriorityClass.Normal:
+                    nameMenuItem = "Hormal";
+                    break;
+                case ProcessPriorityClass.BelowNormal:
+                    nameMenuItem = "Below Normal";
+                    break;
+                case ProcessPriorityClass.Idle:
+                    nameMenuItem = "Low";
+                    break;
+            }
+
+            foreach (var item in menuPriority.Items)
+            {
+                if ((item as MenuItem).Header.ToString() == nameMenuItem)
+                {
+                    (item as MenuItem).IsChecked = true;
+                }
+            }
         }
 
         private void ContextMenu_Closed_1(object sender, RoutedEventArgs e)
         {
             _dispatcherTimer.Start();
+        }
+        private void priority_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in menuPriority.Items)
+            {
+                (item as MenuItem).IsChecked = false;
+            }
+            switch ((sender as MenuItem).Header.ToString())
+            {
+                case "Real time":
+                    _taskManaker.ChangepPriority((ProcessDataGrid.SelectedItem as SystemProcess).Id
+                        , ProcessPriorityClass.RealTime);
+                    break;
+                case "High":
+                    _taskManaker.ChangepPriority((ProcessDataGrid.SelectedItem as SystemProcess).Id
+                        , ProcessPriorityClass.High);
+                    break;
+                case "Above Normal":
+                    _taskManaker.ChangepPriority((ProcessDataGrid.SelectedItem as SystemProcess).Id
+                        , ProcessPriorityClass.AboveNormal);
+                    break;
+                case "Hormal":
+                    _taskManaker.ChangepPriority((ProcessDataGrid.SelectedItem as SystemProcess).Id
+                        , ProcessPriorityClass.Normal);
+                    break;
+                case "Below Normal":
+                    _taskManaker.ChangepPriority((ProcessDataGrid.SelectedItem as SystemProcess).Id
+                        , ProcessPriorityClass.BelowNormal);
+                    break;
+                case "Low":
+                    _taskManaker.ChangepPriority((ProcessDataGrid.SelectedItem as SystemProcess).Id
+                        , ProcessPriorityClass.Idle);
+                    break;
+            }
         }
     }
 }
