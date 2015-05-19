@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace taskmsg
 {
 	class Taskmsg
 	{
-		private readonly ObservableCollection<ProcessModel> _procs;
+		private  ObservableCollection<ProcessModel> _procs;
 
 		public int CurentProcessId { get; set; }
 
@@ -61,28 +62,50 @@ namespace taskmsg
 
 		public void RefreshProcesses()
 		{
-			if (_procs.Any())
+			var res = GetCUrentProcesses();
+			if (!_procs.Any())
 			{
-				_procs.Clear();
+				foreach (var p in res)
+				{
+					_procs.Add(p);
+				}
 			}
+			else
+			{
 
+				foreach (var item in res)
+				{
+					var curent = _procs.FirstOrDefault(p => p.Id == item.Id);
+					if (curent != null)
+					{
+						ProcessModel.CompareChanger(ref curent, item);
+					}
+					else
+					{
+						_procs.Add(item);
+					}
+				}
+
+			}
+		}
+
+
+		private static List<ProcessModel> GetCUrentProcesses()
+		{
 			var proc = Process.GetProcesses();
 			var cputime = 0;
 			var res = proc.Where(t => t.ProcessName != "Idle").Select(p =>
 				new ProcessModel
-				(
-				p.Id
-				, p.ProcessName
-				, (p.WorkingSet64 / 1024f) / 1024f
-				, p.Threads.Count
-				, GetProcessTime(p.Id, ref cputime)
-				, cputime
-				))
-				.OrderBy(a => a.Name).ThenBy(i => i.Id);
-			foreach (var p in res)
-			{
-				_procs.Add(p);
-			}
+					(
+					p.Id
+					, p.ProcessName
+					, (p.WorkingSet64/1024f)/1024f
+					, p.Threads.Count
+					, GetProcessTime(p.Id, ref cputime)
+					, cputime
+					))
+				.OrderBy(a => a.Name).ThenBy(i => i.Id).ToList();
+			return res;
 		}
 
 		private static Process GetProcess(int id)
@@ -104,11 +127,13 @@ namespace taskmsg
 			catch (Exception){}
 		}
 
-		public static void CloseProcess(int id)
+		public void CloseProcess(int id)
 		{
 			try
 			{
 				GetProcess(id).Kill();
+				var item = _procs.FirstOrDefault(p => p.Id == id);
+				_procs.Remove(item);
 			}
 			catch(Exception){}
 		}
