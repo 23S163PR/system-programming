@@ -10,6 +10,13 @@
 			<Style TargetType="{x:Type DataGridCell}" x:Key="CStyle">	
 				<Setter Property="HorizontalAlignment" Value="Right"/>	
 			</Style>
+			<Style TargetType="{x:Type DataGridRow}">
+				<Style.Triggers>
+					<Trigger Property="IsSelected" Value="True">
+						<Setter Property="Background" Value="DodgerBlue"/>
+					</Trigger>
+				</Style.Triggers>
+			</Style>
 		</Grid.Resources>
 		
 	<Grid.RowDefinitions>
