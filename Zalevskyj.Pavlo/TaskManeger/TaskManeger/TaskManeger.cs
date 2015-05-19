@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Management; 
 
 namespace TaskManeger
 {
@@ -20,11 +21,23 @@ namespace TaskManeger
         public List<SystemProcess> GetProcessList()
         {
             _items.Clear();
-            foreach (var process in Process.GetProcesses())
-            {
-                _items.Add(new SystemProcess(process.Id, process.ProcessName, process.Threads.Count, (int)process.WorkingSet64 / 1024, 4));             
-            }
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfProc_Process");
+            var cpuinfo = searcher.Get()
+                .Cast<ManagementObject>()
+                .Where(obj => obj["Name"].ToString() != "Idle")
+                .Where(obj => obj["Name"].ToString() != "_Total")
+                .ToArray();
 
+            foreach (ManagementObject process in cpuinfo)  
+            {
+                _items.Add(new SystemProcess(
+                    int.Parse(process["IDProcess"].ToString())
+                    , process["Name"].ToString()
+                    , process["ThreadCount"].ToString()
+                    , process["WorkingSet"].ToString()
+                    , process["PercentProcessorTime"].ToString()
+                    )); 
+            }      
             return _items;
         }
 
@@ -39,6 +52,10 @@ namespace TaskManeger
         }
 
         public ProcessPriorityClass GetPrioruteProcess(int id)
+        {
+            return Process.GetProcessById(id).PriorityClass;
+        }
+          public ProcessPriorityClass GetPridsadoruteProcess(int id)
         {
             return Process.GetProcessById(id).PriorityClass;
         }
