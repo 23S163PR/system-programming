@@ -8,11 +8,11 @@
 			<ColumnDefinition/>
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
-		<TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Top">
-			     
+		<TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Top" 
+				  SelectedItemChanged="RegistryKeys_OnSelectedItemChanged">    
 			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate DataType="{x:Type self:TreeItem}" ItemsSource="{Binding Items}">
-					<TextBlock Text="{Binding Title}" />
+				<HierarchicalDataTemplate  DataType="{x:Type self:TreeItem}" ItemsSource="{Binding Items}">
+					<TextBlock Text="{Binding Title}"/>
 				</HierarchicalDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>
