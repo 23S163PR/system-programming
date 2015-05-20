@@ -27,6 +27,5 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
-        
     </Grid>
 </Window>

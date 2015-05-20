@@ -34,8 +34,8 @@ namespace TaskManeger
                     int.Parse(process["IDProcess"].ToString())
                     , process["Name"].ToString()
                     , process["ThreadCount"].ToString()
-                    , process["WorkingSet"].ToString()
-                    , process["PercentProcessorTime"].ToString()
+                    , String.Format("{0:f} K", (int.Parse(process["WorkingSet"].ToString()) / 1024F) / 1024F)
+                    , String.Format("{0} % ", process["PercentProcessorTime"].ToString())
                     )); 
             }      
             return _items;
