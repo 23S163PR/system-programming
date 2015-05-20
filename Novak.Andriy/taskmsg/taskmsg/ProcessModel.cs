@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using taskmsg.Annotations;
 
@@ -82,24 +83,25 @@ namespace taskmsg
 		}
 		#endregion
 
-		public ProcessModel(int id, string name, double memory, int treads, TimeSpan ms, string cputime)
+        public ProcessModel(int id, string name, double memory, int treads, string ms/*, string cputime*/)
 		{
 			Id = id;
 			Name = name;
 			Memory = Math.Round(memory, 3);
 			Treads = treads;
-			CpuTime = ms.ToString(@"hh\:mm\:ss");
-			CpuTimePersent = cputime;
+		    CpuTime = ms;
+			//CpuTimePersent = cputime;
 		}
 
-		public static void CompareChanger(ref ProcessModel dest, ProcessModel sourse)
+        public static ProcessModel CompareChanger(ProcessModel dest, Process sourse)
 		{
-			dest.Id				= sourse.Id;
-			dest.Name			= sourse.Name;
-			dest.Memory			= sourse.Memory;
-			dest.Treads			= sourse.Treads;
-			dest.CpuTime		= sourse.CpuTime;
-			dest.CpuTimePersent = sourse.CpuTimePersent;	
+			dest.Id	= sourse.Id;
+            dest.Name = sourse.ProcessName;
+		    dest.Memory =  Math.Round((sourse.WorkingSet64/1024f)/1024f,3);
+            dest.Treads = sourse.Threads.Count;
+            dest.CpuTime = Taskmsg.GetProcessTime(sourse.Id);
+			//dest.CpuTimePersent = sourse.CpuTimePersent;	
+            return dest;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -116,5 +118,7 @@ namespace taskmsg
 			if(PropertyChanged == null) return;
 			PropertyChanged(this, new PropertyChangedEventArgs(member));
 		}
+
+
 	}
 }
