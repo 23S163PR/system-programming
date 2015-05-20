@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace taskmsg
@@ -41,10 +42,23 @@ namespace taskmsg
             return time.ToString(@"hh\:mm\:ss"); 
 		}
 
+	    private void ClearOld(IEnumerable<Process> processes)
+	    {
+            var id = processes.Select(t => t.Id);
+	        var dels =  _procs.Where(p => !id.Contains(p.Id)).ToList();
+	        if (!dels.Any()) return;
+	        foreach (var item in dels)
+	        {
+	            _procs.Remove(item);
+	        }
+	    }
+
 		public void RefreshProcesses()
 		{
             var proc = Process.GetProcesses();
-            var res = proc.Where(t => t.ProcessName != "Idle");
+            var res = proc.Where(t => t.ProcessName != "Idle").OrderBy(p=>p.ProcessName).ThenBy(p=>p.Id);
+
+		    ClearOld(res);
             foreach (var p in res)
             {
                 var curent = _procs.FirstOrDefault(c => c.Id == p.Id);
@@ -65,6 +79,7 @@ namespace taskmsg
                         );
                     _procs.Add(process);
                 }
+                
             }
 		}
 
