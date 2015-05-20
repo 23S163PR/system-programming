@@ -15,6 +15,9 @@
 					<Trigger Property="IsSelected" Value="True">
 						<Setter Property="Background" Value="DodgerBlue"/>
 					</Trigger>
+					<Trigger Property="IsFocused" Value="True">
+						<Setter Property="Background" Value="DodgerBlue"/>
+					</Trigger>
 				</Style.Triggers>
 			</Style>
 		</Grid.Resources>
