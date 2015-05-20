@@ -82,14 +82,14 @@ namespace taskmsg
 		}
 		#endregion
 
-		public ProcessModel(int id, string name, double memory, int treads, TimeSpan ms, int cputime)
+		public ProcessModel(int id, string name, double memory, int treads, TimeSpan ms, string cputime)
 		{
 			Id = id;
 			Name = name;
 			Memory = Math.Round(memory, 3);
 			Treads = treads;
 			CpuTime = ms.ToString(@"hh\:mm\:ss");
-			CpuTimePersent = string.Format("{0}%", cputime);
+			CpuTimePersent = cputime;
 		}
 
 		public static void CompareChanger(ref ProcessModel dest, ProcessModel sourse)

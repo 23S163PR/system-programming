@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
-using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace taskmsg
 {
 	class Taskmsg
 	{
-		private  ObservableCollection<ProcessModel> _procs;
+		private readonly ObservableCollection<ProcessModel> _procs;
 
 		public int CurentProcessId { get; set; }
 
@@ -28,36 +26,19 @@ namespace taskmsg
 			}
 		}
 
-		[DllImport("kernel32.dll")]
-		static extern bool GetProcessTimes(IntPtr hProcess,
-			out FILETIME lpCreationTime,
-			out FILETIME lpExitTime,
-			out FILETIME lpKernelTime,
-			out FILETIME lpUserTime);
-		
-		
-		public static TimeSpan FiletimeToTimeSpan(FILETIME fileTime)
+		private static TimeSpan GetProcessTime(int id)
 		{
-			var hFT2 = unchecked((((ulong)(uint)fileTime.dwHighDateTime) << 32) | (uint)fileTime.dwLowDateTime);
-			return TimeSpan.FromTicks((long)hFT2);
-		}
-
-		//(увеличение CPU time за минуту)/(1 минута)*100% = средняя загрузка CPU процессом за последнюю минуту.
-		private static TimeSpan GetProcessTime(int id, ref int cpu)
-		{
-			FILETIME ftCreation, ftExit, ftKernel, ftUser;
+			var time = new TimeSpan();
 			try
 			{
-				var ip = Process.GetProcessById(id).Handle;
-				GetProcessTimes(ip, out ftCreation, out ftExit, out ftKernel, out ftUser);
+				time = Process.GetProcessById(id).TotalProcessorTime;
 			}
 			catch (Exception)
 			{
-				cpu = 0;
-				return new TimeSpan();
+				//if we do not have access to the system process
+				return time;
 			}
-			cpu = (int)(FiletimeToTimeSpan(ftUser).TotalMilliseconds / (1000 * 60)) * 100;
-			return FiletimeToTimeSpan(ftUser);
+			return time; 
 		}
 
 		public void RefreshProcesses()
@@ -72,7 +53,6 @@ namespace taskmsg
 			}
 			else
 			{
-
 				foreach (var item in res)
 				{
 					var curent = _procs.FirstOrDefault(p => p.Id == item.Id);
@@ -85,15 +65,12 @@ namespace taskmsg
 						_procs.Add(item);
 					}
 				}
-
 			}
 		}
 
-
-		private static List<ProcessModel> GetCUrentProcesses()
+		private static IEnumerable<ProcessModel> GetCUrentProcesses()
 		{
 			var proc = Process.GetProcesses();
-			var cputime = 0;
 			var res = proc.Where(t => t.ProcessName != "Idle").Select(p =>
 				new ProcessModel
 					(
@@ -101,11 +78,18 @@ namespace taskmsg
 					, p.ProcessName
 					, (p.WorkingSet64/1024f)/1024f
 					, p.Threads.Count
-					, GetProcessTime(p.Id, ref cputime)
-					, cputime
+					, GetProcessTime(p.Id)
+					, PersentProcessorTime(GetProcessTime(p.Id))
 					))
 				.OrderBy(a => a.Name).ThenBy(i => i.Id).ToList();
 			return res;
+		}
+		//(увеличение CPU time за минуту)/(1 минута)*100% = средняя загрузка CPU процессом за последнюю минуту.
+		private static string PersentProcessorTime(TimeSpan time)
+		{
+			
+			var res = (int)(time.TotalMilliseconds / (1000)) * 100;
+			return string.Format("{0} %", res < 0 ? 0 : res);
 		}
 
 		private static Process GetProcess(int id)
