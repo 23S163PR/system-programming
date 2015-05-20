@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace TaskManager
 			InitializeComponent();
 			_timer = new DispatcherTimer();
 			_timer.Tick += timer_Tick;
-			_timer.Interval = new TimeSpan(0, 0, 1); // 1s
+			_timer.Interval = new TimeSpan(0, 0, 1); // 1 sec
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
