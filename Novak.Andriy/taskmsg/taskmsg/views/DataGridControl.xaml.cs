@@ -7,8 +7,6 @@ using System.Windows.Threading;
 
 namespace taskmsg.views
 {
-
-
 	public partial class DataGridControl : UserControl
 	{
 		private readonly Taskmsg _tmsg;
