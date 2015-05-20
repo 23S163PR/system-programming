@@ -6,7 +6,7 @@ using taskmsg.Annotations;
 
 namespace taskmsg
 {
-	public class ProcessModel : INotifyPropertyChanged
+	public sealed class ProcessModel : INotifyPropertyChanged
 	{
 		private int		_id;
 		private string  _name;
@@ -100,14 +100,14 @@ namespace taskmsg
 		    dest.Memory =  Math.Round((sourse.WorkingSet64/1024f)/1024f,3);
             dest.Treads = sourse.Threads.Count;
             dest.CpuTime = Taskmsg.GetProcessTime(sourse.Id);
-			//dest.CpuTimePersent = sourse.CpuTimePersent;	
+			//dest.CpuTimePersent 
             return dest;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		[NotifyPropertyChangedInvocator]
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		private void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;
 			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 
 namespace taskmsg
@@ -57,7 +56,6 @@ namespace taskmsg
 		{
             var proc = Process.GetProcesses();
             var res = proc.Where(t => t.ProcessName != "Idle").OrderBy(p=>p.ProcessName).ThenBy(p=>p.Id);
-
 		    ClearOld(res);
             foreach (var p in res)
             {
@@ -75,21 +73,15 @@ namespace taskmsg
                         , (p.WorkingSet64 / 1024f) / 1024f
                         , p.Threads.Count
                         , GetProcessTime(p.Id)
-                        //, PersentProcessorTime(GetProcessTime(p.Id))
+                        //, p.PersentProcessorTime()
                         );
                     _procs.Add(process);
                 }
-                
             }
 		}
 
 		//(увеличение CPU time за минуту)/(1 минута)*100% = средняя загрузка CPU процессом за последнюю минуту.
-		private static string PersentProcessorTime(TimeSpan time)
-		{
-			
-			var res = (int)(time.TotalMilliseconds / (1000)) * 100;
-			return string.Format("{0} %", res < 0 ? 0 : res);
-		}
+		
 
 		private static Process GetProcess(int id)
 		{
@@ -103,11 +95,14 @@ namespace taskmsg
 
 		public static void SetProcessPrioruty(int id, ProcessPriorityClass priority)
 		{
-			try
-			{
-				GetProcess(id).PriorityClass = priority;
-			}
-			catch (Exception){}
+		    try
+		    {
+		        GetProcess(id).PriorityClass = priority;
+		    }
+		    catch (Exception)
+		    {
+		        //if not acsees to system process
+		    }
 		}
 
 		public void CloseProcess(int id)
@@ -118,7 +113,10 @@ namespace taskmsg
 				var item = _procs.FirstOrDefault(p => p.Id == id);
 				_procs.Remove(item);
 			}
-			catch(Exception){}
+			catch(Exception)
+            {
+                //if not acsees to system process
+            }
 		}
 	}
 }
