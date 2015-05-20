@@ -9,12 +9,12 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
-        <DataGrid Name="ListProcesses" VerticalAlignment="Top" AutoGenerateColumns="False" CanUserResizeColumns="True">
+        <DataGrid Name="ListProcesses" VerticalAlignment="Top" AutoGenerateColumns="False" CanUserResizeColumns="True" ItemsSource="{Binding Path=Processes}">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="200" Header="Name" Binding="{Binding Path=Name}"/>
-                <DataGridTextColumn Width="100" Header="Thread" Binding="{Binding Path=Thread}"/>
-                <DataGridTextColumn Width="100" Header="Memory" Binding="{Binding Path=Memory}"/>
-                <DataGridTextColumn Width="100" Header="CPU" Binding="{Binding Path=Cpu}"/>
+                <DataGridTextColumn Width="200" Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Width="100" Header="Thread" Binding="{Binding Thread}"/>
+                <DataGridTextColumn Width="100" Header="Memory" Binding="{Binding Memory}"/>
+                <DataGridTextColumn Width="100" Header="CPU" Binding="{Binding Cpu}"/>
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Margin="10,0" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">

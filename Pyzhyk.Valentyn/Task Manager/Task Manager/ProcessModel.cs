@@ -3,18 +3,74 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Task_Manager
 {
-    public class ProcessModel 
+    public class ProcessModel : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public int Thread { get; set; }
-        public string Memory { get; set; }
-        public string Cpu { get; set; }
-        public int ProcessId { get; set; }
+        private string _name;
+        private int _thread;
+        private string _memory;
+        private string _cpu;
+        private int _processid;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name == value) return;
+
+                _name = value;
+                InvokePropertyChanged();
+            }
+        }
+        public int Thread
+        {
+            get { return _thread; }
+            set
+            {
+                if (_thread == value) return;
+
+                _thread = value;
+                InvokePropertyChanged();
+            }
+        }
+        public string Memory
+        {
+            get { return _memory; }
+            set
+            {
+                if (_memory == value) return;
+
+                _memory = value;
+                InvokePropertyChanged();
+            }
+        }
+        public string Cpu
+        {
+            get { return _cpu; }
+            set
+            {
+                if (_cpu == value) return;
+
+                _cpu = value;
+                InvokePropertyChanged();
+            }
+        }
+        public int ProcessId
+        {
+            get { return _processid; }
+            set
+            {
+                if (_processid == value) return;
+
+                _processid = value;
+                InvokePropertyChanged();
+            }
+        }
 
         public ProcessModel(string name, int thread, float memory, TimeSpan cpu, int processId)
         {
@@ -36,7 +92,7 @@ namespace Task_Manager
             {
                 Cpu = "none";
             }
-            
+
             ProcessId = process.Id;
             Memory = ConvertMemory.ShorteningMemory(process.WorkingSet64);
         }
@@ -51,13 +107,23 @@ namespace Task_Manager
             Thread = process.Threads.Count;
             try
             {
-                Cpu = process.UserProcessorTime.Milliseconds.ToString("F1");
+                Cpu = process.UserProcessorTime.Milliseconds.ToString();
             }
             catch (Exception)
             {
                 Cpu = "none";
             }
             Memory = ConvertMemory.ShorteningMemory(process.WorkingSet64);
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void InvokePropertyChanged([CallerMemberName] string member = null)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(member));
+            }
         }
     }
 }

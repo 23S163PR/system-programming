@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -10,10 +12,13 @@ namespace Task_Manager
 {
     public class Manager
     {
-        public List<ProcessModel> Processes;
-        public static List<ProcessModel> GetProcess()
+        public void Refresh()
         {
-            List<ProcessModel> processes = new List<ProcessModel>();
+
+        }
+        public static ObservableCollection<ProcessModel> GetProcess()
+        {
+            ObservableCollection<ProcessModel> processes = new ObservableCollection<ProcessModel>();
 
             foreach (var process in Process.GetProcesses())
             {
@@ -27,40 +32,68 @@ namespace Task_Manager
             }
             return processes;
         }
-        public static void UpdateProcessesInfo(DataGrid ListProcesses)
+        public static void UpdateProcessesInfo(ObservableCollection<ProcessModel> collection)
         {
-            foreach (var item in ListProcesses.Items)
+            foreach (var item in collection)
             {
                 try
                 {
-                    var newProcess = Process.GetProcessById(((ProcessModel)item).ProcessId);
-                    ((ProcessModel)item).SetInfoProcess(newProcess);
+                    var newProcess = Process.GetProcessById(item.ProcessId);
+                    item.SetInfoProcess(newProcess);
                 }
                 catch (Exception)
                 {
-                    
+
                 }
             }
         }
-        public static bool CheckToAddNewProcess(DataGrid ListProcesses)
+        public static void AddNewProcesses(ObservableCollection<ProcessModel> collection)
         {
-            bool flag;
-            foreach (var process in Process.GetProcesses())
+            var processes = GetProcess();
+            var toadd = new ObservableCollection<ProcessModel>();
+            foreach (var processModel in processes)
             {
-                flag = true;
-                foreach (var item in ListProcesses.Items)
+                var flag = true;
+                foreach (var model in collection)
                 {
-                    if (((ProcessModel)item).ProcessId == process.Id)
+                    if (model.ProcessId == processModel.ProcessId)
                     {
                         flag = false;
                     }
                 }
-                if (flag && process.ProcessName != "Idle")
+                if (flag)
                 {
-                    return true;
+                    toadd.Add(processModel);
+                }
+
+            }
+            if (toadd.Count > 0)
+            {
+                foreach (var processModel in toadd)
+                {
+                    collection.Add(processModel);
                 }
             }
-            return false;
+        }
+        public static void BeforDeleteProcess(ObservableCollection<ProcessModel> collection)
+        {
+            var newprocesses = GetProcess();
+            var flag = true;
+            var todelete = new ObservableCollection<ProcessModel>();
+            foreach (var processModel in collection)
+            {
+                if (!newprocesses.Contains(processModel))
+                {
+                    todelete.Add(processModel);
+                }
+            }
+            if (todelete.Count > 0)
+            {
+                foreach (var processModel in todelete)
+                {
+                    collection.Remove(processModel);
+                }
+            }
         }
     }
 }

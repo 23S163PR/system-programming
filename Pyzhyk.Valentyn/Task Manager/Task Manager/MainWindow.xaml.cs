@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -14,11 +15,25 @@ namespace Task_Manager
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<ProcessModel> _processes;
+        public ObservableCollection<ProcessModel> Processes
+        {
+            get { return _processes; }
+        }
         public MainWindow()
         {
             InitializeComponent();
-            ListProcesses.ItemsSource = Manager.GetProcess();
             InitializeTimer();
+            InitializeProcesses();
+            this.DataContext = this;
+        }
+        public void InitializeProcesses()
+        {
+            _processes = new ObservableCollection<ProcessModel>();
+            foreach (var processModel in Manager.GetProcess())
+            {
+                Processes.Add(processModel);
+            } 
         }
         public void InitializeTimer()
         {
@@ -29,12 +44,9 @@ namespace Task_Manager
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
-            Manager.UpdateProcessesInfo(ListProcesses);
-            if (Manager.CheckToAddNewProcess(ListProcesses))
-            {
-                ListProcesses.ItemsSource = Manager.GetProcess();
-            }
-            ListProcesses.Items.Refresh();
+            Manager.UpdateProcessesInfo(Processes);
+            Manager.AddNewProcesses(Processes);
+            //Manager.BeforDeleteProcess(Processes);
         }
         private void CloseProcess_Button_OnClick(object sender, RoutedEventArgs e)
         {
@@ -44,20 +56,32 @@ namespace Task_Manager
                 var a = Process.GetProcessById(process.ProcessId);
                 try
                 {
+                    var todel = new ObservableCollection<ProcessModel>();
+                    foreach (var processModel in Processes)
+                    {
+                        if (processModel.Name == a.ProcessName)
+                        {
+                            todel.Add(processModel);
+                        }
+                    }
+                    if (todel.Count > 0)
+                    {
+                        foreach (var processModel in todel)
+                        {
+                            Processes.Remove(processModel);
+                        }
+                    }
                     a.Kill();
                 }
                 catch (Exception)
                 {
-                    // ignored
+                     //ignored
                 }
-                ListProcesses.ItemsSource = Manager.GetProcess();
             }
         }
-
         private void MainWindow_OnActivated(object sender, EventArgs e)
         {
-            ListProcesses.ItemsSource = Manager.GetProcess();
-            ListProcesses.Items.Refresh();
+            Manager.BeforDeleteProcess(Processes);   
         }
     }
 }
