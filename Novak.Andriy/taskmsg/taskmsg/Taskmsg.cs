@@ -26,7 +26,7 @@ namespace taskmsg
 			}
 		}
 
-		private static TimeSpan GetProcessTime(int id)
+		public static string GetProcessTime(int id)
 		{
 			var time = new TimeSpan();
 			try
@@ -36,54 +36,38 @@ namespace taskmsg
 			catch (Exception)
 			{
 				//if we do not have access to the system process
-				return time;
+                return time.ToString(@"hh\:mm\:ss"); 
 			}
-			return time; 
+            return time.ToString(@"hh\:mm\:ss"); 
 		}
 
 		public void RefreshProcesses()
 		{
-			var res = GetCUrentProcesses();
-			if (!_procs.Any())
-			{
-				foreach (var p in res)
-				{
-					_procs.Add(p);
-				}
-			}
-			else
-			{
-				foreach (var item in res)
-				{
-					var curent = _procs.FirstOrDefault(p => p.Id == item.Id);
-					if (curent != null)
-					{
-						ProcessModel.CompareChanger(ref curent, item);
-					}
-					else
-					{
-						_procs.Add(item);
-					}
-				}
-			}
+            var proc = Process.GetProcesses();
+            var res = proc.Where(t => t.ProcessName != "Idle");
+            foreach (var p in res)
+            {
+                var curent = _procs.FirstOrDefault(c => c.Id == p.Id);
+                if (curent != null)
+                {
+                    curent = ProcessModel.CompareChanger(curent, p);
+                }
+                else
+                {
+                    var process = new ProcessModel
+                        (
+                        p.Id
+                        , p.ProcessName
+                        , (p.WorkingSet64 / 1024f) / 1024f
+                        , p.Threads.Count
+                        , GetProcessTime(p.Id)
+                        //, PersentProcessorTime(GetProcessTime(p.Id))
+                        );
+                    _procs.Add(process);
+                }
+            }
 		}
 
-		private static IEnumerable<ProcessModel> GetCUrentProcesses()
-		{
-			var proc = Process.GetProcesses();
-			var res = proc.Where(t => t.ProcessName != "Idle").Select(p =>
-				new ProcessModel
-					(
-					p.Id
-					, p.ProcessName
-					, (p.WorkingSet64/1024f)/1024f
-					, p.Threads.Count
-					, GetProcessTime(p.Id)
-					, PersentProcessorTime(GetProcessTime(p.Id))
-					))
-				.OrderBy(a => a.Name).ThenBy(i => i.Id).ToList();
-			return res;
-		}
 		//(увеличение CPU time за минуту)/(1 минута)*100% = средняя загрузка CPU процессом за последнюю минуту.
 		private static string PersentProcessorTime(TimeSpan time)
 		{
