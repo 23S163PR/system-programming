@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Threading;
 
 namespace TaskManager
 {
@@ -15,58 +11,37 @@ namespace TaskManager
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private readonly DispatcherTimer _timer;
+		private readonly Timer _timer;
+		private readonly ProcessManager _processManager;
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			_timer = new DispatcherTimer();
-			_timer.Tick += timer_Tick;
-			_timer.Interval = new TimeSpan(0, 0, 1); // 1 sec
+			_timer = new Timer(1000); // 1000ms - 1sec
+            _timer.Elapsed += timer_Tick;
+			_timer.Enabled = true;
+
+			_processManager = new ProcessManager();
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
 		{
+			ProcessDataGrid.ItemsSource = _processManager.ProcessList;
+
 			_timer.Start();
 		}
 
 		private void timer_Tick(object sender, EventArgs e)
 		{
-			string dataGridSortDescription = null;
-			ListSortDirection? dataGridSortDirection = null;
-			var columnIndex = 0;
-
-			var activeRow = ProcessDataGrid.SelectedValue;
-			var activeColumn = ProcessDataGrid.Columns.FirstOrDefault(col => col.SortDirection != null);
-			if (activeColumn != null)
-			{
-				dataGridSortDirection = activeColumn.SortDirection;
-				dataGridSortDescription = activeColumn.SortMemberPath;
-				columnIndex = activeColumn.DisplayIndex;
-			}
-
-			ProcessDataGrid.DataContext = ProcessManager.GetProcessList();
-
-			if (dataGridSortDirection != null)
-			{
-				var sortDescription = new SortDescription(dataGridSortDescription, dataGridSortDirection.Value);
-				var collectionView = (CollectionView)CollectionViewSource.GetDefaultView(ProcessDataGrid.ItemsSource);
-				collectionView.SortDescriptions.Add(sortDescription);
-				ProcessDataGrid.Columns[columnIndex].SortDirection = dataGridSortDirection;
-			}
-
-			if (activeRow != null)
-			{
-				ProcessDataGrid.SelectedValue = activeRow;
-			}
-		}
+            _processManager.UpdateList();
+        }
 
 		private void EndProcess_Click(object sender, RoutedEventArgs e)
 		{
 			if (MessageBox.Show("Kill Process?", "Kill Process", MessageBoxButton.OKCancel, MessageBoxImage.Warning) ==
 				MessageBoxResult.OK)
 			{
-				ProcessManager.KillProcess(ProcessDataGrid.GetSelectedProcessId());
+				_processManager.KillProcess(ProcessDataGrid.GetSelectedProcessId());
 			}
 		}
 
@@ -77,7 +52,7 @@ namespace TaskManager
 			priorityName = priorityName.Replace("PriorityMenuItem", "");
 			Enum.TryParse(priorityName, out res);
 
-			ProcessManager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
+			_processManager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
 		}
 
 		private void ContextMenu_Opening(object sender, RoutedEventArgs e)
@@ -89,7 +64,7 @@ namespace TaskManager
 				menuItem.IsChecked = false;
 			}
 
-			switch (ProcessManager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
+			switch (_processManager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
 			{
 				case ProcessPriorityClass.RealTime:
 					RealtimePriorityMenuItem.IsChecked = true;

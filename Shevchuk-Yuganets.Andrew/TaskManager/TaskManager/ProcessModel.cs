@@ -5,13 +5,37 @@ namespace TaskManager
 {
 	public class ProcessModel : INotifyPropertyChanged
 	{
+		private int _processId;
+		private string _name;
 		private string _threads;
 		private string _memoryUsage;
 		private string _cpuUsage;
 
-		public int ProcessId { get; set; }
+		public int ProcessId
+		{
+			get { return _processId; }
+			set
+			{
+				if (_processId == value)
+					return;
 
-		public string Name{ get; set; }
+				_processId = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public string Name
+		{
+			get { return _name; }
+			set
+			{
+				if (_name == value)
+					return;
+
+				_name = value;
+				OnPropertyChanged();
+			}
+		}
 
 		public string Threads
 		{
@@ -22,7 +46,7 @@ namespace TaskManager
 					return;
 
 				_threads = value;
-				InvokePropertyChanged();
+				OnPropertyChanged();
 			}
 		}
 
@@ -35,7 +59,7 @@ namespace TaskManager
 					return;
 
 				_memoryUsage = value;
-				InvokePropertyChanged();
+				OnPropertyChanged();
 			}
 		}
 
@@ -48,13 +72,13 @@ namespace TaskManager
 					return;
 
 				_cpuUsage = value;
-				InvokePropertyChanged();
+				OnPropertyChanged();
 			}
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		private void InvokePropertyChanged([CallerMemberName] string member = null)
+		private void OnPropertyChanged([CallerMemberName] string member = null)
 		{
 			if (PropertyChanged != null)
 			{
