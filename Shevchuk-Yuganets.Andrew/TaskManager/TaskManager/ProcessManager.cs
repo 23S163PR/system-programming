@@ -10,7 +10,6 @@ namespace TaskManager
 {
 	public class ProcessManager
 	{
-		private DispatcherTimer _dispatcherTimer;
 		private ObservableCollection<ProcessModel> _processList;
 
 		public ObservableCollection<ProcessModel> ProcessList
@@ -24,88 +23,45 @@ namespace TaskManager
 		public ProcessManager()
 		{
 			_processList = WmiManager.GetProcessList();
-
-			_dispatcherTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 100) };
-			_dispatcherTimer.Tick += OneTime_Tick;
 		}
 
 		public void UpdateList()
 		{
-			// TODO: need idea how to update data using DispatherTimer without scrollbar freeze
-			// _dispatcherTimer.Start();
-			// UpdateListTest();
-		}
-
-		void OneTime_Tick(object sender, EventArgs e)
-		{
-			var wmiProcessList = WmiManager.GetProcessList();
-
-			foreach (var process in wmiProcessList)
+			// TODO: need idea how to update data using Dispather without scrollbar freeze
+			Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
 			{
-				var tmpProcess = _processList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
-				if (tmpProcess != null)
+				var wmiProcessList = WmiManager.GetProcessList();
+
+				foreach (var process in wmiProcessList)
 				{
-					tmpProcess.CpuUsage = process.CpuUsage;
-					tmpProcess.MemoryUsage = process.MemoryUsage;
-					tmpProcess.Threads = process.Threads;
+					var tmpProcess = _processList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
+					if (tmpProcess != null)
+					{
+						tmpProcess.CpuUsage = process.CpuUsage;
+						tmpProcess.MemoryUsage = process.MemoryUsage;
+						tmpProcess.Threads = process.Threads;
+					}
+					else
+					{
+						_processList.Add(process);
+					}
 				}
-				else
+
+				var closedProcess = new List<int>();
+				foreach (var process in _processList)
 				{
-					_processList.Add(process);
+					var tmpProcess = wmiProcessList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
+					if (tmpProcess == null)
+					{
+						closedProcess.Add(process.ProcessId);
+					}
 				}
-			}
 
-			var closedProcess = new List<int>();
-			foreach (var process in _processList)
-			{
-				var tmpProcess = wmiProcessList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
-				if (tmpProcess == null)
+				foreach (var processId in closedProcess)
 				{
-					closedProcess.Add(process.ProcessId);
-                }
-			}
-
-			foreach (var processId in closedProcess)
-			{
-				_processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId));
-			}
-
-			_dispatcherTimer.Stop();
-        }
-
-		private void UpdateListTest()
-		{
-			var wmiProcessList = WmiManager.GetProcessList();
-
-			foreach (var process in wmiProcessList)
-			{
-				var tmpProcess = _processList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
-				if (tmpProcess != null)
-				{
-					tmpProcess.CpuUsage = process.CpuUsage;
-					tmpProcess.MemoryUsage = process.MemoryUsage;
-					tmpProcess.Threads = process.Threads;
+					_processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId));
 				}
-				else
-				{
-					_processList.Add(process);
-				}
-			}
-
-			var closedProcess = new List<int>();
-			foreach (var process in _processList)
-			{
-				var tmpProcess = wmiProcessList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
-				if (tmpProcess == null)
-				{
-					closedProcess.Add(process.ProcessId);
-				}
-			}
-
-			foreach (var processId in closedProcess)
-			{
-				_processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId));
-			}
+			}));
 		}
 
 		private Process GetProcess(int id)
