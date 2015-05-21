@@ -1,0 +1,5 @@
+﻿File firstGroup.xml 	Contains - 13987 records
+File secondGroup.xml 	Contains - 555 records
+File thirdGroup.xml 	Contains - 3296 records
+File fourthGroup.xml 	Contains - 3218 records
+Data generation completed in 7116ms
