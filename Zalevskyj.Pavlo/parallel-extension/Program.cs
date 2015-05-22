@@ -7,29 +7,20 @@ using System.Threading.Tasks;
 
 namespace parallel_extension_demo
 {
-	public class Employee
-	{
-		public Guid Identity { get; set; }
-		public string Name { get; set; }
-		public string Email { get; set; }
-		public int AgeInYears { get; set; }
-		public Gender Gender { get; set; }
-		public decimal Salary { get; set; }
-	}
-
-	public enum Gender
-	{
-		Men,
-		Woman,
-		Transgender
-	}
+	
 
 	class Program
 	{
 		static void Main(string[] args)
 		{
-			const int PeopleCount = 50000;
+			const int PeopleCount = 2000;
 			var people = new List<Employee>(PeopleCount);
+
+            var group1 = new List<Employee>();
+            var group2 = new List<Employee>();
+            var group3 = new List<Employee>();
+            var group4 = new List<Employee>();
+
 
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
@@ -49,6 +40,18 @@ namespace parallel_extension_demo
 
 				people.Add(employee);
 			});
+
+            group1.AddRange(people.Where(e => e.AgeInYears > 21 && e.Salary > 15000)
+               .OrderBy(e => e.AgeInYears).ToList());
+
+            group2.AddRange(people.Where(e => e.Name.StartsWith("A") && e.Gender == Gender.Woman)
+             .OrderBy(e => e.AgeInYears).ToList());
+
+            group3.AddRange(people.Where(e => e.Salary > 20000 && e.Gender == Gender.Men)
+            .OrderBy(e => e.AgeInYears).ToList());
+
+            group4.AddRange(people.Where(e => e.AgeInYears > 50 && e.Gender == Gender.Transgender)
+            .OrderBy(e => e.AgeInYears).ToList());
 
 			stopWatch.Stop();
 			Console.WriteLine("Data generation completed in {0}ms", stopWatch.ElapsedMilliseconds);
