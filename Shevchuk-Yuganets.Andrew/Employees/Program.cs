@@ -14,7 +14,7 @@ namespace Employees
 		{
 			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
 
-			const int PeopleCount = 100000;
+			const int PeopleCount = 1000000;
 			var peopleList = new List<Employee>(PeopleCount);
 
 			var stopWatch = new Stopwatch();
@@ -36,7 +36,11 @@ namespace Employees
 				peopleList.Add(employee);
 			});
 
-			// 100000 - 41055
+			// 100 000 - 41055ms Phenom x3 2.7
+			// 1 000 000 - 431803ms Phenom x3 2.7
+
+			// 100 000 - 27489ms i5 3.1
+			// 1 000 000 - 304793ms i5 3.1
 			var firstFilterList =
 				peopleList.AsParallel().Where(employee => employee.AgeInYears > 21 && employee.Salary > 15000)
 					.ToList();
