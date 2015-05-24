@@ -3,18 +3,20 @@ using Microsoft.Win32;
 
 namespace RegEditor
 {
-	class TreeItem
+	class TreeItem 
 	{
 		public string Title { get; set;}
-		public RegistryKey Key { get; set; }
+	    public RegistryKey Key { get; private set; }
 
-		public ObservableCollection<TreeItem> Items { get; set; }
+	    public ObservableCollection<TreeItem> ListItems { get; set; }
 
-		public TreeItem(RegistryKey key, string title)
-		{
+	    public TreeItem(RegistryKey key, string title)
+	    {
+	        Title = title;
 			Key = key;
-			Title = title;
-			Items = new ObservableCollection<TreeItem>();
-		}	
+            ListItems = new ObservableCollection<TreeItem>();
+	    }
+
+	    
 	}
 }

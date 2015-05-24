@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Dynamic;
 using Microsoft.Win32;
 
 namespace RegEditor
@@ -8,12 +9,12 @@ namespace RegEditor
 	class RegistryEditor
 	{
 		private ObservableCollection<TreeItem> _items;
-		public ObservableCollection<TreeItem> Items { get { return _items; }  }
+        public IEnumerable<TreeItem> Items { get { return _items; } }
 
 
 		public RegistryEditor()
 		{
-			_items = new ObservableCollection<TreeItem>();
+		  _items = new ObservableCollection<TreeItem>();
 			ReadRegistry();
 		}
 
@@ -25,45 +26,46 @@ namespace RegEditor
 			RegistryKeys(Registry.Users);
 			RegistryKeys(Registry.CurrentConfig);
 		}
-
-		
-
-		//#region Get Keys
+        
 		private void RegistryKeys(RegistryKey registryKey)
 		{
 			var root = new TreeItem(registryKey, registryKey.Name);
-			GetChildKeys(ref root);
-			_items.Add(root);
+            foreach (var keys in GetChildKeys(root))
+		    {
+                root.ListItems.Add(keys);
+		    }
+		    _items.Add(root);
 		}
 
-		public void GetChildKeys(ref TreeItem key)
-		{
-			foreach (var name in key.Key.GetSubKeyNames())
-			{
-				try
-				{
-					var childKey = key.Key.OpenSubKey(name);//open child keys
-					//if (key.Items.FirstOrDefault(p => p.Title.Equals(name)) == null) // check if child list conteins new element
-					//{
-					var item = new TreeItem(childKey, name);
-					//}
-					if (childKey != null)
-					{
-						foreach (var citem in childKey.GetSubKeyNames())
-						{
-							var subchild = childKey.OpenSubKey(citem);
-							//if (item.Items.FirstOrDefault(p => p.Title.Equals(citem)) != null) continue;
-							var sybitem = new TreeItem(subchild, citem);
-							item.Items.Add(sybitem);
-						}
-					}
-					key.Items.Add(item);
-				}
-				catch (Exception)
-				{
-					//this exception for system keys
-				}
-			}
-		}
+        public IEnumerable<TreeItem> GetChildKeys(TreeItem key)
+        {
+            var items = new ObservableCollection<TreeItem>();
+            foreach (var name in key.Key.GetSubKeyNames())
+            {
+                try
+                {
+                    var childKey = key.Key.OpenSubKey(name);//open child keys
+                    var item = new TreeItem(childKey, name);
+                    if (childKey != null)
+                    {
+                        foreach (var citem in childKey.GetSubKeyNames())
+                        {
+                            var subchild = childKey.OpenSubKey(citem);
+                            var sybitem = new TreeItem(subchild, citem);
+                            item.ListItems.Add(sybitem);
+                            item.ListItems.Add(sybitem);
+                        }
+                    }
+                    items.Add(item);
+                }
+                catch (Exception)
+                {
+                    //this exception for system keys
+                }
+            }
+            return items;
+        }
+
+        //public void CreateKey()
 	}
 }
