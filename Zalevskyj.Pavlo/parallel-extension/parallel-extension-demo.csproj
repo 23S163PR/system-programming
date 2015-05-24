@@ -48,8 +48,11 @@
   <ItemGroup>
     <Compile Include="Employee.cs" />
     <Compile Include="Faker.Extensions.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="ListGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
