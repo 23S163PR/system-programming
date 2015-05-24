@@ -8,17 +8,28 @@
 			<ColumnDefinition/>
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
-		<TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Top" 
+        <TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Stretch" 
 				  SelectedItemChanged="RegistryKeys_OnSelectedItemChanged">    
 			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate  DataType="{x:Type self:TreeItem}" ItemsSource="{Binding Items}">
-					<TextBlock Text="{Binding Title}"/>
-				</HierarchicalDataTemplate>
-			</TreeView.ItemTemplate>
-		</TreeView>
-		<DataGrid Grid.Column="1" Name="InfoDataGrid" 
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-			<DataGridTextColumn Header="Name"/>
-		</DataGrid>
+				<HierarchicalDataTemplate DataType="{x:Type self:TreeItem}" ItemsSource="{Binding ListItems}">
+                    <TextBlock Text="{Binding Title}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate> 
+        </TreeView>
+
+        <DataGrid Grid.Column="1" Name="InfoDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Width="*" Header="Type" Binding="{Binding Type}"/>
+                <DataGridTextColumn Width="*" Header="Value" Binding="{Binding Value}"/>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Create Key" />
+                    <MenuItem Header="Update Key"/>
+                    <MenuItem Header="Delete Key"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
 	</Grid>
 </Window>
