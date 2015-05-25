@@ -58,7 +58,13 @@ namespace task_factory
 
 		private static int Sum(CancellationToken cancellationToken, int count)
 		{
-			throw new NotImplementedException();
+			var sum = 0;
+			for (int i = 0; i < count; i++)
+			{
+				checked { sum += i; }
+			}
+
+			return sum;
 		}
 	}
 }
