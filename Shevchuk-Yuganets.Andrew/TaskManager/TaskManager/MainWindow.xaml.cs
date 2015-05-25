@@ -17,11 +17,12 @@ namespace TaskManager
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			_processManager = new ProcessManager();
+
 			_timer = new Timer(1000); // 1000ms - 1sec
             _timer.Elapsed += timer_Tick;
 			_timer.Enabled = true;
-
-			_processManager = new ProcessManager();
 		}
 
 		private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)

@@ -27,41 +27,40 @@ namespace TaskManager
 
 		public void UpdateList()
 		{
-			// TODO: need idea how to update data using Dispather without scrollbar freeze
-			Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
-			{
-				var wmiProcessList = WmiManager.GetProcessList();
+			var dispather = Application.Current.Dispatcher;
+			var wmiProcessList = WmiManager.GetProcessList();
 
-				foreach (var process in wmiProcessList)
+			foreach (var process in wmiProcessList)
+			{
+				var tmpProcess = _processList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
+				if (tmpProcess != null)
 				{
-					var tmpProcess = _processList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
-					if (tmpProcess != null)
-					{
+					dispather.Invoke(() => {
 						tmpProcess.CpuUsage = process.CpuUsage;
 						tmpProcess.MemoryUsage = process.MemoryUsage;
 						tmpProcess.Threads = process.Threads;
-					}
-					else
-					{
-						_processList.Add(process);
-					}
+					});
 				}
-
-				var closedProcess = new List<int>();
-				foreach (var process in _processList)
+				else
 				{
-					var tmpProcess = wmiProcessList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
-					if (tmpProcess == null)
-					{
-						closedProcess.Add(process.ProcessId);
-					}
+					dispather.Invoke(() => _processList.Add(process));
 				}
+			}
 
-				foreach (var processId in closedProcess)
+			var closedProcess = new List<int>();
+			foreach (var process in _processList)
+			{
+				var tmpProcess = wmiProcessList.FirstOrDefault(pr => pr.ProcessId == process.ProcessId);
+				if (tmpProcess == null)
 				{
-					_processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId));
+					closedProcess.Add(process.ProcessId);
 				}
-			}));
+			}
+
+			foreach (var processId in closedProcess)
+			{
+				dispather.Invoke(() => _processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId)));				;
+			}
 		}
 
 		private Process GetProcess(int id)

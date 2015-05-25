@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace TaskManager
 {
@@ -16,11 +16,7 @@ namespace TaskManager
 			get { return _processId; }
 			set
 			{
-				if (_processId == value)
-					return;
-
-				_processId = value;
-				OnPropertyChanged();
+				Set(ref _processId, value, nameof(ProcessId));
 			}
 		}
 
@@ -29,11 +25,7 @@ namespace TaskManager
 			get { return _name; }
 			set
 			{
-				if (_name == value)
-					return;
-
-				_name = value;
-				OnPropertyChanged();
+				Set(ref _name, value, nameof(Name));
 			}
 		}
 
@@ -42,11 +34,7 @@ namespace TaskManager
 			get { return _threads; }
 			set
 			{
-				if (_threads == value)
-					return;
-
-				_threads = value;
-				OnPropertyChanged();
+				Set(ref _threads, value, nameof(Threads));
 			}
 		}
 
@@ -55,11 +43,7 @@ namespace TaskManager
 			get { return _memoryUsage; }
 			set
 			{
-				if (_memoryUsage == value)
-					return;
-
-				_memoryUsage = value;
-				OnPropertyChanged();
+				Set(ref _memoryUsage, value, nameof(MemoryUsage));
 			}
 		}
 
@@ -68,17 +52,21 @@ namespace TaskManager
 			get { return _cpuUsage; }
 			set
 			{
-				if (_cpuUsage == value)
-					return;
-
-				_cpuUsage = value;
-				OnPropertyChanged();
+				Set(ref _cpuUsage, value, nameof(CpuUsage));
 			}
+		}
+
+		private void Set<T>(ref T field, T newValue, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, newValue)) return;
+
+			field = newValue;
+			OnPropertyChanged(propertyName);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		private void OnPropertyChanged([CallerMemberName] string member = null)
+		private void OnPropertyChanged(string member = null)
 		{
 			if (PropertyChanged != null)
 			{
