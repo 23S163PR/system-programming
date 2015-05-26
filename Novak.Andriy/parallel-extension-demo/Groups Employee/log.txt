@@ -3,3 +3,123 @@ File secondGroup.xml 	Contains - 555 records
 File thirdGroup.xml 	Contains - 3296 records
 File fourthGroup.xml 	Contains - 3218 records
 Data generation completed in 7116ms
+File firstGroup.xml 	Contains - 697 records
+File secondGroup.xml 	Contains - 28 records
+File thirdGroup.xml 	Contains - 158 records
+File fourthGroup.xml 	Contains - 174 records
+Data generation completed in 40999ms
+File firstGroup.xml 	Contains - 700 records
+File secondGroup.xml 	Contains - 28 records
+File thirdGroup.xml 	Contains - 160 records
+File fourthGroup.xml 	Contains - 160 records
+Data generation completed in 5060ms
+File firstGroup.xml 	Contains - 70 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 12 records
+File fourthGroup.xml 	Contains - 14 records
+Data generation completed in 5548ms
+File firstGroup.xml 	Contains - 67 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 19 records
+File fourthGroup.xml 	Contains - 10 records
+Data generation completed in 237ms
+File firstGroup.xml 	Contains - 65 records
+File secondGroup.xml 	Contains - 3 records
+File thirdGroup.xml 	Contains - 14 records
+File fourthGroup.xml 	Contains - 15 records
+Data generation completed in 259ms
+File firstGroup.xml 	Contains - 75 records
+File secondGroup.xml 	Contains - 2 records
+File thirdGroup.xml 	Contains - 18 records
+File fourthGroup.xml 	Contains - 16 records
+Data generation completed in 247ms
+File firstGroup.xml 	Contains - 72 records
+File secondGroup.xml 	Contains - 1 records
+File thirdGroup.xml 	Contains - 16 records
+File fourthGroup.xml 	Contains - 19 records
+Data generation completed in 4607ms
+File firstGroup.xml 	Contains - 78 records
+File secondGroup.xml 	Contains - 1 records
+File thirdGroup.xml 	Contains - 21 records
+File fourthGroup.xml 	Contains - 16 records
+Data generation completed in 269ms
+File firstGroup.xml 	Contains - 68 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 15 records
+File fourthGroup.xml 	Contains - 16 records
+Data generation completed in 413ms
+File firstGroup.xml 	Contains - 62 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 24 records
+File fourthGroup.xml 	Contains - 16 records
+Data generation completed in 334ms
+File firstGroup.xml 	Contains - 66 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 16 records
+File fourthGroup.xml 	Contains - 11 records
+Data generation completed in 293ms
+File firstGroup.xml 	Contains - 66 records
+File secondGroup.xml 	Contains - 3 records
+File thirdGroup.xml 	Contains - 11 records
+File fourthGroup.xml 	Contains - 23 records
+Data generation completed in 432ms
+File firstGroup.xml 	Contains - 62 records
+File secondGroup.xml 	Contains - 7 records
+File thirdGroup.xml 	Contains - 19 records
+File fourthGroup.xml 	Contains - 11 records
+Data generation completed in 5033ms
+File firstGroup.xml 	Contains - 66 records
+File secondGroup.xml 	Contains - 2 records
+File thirdGroup.xml 	Contains - 18 records
+File fourthGroup.xml 	Contains - 12 records
+Data generation completed in 304ms
+File firstGroup.xml 	Contains - 74 records
+File secondGroup.xml 	Contains - 3 records
+File thirdGroup.xml 	Contains - 19 records
+File fourthGroup.xml 	Contains - 14 records
+Data generation completed in 298ms
+File firstGroup.xml 	Contains - 76 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 19 records
+File fourthGroup.xml 	Contains - 10 records
+Data generation completed in 389ms
+File firstGroup.xml 	Contains - 70 records
+File secondGroup.xml 	Contains - 2 records
+File thirdGroup.xml 	Contains - 18 records
+File fourthGroup.xml 	Contains - 9 records
+Data generation completed in 611ms
+File firstGroup.xml 	Contains - 60 records
+File secondGroup.xml 	Contains - 5 records
+File thirdGroup.xml 	Contains - 14 records
+File fourthGroup.xml 	Contains - 13 records
+Data generation completed in 5791ms
+File firstGroup.xml 	Contains - 69 records
+File secondGroup.xml 	Contains - 4 records
+File thirdGroup.xml 	Contains - 14 records
+File fourthGroup.xml 	Contains - 21 records
+Data generation completed in 359ms
+File firstGroup.xml 	Contains - 71 records
+File secondGroup.xml 	Contains - 2 records
+File thirdGroup.xml 	Contains - 16 records
+File fourthGroup.xml 	Contains - 15 records
+Data generation completed in 336ms
+File firstGroup.xml 	Contains - 7049 records
+File secondGroup.xml 	Contains - 289 records
+File thirdGroup.xml 	Contains - 1637 records
+File fourthGroup.xml 	Contains - 1514 records
+Data generation completed in 3356ms
+File firstGroup.xml 	Contains - 13985 records
+File secondGroup.xml 	Contains - 549 records
+File thirdGroup.xml 	Contains - 3288 records
+File fourthGroup.xml 	Contains - 3071 records
+Data generation completed in 6856ms
+File firstGroup.xml 	Contains - 7118 records
+File secondGroup.xml 	Contains - 270 records
+File thirdGroup.xml 	Contains - 1684 records
+File fourthGroup.xml 	Contains - 1518 records
+Data generation completed in 3397ms
+File firstGroup.xml 	Contains - 14154 records
+File secondGroup.xml 	Contains - 600 records
+File thirdGroup.xml 	Contains - 3380 records
+File fourthGroup.xml 	Contains - 3039 records
+Data generation completed in 7661ms
