@@ -5,17 +5,22 @@ using System.Xml.Serialization;
 
 namespace parallel_extension_demo
 {
-    public static class XSerializer
+    public static class XSerializer<T>
     {
-        public static void XSerilizer<T>(T obj, string fileName)
+        private static readonly XmlSerializer XmlSerializer;
+        static XSerializer()
+        {
+            XmlSerializer = new XmlSerializer(typeof(T));
+        }
+
+        public static void XSerilizer(T obj, string fileName)
         {
             try
             {
                 if (obj == null) return;
-                var xmlSerializer = new XmlSerializer(typeof(T));
                 using (var fs = new FileStream(string.Format(@"../../Groups Employee/{0}",fileName), FileMode.OpenOrCreate))
                 {
-                    xmlSerializer.Serialize(fs, obj);
+                    XmlSerializer.Serialize(fs, obj);
                     fs.Flush();
                 }
             }
