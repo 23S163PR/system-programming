@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace parallel_extension_demo
@@ -13,10 +14,11 @@ namespace parallel_extension_demo
 
         public Groups() { }
 
-        public Groups(List<Employee> list)
+        public Groups(IEnumerable<Employee> list)
         {
-            Colection = list; //.AddRange(list);
-            Count = Colection.Count;
+            Colection = new List<Employee>();
+            Colection.AddRange(list);
+            Count = Colection.Count();
         }
         
     }

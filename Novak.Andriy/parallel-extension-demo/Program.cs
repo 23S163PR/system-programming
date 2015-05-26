@@ -19,7 +19,7 @@ namespace parallel_extension_demo
 
 		    var stopWatch = new Stopwatch();
 			stopWatch.Start();
-
+           
 			Parallel.For(0, peopleCount, i =>
 			{
 				var name = Name.FullName();
@@ -35,20 +35,17 @@ namespace parallel_extension_demo
 
 				people.Add(employee);
 			});
+		   var res = people.OrderBy(p=>p.AgeInYears);
            var groups = new Dictionary<string, Groups>();
-           groups.Add("firstGroup.xml", new Groups(people.Where(p => p.AgeInYears > 21 && p.Salary > 15000)
-               .OrderBy(p => p.AgeInYears).ToList()));
-           groups.Add("secondGroup.xml", new Groups(people.Where(p => p.Gender == Gender.Woman && p.Name.StartsWith("A"))
-               .OrderBy(p => p.AgeInYears).ToList()));
-           groups.Add("thirdGroup.xml", new Groups(people.Where(p => p.Gender == Gender.Men && p.Salary > 20000)
-               .OrderBy(p => p.AgeInYears).ToList()));
-           groups.Add("fourthGroup.xml", new Groups(people.Where(p => p.Gender == Gender.Transgender && p.AgeInYears > 50)
-               .OrderBy(p => p.AgeInYears).ToList()));
+           groups.Add("firstGroup.xml", new Groups(res.Where(p => p.AgeInYears > 21 && p.Salary > 15000)));
 
-		 
+           groups.Add("secondGroup.xml", new Groups(res.Where(p => p.Gender == Gender.Woman && p.Name.StartsWith("A"))));
+           groups.Add("thirdGroup.xml", new Groups(res.Where(p => p.Gender == Gender.Men && p.Salary > 20000)));
+           groups.Add("fourthGroup.xml", new Groups(res.Where(p => p.Gender == Gender.Transgender && p.AgeInYears > 50)));
+
             foreach (var item in groups)
             {
-                XSerializer.XSerilizer(item.Value, item.Key);
+                XSerializer<Groups>.XSerilizer(item.Value, item.Key);
             }
             
             stopWatch.Stop();
