@@ -21,11 +21,8 @@ namespace Employees
 
 		public static void SaveToJsonFile<T>(this T obj, string path) where T : List<Employee>
 		{
-			using (var streamWriter = new StreamWriter(path))
-			{
-				streamWriter.Write(obj.OrderBy(employee => employee.AgeInYears).ToList().ToJson());
-				Console.WriteLine("write: {0, -30} - done", path);
-			}
+			File.WriteAllText(path, obj.OrderBy(employee => employee.AgeInYears).ToList().ToJson());
+			Console.WriteLine("write: {0, -30} - done", path);
 		}
 	}
 }

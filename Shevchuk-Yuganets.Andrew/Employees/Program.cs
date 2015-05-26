@@ -12,9 +12,7 @@ namespace Employees
 	{
 		private static void Main(string[] args)
 		{
-			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
-
-			const int PeopleCount = 1000000;
+            const int PeopleCount = 1000000;
 			var peopleList = new List<Employee>(PeopleCount);
 
 			var stopWatch = new Stopwatch();
@@ -22,15 +20,16 @@ namespace Employees
 
 			Parallel.For(0, PeopleCount, i =>
 			{
-				var name = Name.FullName();
+				var name = Name.FullName();						// ???
 				var employee = new Employee
 				{
 					Identity = Guid.NewGuid(),
-					Name = name,
-					Email = Internet.Email(name),
+					Name = name,									
+					Email = Internet.Email(name),				// ???
 					AgeInYears = RandomNumber.Next(18, 80),
-					Salary = RandomNumber.Next(10000, 30000), // $
-					Gender = EnumExtensions.Rand<Gender>()
+					Salary = RandomNumber.Next(10000, 30000),	// $
+					// Gender = EnumExtensions.Rand<Gender>()	// slow solution
+					Gender = GetRandomGender()					// work faster than tamplate solution
 				};
 
 				peopleList.Add(employee);
@@ -64,5 +63,23 @@ namespace Employees
 			thirdFilterList.SaveToJsonFile("third.json");
 			fourthFilterList.SaveToJsonFile("fourth.json");
 		}
+
+		private static Gender GetRandomGender()
+		{
+			Gender res = Gender.Men;
+			switch(RandomNumber.Next(0, 3))
+			{
+				case 0:
+					res =  Gender.Men;
+					break;
+				case 1:
+					res = Gender.Transgender;
+					break;
+				case 2:
+					res = Gender.Woman;
+					break;
+			}
+			return res;
+        }
 	}
 }
