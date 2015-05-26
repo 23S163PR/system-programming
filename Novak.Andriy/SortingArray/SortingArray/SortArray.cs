@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Reflection;
 
 namespace SortingArray
 {
     static class SortArray
     {
-        public static int[] BubleSort(int[] array)
+        public static string BubleSort(int[] array)
         {
             for (int write = 0; write < array.Length; write++)
             {
@@ -18,10 +19,10 @@ namespace SortingArray
                     }
                 }
             }
-            return array;
+            return "BubleSort";
         }
 
-        public static int[] QuickSort(int[] elements, int left, int right)
+        public static string QuickSort(int[] elements, int left, int right)
         {
             int i = left, j = right;
             int pivot = elements[(left + right) / 2];
@@ -60,10 +61,10 @@ namespace SortingArray
                 QuickSort(elements, i, right);
             }
 
-            return elements;
+            return "QuickSort";
         }
 
-        public static int[] SelectionSort(int[] array)
+        public static string SelectionSort(int[] array)
         {
             int i, j, min, temp;
             for (i = 0; i < array.Length - 1; i++)
@@ -80,10 +81,10 @@ namespace SortingArray
                 array[i] = array[min];
                 array[min] = temp;
             }
-            return array;
+            return "SelectionSort";
         }
 
-        public static int[] MergeSort(int[] input, int left, int right)
+        public static string MergeSort(int[] input, int left, int right)
         {
             if (left < right)
             {
@@ -91,8 +92,7 @@ namespace SortingArray
 
                 MergeSort(input, left, middle);                 //maximum load
                 MergeSort(input, middle + 1, right);            //maximum load
-                //maximum load
-                //Merge                                         //maximum load
+              
                 int[] leftArray = new int[middle - left + 1];   //maximum load
                 int[] rightArray = new int[right - middle];     //maximum load
 
@@ -125,7 +125,7 @@ namespace SortingArray
                     }
                 }
             }
-            return input;
+            return "MergeSort";
         }
 
 

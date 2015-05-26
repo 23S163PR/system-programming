@@ -6,10 +6,16 @@ namespace SortingArray
 {
     class Program
     {
+        struct TestResult
+        {
+            public string Name { get;set; }
+            public double Time { get; set; }
+        }
+
         static void Main(string[] args)
         {
 
-            var bubleArr = RandArr(5000, new Random());
+            var bubleArr = RandArr(10000, new Random());
             var quickArr = (int[])bubleArr.Clone();
             var selectionArr = (int[])bubleArr.Clone();
             var mergArr = (int[])bubleArr.Clone();
@@ -21,7 +27,7 @@ namespace SortingArray
             {
                 /*inclusive samples 20%*/
                  task.StartNew(() => GetTime(() => SortArray.BubleSort(bubleArr)))
-                 /*inclusive samples 10%*/  // 
+                 /*inclusive samples 10%*/  
                  ,task.StartNew(() => GetTime(() => SortArray.QuickSort(quickArr,0,quickArr.Length-1)))
                 //samples 14.29
                 ,task.StartNew(() => GetTime(() => SortArray.SelectionSort(selectionArr)))
@@ -31,17 +37,21 @@ namespace SortingArray
 
             foreach (var t in tasks)
             {
-                Console.WriteLine("\n{0} Miliseconds", t.Result);
+                Console.WriteLine("\nMethod - {0}\t{1} Miliseconds", t.Result.Name, t.Result.Time);
             }
         }
 
-        static double GetTime(Func<int[]> func)
+        static TestResult  GetTime(Func<string> func)
         {
             var stopWotch = new Stopwatch();
             stopWotch.Start();
-            func();
+            var str = func();
             stopWotch.Stop();
-            return stopWotch.Elapsed.TotalMilliseconds;
+            return new TestResult
+            {
+                Time = stopWotch.Elapsed.TotalMilliseconds,
+                Name = str
+            };
         }
 
         static int[] RandArr(int count, Random rnd)
