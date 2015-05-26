@@ -16,7 +16,7 @@ namespace ConsoleApplication2
             public String Name { get; set; }
             public String Email { get; set; }
             public int AgeInYears { get; set; }
-            public Gender GenderVal { get; set; }
+            public Gender GenderVal { get; set; } // enum type
             public decimal Salary { get; set; }
 
             public Employee(Guid id, String name, String email, int age, Gender gender, decimal salary)
@@ -30,45 +30,46 @@ namespace ConsoleApplication2
                 rnd = new Random();
 
             }
-        public bool Serialize(int group)
+
+        public void Serialize(int group)
         {
             try
             {
-              
               System.IO.File.AppendAllText(@"path" + group.ToString() + ".txt", Newtonsoft.Json.JsonConvert.SerializeObject(this).ToString());
+                // serialize current instance of an object
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception " + e.Message);
-                return false;
             }
-            return true;
-
         }
 
         public enum Gender
         {
-            Men,
+            Man,
             Woman,
             Transgender
         }
+
         public static Gender GetGender()
         {
             int val = new Random().Next(0, 3);
+
             switch (val)
             {
-                case 0: return Gender.Men;
+                case 0: return Gender.Man;
                     break;
                 case 1: return Gender.Woman;
                     break;
                 case 2: return Gender.Transgender;
                     break;
-               
+                default:
+                    return Gender.Woman;
             }
-            return Gender.Woman;
+            
         }
 
-        public class HelpTools
+        public class HelpTools // class to help with Employee
         {
             public static List<Employee> GetEmployees(int count)
             {
@@ -93,7 +94,7 @@ namespace ConsoleApplication2
 
         static void Main(string[] args)
         {
-
+            
             Stopwatch timer1 = new Stopwatch(); //timer for list w/o AsParalell()
             Stopwatch timerMain = new Stopwatch(); // timer for list GetEmployees w/o AsParalell()
             Stopwatch timer2 = new Stopwatch(); // timer for list w/ AsParalell()
@@ -107,10 +108,14 @@ namespace ConsoleApplication2
             Console.WriteLine((double)timerMain.ElapsedTicks / TimeSpan.TicksPerSecond); // show time in seconds that we required to fill 10000 random employess
 
             timer1.Start();
-
+            
+            // ONLY 21yo+, only with salary > 15k, sorted by age
             List<Employee> firstGroup = list.Where(x => x.AgeInYears > 21 && x.Salary > 15000).OrderBy(x => x.AgeInYears).ToList();
+            // only women, only with name start with "A", sorted by age
             List<Employee> secondGroup = list.Where(x => x.GenderVal == Gender.Woman && x.Name[0] == 'A').OrderBy(x => x.AgeInYears).ToList();
-            List<Employee> thirdGroup = list.Where(x => x.GenderVal == Gender.Men && x.Salary > 20000).OrderBy(x => x.AgeInYears).ToList();
+            // only men, only with salary > 20k, sorted by age
+            List<Employee> thirdGroup = list.Where(x => x.GenderVal == Gender.Man && x.Salary > 20000).OrderBy(x => x.AgeInYears).ToList();
+            // only transgender, only 50yo+, sorted by age
             List<Employee> fourthGroup = list.Where(x => x.GenderVal == Gender.Transgender && x.AgeInYears > 50).OrderBy(x => x.AgeInYears).ToList();
             // grouping w/o AsParalell()
             timer1.Stop();
@@ -118,10 +123,16 @@ namespace ConsoleApplication2
             Console.WriteLine((double)timer1.ElapsedTicks / TimeSpan.TicksPerSecond); // time in seconds to group w/o asParalell()
             
             timer2.Start();
+
+            // ONLY 21yo+, only with salary > 15k, sorted by age            
             firstGroup = list.AsParallel().Where(x => x.AgeInYears > 21 && x.Salary > 15000).OrderBy(x => x.AgeInYears).ToList();
+            // only women, only with name start with "A", sorted by age            
             secondGroup = list.AsParallel().Where(x => x.GenderVal == Gender.Woman && x.Name[0] == 'A').OrderBy(x => x.AgeInYears).ToList();
-            thirdGroup = list.AsParallel().Where(x => x.GenderVal == Gender.Men && x.Salary > 20000).OrderBy(x => x.AgeInYears).ToList();
+            // only men, only with salary > 20k, sorted by age            
+            thirdGroup = list.AsParallel().Where(x => x.GenderVal == Gender.Man && x.Salary > 20000).OrderBy(x => x.AgeInYears).ToList();
+            // only transgender, only 50yo+, sorted by age
             fourthGroup = list.AsParallel().Where(x => x.GenderVal == Gender.Transgender && x.AgeInYears > 50).OrderBy(x => x.AgeInYears).ToList();
+            // grouping w/ AsParalell()
             timer2.Stop();
 
             Console.WriteLine((double)timer2.ElapsedTicks / TimeSpan.TicksPerSecond); // time to group w/ AsParalell()
