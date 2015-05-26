@@ -35,7 +35,7 @@ namespace ConsoleApplication2
             try
             {
               
-              System.IO.File.AppendAllText(@"C:\Users\zhluktenko\OneDrive\path" + group.ToString() + ".txt", Newtonsoft.Json.JsonConvert.SerializeObject(this).ToString());
+              System.IO.File.AppendAllText(@"path" + group.ToString() + ".txt", Newtonsoft.Json.JsonConvert.SerializeObject(this).ToString());
             }
             catch (Exception e)
             {
@@ -85,7 +85,7 @@ namespace ConsoleApplication2
         {
             for (int i = 1; i <= count; i++)
             {
-                System.IO.File.WriteAllText(@"C:\Users\zhluktenko\OneDrive\path" + (i).ToString() + ".txt", String.Empty); // fill all json files with empty string
+                System.IO.File.WriteAllText(@"path" + (i).ToString() + ".txt", String.Empty); // fill all json files with empty string
             }
             return true;
         }
@@ -114,7 +114,7 @@ namespace ConsoleApplication2
             List<Employee> fourthGroup = list.Where(x => x.GenderVal == Gender.Transgender && x.AgeInYears > 50).OrderBy(x => x.AgeInYears).ToList();
             // grouping w/o AsParalell()
             timer1.Stop();
-
+            
             Console.WriteLine((double)timer1.ElapsedTicks / TimeSpan.TicksPerSecond); // time in seconds to group w/o asParalell()
             
             timer2.Start();
