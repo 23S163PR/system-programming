@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task-cancellation", "task-c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "synchronization-context", "synchronization-context\synchronization-context.csproj", "{01079EE6-39E8-474D-9362-879B4517EC4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "volatile-demo", "volatile-demo\volatile-demo.csproj", "{F2EED8B7-A394-405A-9DA6-4200B64584DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,10 @@ Global
 		{01079EE6-39E8-474D-9362-879B4517EC4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01079EE6-39E8-474D-9362-879B4517EC4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01079EE6-39E8-474D-9362-879B4517EC4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2EED8B7-A394-405A-9DA6-4200B64584DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2EED8B7-A394-405A-9DA6-4200B64584DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2EED8B7-A394-405A-9DA6-4200B64584DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2EED8B7-A394-405A-9DA6-4200B64584DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
