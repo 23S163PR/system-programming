@@ -47,7 +47,7 @@ namespace TaskManeger
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            ProcessDataGrid.DataContext = _taskManaker.GetProcessList();
+            //ProcessDataGrid.DataContext = _taskManaker.GetProcessList();
             ProcessDataGrid.Items.Refresh();
         }
 
