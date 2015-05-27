@@ -3,20 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "parallel-extension-demo", "..\parallel-extension-demo\parallel-extension-demo.csproj", "{1EE35472-82D5-48CB-BED6-DCD32F1DF62E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegEditor", "..\RegEditor\RegEditor\RegEditor.csproj", "{2D2F4984-159A-41FD-8F01-57E532E5F2B4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortingArray", "..\SortingArray\SortingArray\SortingArray.csproj", "{8561A5A1-7787-428E-B69C-2F600C1A8093}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "taskmsg", "..\taskmsg\taskmsg\taskmsg.csproj", "{AC6C5C12-4539-4C12-81AB-EED7C5989F23}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{728B80A8-2DEC-40C9-9F60-AF5A3E8EA292}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "parallel-extension-demo", "parallel-extension-demo\parallel-extension-demo.csproj", "{1EE35472-82D5-48CB-BED6-DCD32F1DF62E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegEditor", "RegEditor\RegEditor.csproj", "{2D2F4984-159A-41FD-8F01-57E532E5F2B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortingArray", "SortingArray\SortingArray.csproj", "{8561A5A1-7787-428E-B69C-2F600C1A8093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "taskmsg", "taskmsg\taskmsg.csproj", "{AC6C5C12-4539-4C12-81AB-EED7C5989F23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "multi-treading-max", "multi-treading-max\multi-treading-max.csproj", "{99F76132-5213-474E-A080-6C444959C091}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{AC6C5C12-4539-4C12-81AB-EED7C5989F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC6C5C12-4539-4C12-81AB-EED7C5989F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC6C5C12-4539-4C12-81AB-EED7C5989F23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F76132-5213-474E-A080-6C444959C091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F76132-5213-474E-A080-6C444959C091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F76132-5213-474E-A080-6C444959C091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F76132-5213-474E-A080-6C444959C091}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
