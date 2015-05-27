@@ -12,35 +12,39 @@ namespace sort
         static void Main(string[] args)
         {
             Random rnd = new Random();
-            var arr = new int[1000000];
+            var bubble = new int[1000];
 
-            for (int i = 0; i < arr.Length; i++)
+            for (int i = 0; i < bubble.Length; i++)
             {
-                arr[i] = rnd.Next(0, 40);
+                bubble[i] = rnd.Next(0, 40);
             }
 
-            Console.WriteLine();
+            var quick = (int[])bubble.Clone();
+            var selection = (int[])bubble.Clone();
+            var merge = (int[])bubble.Clone();
 
 
+            var taskFactory = new TaskFactory(
+				TaskCreationOptions.AttachedToParent,
+				TaskContinuationOptions.None);
 
+			var tasks = new[]
+			{
+				taskFactory.StartNew(() => GetRuntime(() => bubbleSort(bubble))),
+				taskFactory.StartNew(() => GetRuntime(() => Quicksort(quick,0,quick.Length-1))),
+				taskFactory.StartNew(() => GetRuntime(() => SelectionSort(selection))),
+				taskFactory.StartNew(() => GetRuntime(() => mergesort(merge,0,merge.Length-1)))
+			};
 
-            //bubbleSort(arr);
-            Quicksort(arr, 0, arr.Length - 1);
-            //SelectionSort(arr);
-          //  mergesort(arr, 0, arr.Length - 1);
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                Console.Write(arr[i].ToString() + " ");
-            }
+			foreach (var time in tasks)
+			{
+				Console.WriteLine("{0, -10} Miliseconds \n", time.Result);
+			}
 
         }
 
-        static void bubbleSort(int[] arr)
+        static int[] bubbleSort(int[] arr)
         {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
             for (int j = 0; j < arr.Length - 1; j++)
             {
                 for (int i = 0; i < arr.Length - 1; i++)
@@ -53,12 +57,18 @@ namespace sort
                     }
                 }
             }
-
-            stopWatch.Stop();
-            Console.WriteLine("Data generation completed in {0}ms", stopWatch.ElapsedMilliseconds);
+            return arr;
         }
+        static double GetRuntime(Func<int[]> sortMethod)
+		{
+			var stopWotch = new Stopwatch();
+			stopWotch.Start();
+			sortMethod();
+			stopWotch.Stop();
+			return stopWotch.Elapsed.TotalMilliseconds;
+		}
 
-        static void Quicksort(int[] arr, int left, int right)
+        static int[] Quicksort(int[] arr, int left, int right)
         {
             int i = left, j = right;
             IComparable pivot = arr[(left + right) / 2];
@@ -97,9 +107,10 @@ namespace sort
             {
                 Quicksort(arr, i, right);
             }
+            return arr;
         }
 
-        static void SelectionSort(int[] arr)
+        static int[] SelectionSort(int[] arr)
         {
             int i, j, min, temp;
             for (i = 0; i < arr.Length - 1; i++)
@@ -116,6 +127,7 @@ namespace sort
                 arr[i] = arr[min];
                 arr[min] = temp;
             }
+            return arr;
         }
         static void mergeArray(int[] arr, int start, int mid, int end)
         {
@@ -167,7 +179,7 @@ namespace sort
             }
         }
         // Recursive Merge Procedure
-        static void mergesort(int[] arr, int start, int end)
+        static int[] mergesort(int[] arr, int start, int end)
         {
             if (start < end)
             {
@@ -176,6 +188,7 @@ namespace sort
                 mergesort(arr, mid + 1, end);
                 mergeArray(arr, start, mid, end);
             }
+            return arr;
         }
 
     }
