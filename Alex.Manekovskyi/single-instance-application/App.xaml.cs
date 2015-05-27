@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WpfApplication1
+namespace single_instance_application
 {
     /// <summary>
     /// Interaction logic for App.xaml
