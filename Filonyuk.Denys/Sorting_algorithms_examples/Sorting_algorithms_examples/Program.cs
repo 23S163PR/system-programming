@@ -11,7 +11,7 @@ namespace Sorting_algorithms_examples
     {
         static void Main(string[] args)
         {
-            const int size = 10000;
+            const int size = 50000;
             int[] unsorted_array = new int[size];
             Random Rnd_digit = new Random();
 
@@ -19,22 +19,23 @@ namespace Sorting_algorithms_examples
             {
                 unsorted_array[i] = Rnd_digit.Next(0, 1000);
             }
-            Stopwatch obj1 = new Stopwatch();
+            Stopwatch stopWatch = new Stopwatch();
+            //Stopwatch obj1 = new Stopwatch();
 
-
-
+            
             
             Task QuickSortingTask = new Task(() =>
                 {
                     int[] CopyOfBaseArr = new int[size];
                     unsorted_array.CopyTo(CopyOfBaseArr,0);
-
-                    obj1.Start();
+                    
+                    stopWatch.Start();
                     Quicksort(CopyOfBaseArr,0,CopyOfBaseArr.Length-1);
-                    obj1.Stop();
-                    Console.WriteLine(" Quick sorting of {0} elements \n ElapsedMilliseconds {1}\n",CopyOfBaseArr.Length, obj1.ElapsedMilliseconds);
+                    stopWatch.Stop();
+                    Console.WriteLine(" Quick sorting of {0} elements \n ElapsedMilliseconds {1}\n",CopyOfBaseArr.Length, stopWatch.ElapsedMilliseconds);
+                    stopWatch.Reset();
                 });
-            
+
             QuickSortingTask.Start();
             QuickSortingTask.Wait();
 
@@ -42,11 +43,12 @@ namespace Sorting_algorithms_examples
             {
                 int[] CopyOfBaseArr = new int[size];
                 unsorted_array.CopyTo(CopyOfBaseArr, 0);
-
-                obj1.Start();
+                
+                stopWatch.Start();
                 BubleSort(CopyOfBaseArr);
-                obj1.Stop();
-                Console.WriteLine(" Bubble sorting of {0} elements \n ElapsedMilliseconds {1}\n", CopyOfBaseArr.Length, obj1.ElapsedMilliseconds);
+                stopWatch.Stop();
+                Console.WriteLine(" Bubble sorting of {0} elements \n ElapsedMilliseconds {1}\n", CopyOfBaseArr.Length, stopWatch.ElapsedMilliseconds);
+                stopWatch.Reset();
             });
 
             BubleSortingTask.Start();
@@ -56,55 +58,59 @@ namespace Sorting_algorithms_examples
             {
                 int[] CopyOfBaseArr = new int[size];
                 unsorted_array.CopyTo(CopyOfBaseArr, 0);
-
-                obj1.Start();
+                
+                stopWatch.Start();
                 selectsort(CopyOfBaseArr, CopyOfBaseArr.Length);
-                obj1.Stop();
-                Console.WriteLine(" Select sorting of {0} elements \n ElapsedMilliseconds {1}\n", CopyOfBaseArr.Length, obj1.ElapsedMilliseconds);
+                stopWatch.Stop();
+                Console.WriteLine(" Select sorting of {0} elements \n ElapsedMilliseconds {1}\n", CopyOfBaseArr.Length, stopWatch.ElapsedMilliseconds);
+                stopWatch.Reset();
             });
 
             SelectSortingTask.Start();
             SelectSortingTask.Wait();
-            //Console.WriteLine("ElapsedMilliseconds {0}", obj1.ElapsedMilliseconds);
 
-           // Console.WriteLine("Before sorting");
+            Task MergeSortingTask = new Task(() =>
+            {
+                int[] CopyOfBaseArr = new int[size];
+                unsorted_array.CopyTo(CopyOfBaseArr, 0);
+                stopWatch.Start();
+                MergeSort_Recursive(CopyOfBaseArr, 0, CopyOfBaseArr.Length - 1);
+                stopWatch.Stop();
+                Console.WriteLine(" Merge sorting of {0} elements \n ElapsedMilliseconds {1}\n", CopyOfBaseArr.Length, stopWatch.ElapsedMilliseconds);
+                stopWatch.Reset();
+            });
 
-           // //foreach (var el in unsorted_array)
-           // //{
-           // //    Console.WriteLine(el.ToString());
-           // //}
-           //obj1.Start();//30820
-           //Console.WriteLine("After Bubble sorting");
-           //BubleSort(unsorted_array);
-           
-           //obj1.Stop();
-           //Console.WriteLine("ElapsedMilliseconds {0}",obj1.ElapsedMilliseconds);
+           MergeSortingTask.Start();
+           MergeSortingTask.Wait();
 
+            //Parallel.Invoke(
+            //    () =>
+            //    {
+            //        QuickSortingTask.Start();
+            //        //QuickSortingTask.Wait();
+            //    },
 
-          // Console.WriteLine("After Quick sort");
-          // obj1.Start();//71
-          // Quicksort(unsorted_array, 0, unsorted_array.Length - 1);
-          // 
-          // obj1.Stop();
-          // Console.WriteLine("ElapsedMilliseconds {0}", obj1.ElapsedMilliseconds);
+            //    () =>
+            //    {
+            //        BubleSortingTask.Start();
+            //        //BubleSortingTask.Wait();
+            //    },
 
-
-          // Console.WriteLine("After select sort");
-          // obj1.Start();//11120
-          // selectsort(unsorted_array, unsorted_array.Length);
-          // obj1.Stop();
-          // Console.WriteLine("ElapsedMilliseconds {0}", obj1.ElapsedMilliseconds);
-
-
-            //Console.WriteLine("After merge_recursive sort");  
-            //obj1.Start();
-            //MergeSort_Recursive(unsorted_array, 0, unsorted_array.Length-1 );
-            //obj1.Stop();
-            //Console.WriteLine("ElapsedMilliseconds {0}", obj1.ElapsedMilliseconds);
-
+            //    () =>
+            //    {
+            //        SelectSortingTask.Start();
+            //        //SelectSortingTask.Wait();
+            //    },
+            //    () =>
+            //    {
+            //        MergeSortingTask.Start();
+            //        //MergeSortingTask.Wait();
+            //    });
+           //Thre 
+           // Console.ReadLine();
         }
 
-        public static void BubleSort(int[] arr)
+         static void BubleSort(int[] arr)
         {
             int temp = 0;
 
@@ -123,7 +129,7 @@ namespace Sorting_algorithms_examples
            // return arr;
         }
 
-        public static void Quicksort(int[] elements, int left, int right)
+         static void Quicksort(int[] elements, int left, int right)
         {
             int i = left, j = right;
             int pivot = elements[(left + right) / 2];
@@ -164,9 +170,7 @@ namespace Sorting_algorithms_examples
             }
         }
 
-
-
-        static void selectsort(int[] dataset, int n){
+         static void selectsort(int[] dataset, int n){
                 int i,j;
                 for(i=0;i<n;i++){
                        int min=i;     
@@ -180,10 +184,9 @@ namespace Sorting_algorithms_examples
 
         }
 
-
-        static public void DoMerge(int[] numbers, int left, int mid, int right)
+         static void DoMerge(int[] numbers, int left, int mid, int right)
         {
-            int[] temp = new int[25];
+            int[] temp = new int[numbers.Length];
             int i, left_end, num_elements, tmp_pos;
 
             left_end = (mid - 1);
@@ -211,7 +214,7 @@ namespace Sorting_algorithms_examples
             }
         }
 
-        static public void MergeSort_Recursive(int[] numbers, int left, int right)
+         static void MergeSort_Recursive(int[] numbers, int left, int right)
         {
             int mid;
 
