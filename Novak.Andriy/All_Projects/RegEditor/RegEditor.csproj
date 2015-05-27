@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ComandsContextMenu.cs" />
     <Compile Include="RegistryEditor.cs" />
     <Compile Include="TreeItem.cs" />
     <Compile Include="Usercontol\UserControl1.xaml.cs">

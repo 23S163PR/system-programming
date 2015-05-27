@@ -3,11 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:RegEditor"
         Title="MainWindow" Height="350" Width="525">
-	<Grid>
-		<Grid.ColumnDefinitions>
+    <Window.CommandBindings>
+        <CommandBinding Command="self:ComandsContextMenu.CreateKey" Executed="CreateKey_Executed" CanExecute="CreateKey_CanExecute"/>
+        <CommandBinding Command="self:ComandsContextMenu.UpdateKey" Executed="UpdateKey_Executed" CanExecute="UpdateKey_CanExecute"/>
+        <CommandBinding Command="self:ComandsContextMenu.DeleteKey" Executed="DeleteKey_Executed" CanExecute="DeleteKey_CanExecute"/>
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.ColumnDefinitions>
 			<ColumnDefinition/>
+            <ColumnDefinition Width="3"/>
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3"/>
         <TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Stretch" 
 				  SelectedItemChanged="RegistryKeys_OnSelectedItemChanged">    
 			<TreeView.ItemTemplate>
@@ -17,17 +24,17 @@
             </TreeView.ItemTemplate> 
         </TreeView>
 
-        <DataGrid Grid.Column="1" Name="InfoDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False">
+        <DataGrid Grid.Column="2" Name="InfoDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Width="*" Header="Type" Binding="{Binding Type}"/>
                 <DataGridTextColumn Width="*" Header="Value" Binding="{Binding Value}"/>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Create Key" />
-                    <MenuItem Header="Update Key"/>
-                    <MenuItem Header="Delete Key"/>
+                <ContextMenu Name="ctxMenu" Opened="CtxMenu_OnOpened">
+                    <MenuItem Header="Create Key" Command="self:ComandsContextMenu.CreateKey"/>
+                    <MenuItem Header="Update Key" Command="self:ComandsContextMenu.UpdateKey"/>
+                    <MenuItem Header="Delete Key" Command="self:ComandsContextMenu.DeleteKey"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
