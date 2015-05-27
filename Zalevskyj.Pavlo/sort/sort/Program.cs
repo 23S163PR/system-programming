@@ -12,6 +12,8 @@ namespace sort
         static void Main(string[] args)
         {
             Random rnd = new Random();
+            Graphic grafic = new Graphic(rnd);
+
             var bubble = new int[1000];
 
             for (int i = 0; i < bubble.Length; i++)
@@ -36,10 +38,19 @@ namespace sort
 				taskFactory.StartNew(() => GetRuntime(() => Sorts.MergeSort(merge,0,merge.Length-1)))
 			};
 
-			foreach (var time in tasks)
-			{
-				Console.WriteLine("{0, -10} Miliseconds \n", time.Result);
-			}
+            foreach (var time in tasks)
+            {
+                grafic.time += time.Result;
+            }
+
+            foreach (var time in tasks)
+            {
+                grafic.PaintingGraphic(time.Result);
+            }
+
+
+            Console.SetCursorPosition(0, 110);
+            Console.ReadLine();
         }
 
         static double GetRuntime(Func<int[]> sortMethod)
