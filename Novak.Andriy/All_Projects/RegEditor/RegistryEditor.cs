@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Dynamic;
+using System.Windows;
 using Microsoft.Win32;
 
 namespace RegEditor
 {
+    
+    struct RegistryValue
+    {
+        public RegistryKey Key { get; set; }
+        public string Name { get; set; }
+        public RegistryValueKind Type { get; set; }
+        public object Value { get; set; }
+    }
+
 	class RegistryEditor
 	{
 		private ObservableCollection<TreeItem> _items;
@@ -43,14 +52,16 @@ namespace RegEditor
             foreach (var name in key.Key.GetSubKeyNames())
             {
                 try
-                {
-                    var childKey = key.Key.OpenSubKey(name);//open child keys
+                {//todo Acces control #p1 some keys dont have access control 
+                    var childKey = key.Key.OpenSubKey(name,true /*open key with read & write acces*/);
                     var item = new TreeItem(childKey, name);
                     if (childKey != null)
                     {
                         foreach (var citem in childKey.GetSubKeyNames())
                         {
-                            var subchild = childKey.OpenSubKey(citem);
+                            //var tt=childKey.OpenSubKey(citem).GetAccessControl();
+                            //todo Acces control #p1
+                            var subchild = childKey.OpenSubKey(citem, true /*open key with read & write acces*/);
                             var sybitem = new TreeItem(subchild, citem);
                             item.ListItems.Add(sybitem);
                             item.ListItems.Add(sybitem);
@@ -66,6 +77,27 @@ namespace RegEditor
             return items;
         }
 
-        //public void CreateKey()
+        public static void CreateKey(RegistryKey key)
+        {
+            try
+            {
+                key.CreateSubKey("WWW123");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+	    public static void DeleteKey(RegistryKey key, string keyName)
+	    { 
+	        try
+	        {
+	            key.DeleteSubKey(keyName);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+	    }
 	}
 }
