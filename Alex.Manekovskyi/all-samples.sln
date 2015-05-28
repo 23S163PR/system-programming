@@ -46,6 +46,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "single-instance-application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "autoresetevent-performance-demo", "autoresetevent-performance-demo\autoresetevent-performance-demo.csproj", "{FD16E27C-5277-46F8-A196-FA5AE40B449B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "recursive-autoresetevent", "recursive-autoresetevent\recursive-autoresetevent.csproj", "{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,10 @@ Global
 		{FD16E27C-5277-46F8-A196-FA5AE40B449B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD16E27C-5277-46F8-A196-FA5AE40B449B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD16E27C-5277-46F8-A196-FA5AE40B449B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
