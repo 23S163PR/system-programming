@@ -17,6 +17,7 @@ namespace redirect_process_standard_streams
 	{
 		static void Main(string[] args)
 		{
+            
 			WriteLine("Welcome to the colored WHERE command!", ConsoleColor.White);
 			WriteLine("Enter the command arguments or press the Enter key to display help reference: ", ConsoleColor.White);
 			var arguments = Console.ReadLine();
