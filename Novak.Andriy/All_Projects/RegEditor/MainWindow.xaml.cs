@@ -26,7 +26,7 @@ namespace RegEditor
             var item = RegistryKeys.SelectedItem as TreeItem;
             if (item == null) return;
             item.ListItems.Clear();
-            var res = _registryEditor.GetChildKeys(item);
+            var res = RegistryEditor.GetChildKeys(item);
             if (res == null) return;
              item.ListItems.Clear();
             foreach (var bar in res)
@@ -40,8 +40,7 @@ namespace RegEditor
 	    {
             var res = key.GetValueNames().Select(p => new RegistryValue
 	        {
-                Key =  key
-	            ,Name = p//.Any() ? p : "default"
+	            Name = p//.Any() ? p : "default"
                 ,Type = key.GetValueKind(p)
                 ,Value=key.GetValue(p)
 	        });
@@ -59,7 +58,7 @@ namespace RegEditor
             var treeItem = RegistryKeys.SelectedItem as TreeItem;
             if (treeItem == null) return;
             var key = treeItem.Key;
-            RegistryEditor.CreateKey(key);
+           // _registryEditor.CreateKey(key);
         }
 
 	    private void UpdateKey_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -81,8 +80,7 @@ namespace RegEditor
         {
             var treeItem = RegistryKeys.SelectedItem as TreeItem;
             if (treeItem == null) return;
-            var key = treeItem.Key;
-            if (_registryValue != null) RegistryEditor.DeleteKey(key, _registryValue.Value.Name);
+            if (_registryValue != null) _registryEditor.DeleteKey(treeItem, _registryValue.Value.Name);
         }
 
 	    #endregion
