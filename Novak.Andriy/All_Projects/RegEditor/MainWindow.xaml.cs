@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
+using RegEditor.Usercontol;
 
 namespace RegEditor
 {
@@ -48,28 +49,15 @@ namespace RegEditor
 	        InfoDataGrid.DataContext = res;
         }
         #region Comands
-
-	    private void CreateKey_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        #region Comands CanExecuted
+        private void CreateKey_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
-        private void CreateKey_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var treeItem = RegistryKeys.SelectedItem as TreeItem;
-            if (treeItem == null) return;
-            var key = treeItem.Key;
-           // _registryEditor.CreateKey(key);
-        }
-
-	    private void UpdateKey_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void UpdateKey_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
-        }
-
-        private void UpdateKey_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-           
         }
 
         private void DeleteKey_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -77,13 +65,58 @@ namespace RegEditor
             e.CanExecute = true;
         }
 
-        private void DeleteKey_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void DeleteKeyValue_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void UpdateKeyValue_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CreateKeyValue_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+        #endregion
+        
+        private void CreateKeyValue_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var treeItem = RegistryKeys.SelectedItem as TreeItem;
+            if (treeItem == null) return;
+            var control = new RegistryValuesControl();
+            WindowOperator.Create_Window(control, "Create Key Value", true /*is Modal window*/);
+            _registryEditor.CreateKeyValue(treeItem, control.RegistryValue);
+        }
+
+        private void CreateKey_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+           
+        }
+        
+        private void UpdateKey_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+           
+        }
+
+        private void UpdateKeyValue_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteKey_Execute(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteKeyValue_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var treeItem = RegistryKeys.SelectedItem as TreeItem;
             if (treeItem == null) return;
             try
             {
-                if (_registryValue != null) _registryEditor.DeleteKey(treeItem, _registryValue.Value.Name);
+                if (_registryValue != null) _registryEditor.DeleteKeyValue(treeItem, _registryValue.Value.Name);
             }
             catch (ArgumentOutOfRangeException m)
             {

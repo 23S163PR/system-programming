@@ -6,7 +6,10 @@
     <Window.CommandBindings>
         <CommandBinding Command="self:ComandsContextMenu.CreateKey" Executed="CreateKey_Executed" CanExecute="CreateKey_CanExecute"/>
         <CommandBinding Command="self:ComandsContextMenu.UpdateKey" Executed="UpdateKey_Executed" CanExecute="UpdateKey_CanExecute"/>
-        <CommandBinding Command="self:ComandsContextMenu.DeleteKey" Executed="DeleteKey_Executed" CanExecute="DeleteKey_CanExecute"/>
+        <CommandBinding Command="self:ComandsContextMenu.DeleteKey" Executed="DeleteKey_Execute" CanExecute="DeleteKey_CanExecute"/>
+        <CommandBinding Command="self:ComandsContextMenu.DeleteKeyValue" Executed="DeleteKeyValue_Executed" CanExecute="DeleteKeyValue_CanExecute"/>
+        <CommandBinding Command="self:ComandsContextMenu.CreateKeyValue" Executed="CreateKeyValue_Executed" CanExecute="CreateKeyValue_CanExecute"/>
+        <CommandBinding Command="self:ComandsContextMenu.UpdateKeyValue" Executed="UpdateKeyValue_Executed" CanExecute="UpdateKeyValue_CanExecute"/>
     </Window.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -35,6 +38,9 @@
                     <MenuItem Header="Create Key" Command="self:ComandsContextMenu.CreateKey"/>
                     <MenuItem Header="Update Key" Command="self:ComandsContextMenu.UpdateKey"/>
                     <MenuItem Header="Delete Key" Command="self:ComandsContextMenu.DeleteKey"/>
+                    <MenuItem Header="Create Key Value" Command="self:ComandsContextMenu.CreateKeyValue"/>
+                    <MenuItem Header="Update Key Value" Command="self:ComandsContextMenu.UpdateKeyValue"/>
+                    <MenuItem Header="Delete Key Value" Command="self:ComandsContextMenu.DeleteKeyValue"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
