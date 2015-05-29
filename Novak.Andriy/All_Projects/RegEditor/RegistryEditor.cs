@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 
 namespace RegEditor
 {
-    
-    struct RegistryValue
+    public struct RegistryValue
     {
         public string Name { get; set; }
         public RegistryValueKind Type { get; set; }
@@ -18,9 +17,8 @@ namespace RegEditor
 
 	class RegistryEditor
 	{
-		private ObservableCollection<TreeItem> _items;
+		private readonly ObservableCollection<TreeItem> _items;
         public IEnumerable<TreeItem> Items { get { return _items; } }
-
 
 		public RegistryEditor()
 		{
@@ -49,91 +47,165 @@ namespace RegEditor
 
         public static IEnumerable<TreeItem> GetChildKeys(TreeItem key)
         {
-            var items = new ObservableCollection<TreeItem>();
-            foreach (var name in key.Key.GetSubKeyNames())
+            var task = new Task<ObservableCollection<TreeItem>>(() =>
             {
-                try
+                var items = new ObservableCollection<TreeItem>();
+                foreach (var name in key.Key.GetSubKeyNames())
                 {
-                    var childKey = key.Key.OpenSubKey(name);
-                    var item = new TreeItem(childKey, name);
-                    if (childKey != null)
+                    try
                     {
-                        foreach (var citem in childKey.GetSubKeyNames())
+                        var childKey = key.Key.OpenSubKey(name);
+                        var item = new TreeItem(childKey, name);
+                        if (childKey != null)
                         {
-                            var subchild = childKey.OpenSubKey(citem);
-                            var sybitem = new TreeItem(subchild, citem);
-                            item.ListItems.Add(sybitem);
-                            item.ListItems.Add(sybitem);
+                            foreach (var citem in childKey.GetSubKeyNames())
+                            {
+                                var subchild = childKey.OpenSubKey(citem);
+                                var sybitem = new TreeItem(subchild, citem);
+                                item.ListItems.Add(sybitem);
+                                item.ListItems.Add(sybitem);
+                            }
                         }
+                        items.Add(item);
                     }
-                    items.Add(item);
+                    catch (Exception)
+                    {
+                        //this exception may be if dont access to system registry keys 
+                    }
                 }
-                catch (Exception)
-                {
-                    //this exception may be if dont access to system registry keys 
-                }
-            }
-            return items;
+                return items;
+            });
+            task.Start(TaskScheduler.Current);
+            return task.Result;
         }
 
-        private RegistryKey OpenCurentKeyWithWriteAccess(TreeItem key)
+        private static RegistryKey OpenCurentKeyWithWriteAccess(TreeItem key, bool isParentKey = false)
         {
             var regexpRoot = new Regex(@"(^[\w]*)");
             var regexpParentKey = new Regex(@"([\\][\w]*)*([\\])");
             var root = regexpRoot.Match(key.Key.Name);
-            RegistryKey rooKey = null;
+            RegistryKey rootKey = null;
             switch (root.Value)
             {
                 case "HKEY_CLASSES_ROOT":
-                    rooKey = Registry.ClassesRoot;
+                    rootKey = Registry.ClassesRoot;
                     break;
                 case "HKEY_CURRENT_USER":
-                    rooKey = Registry.CurrentUser;
+                    rootKey = Registry.CurrentUser;
                     break;
                 case "HKEY_LOCAL_MACHINE":
-                    rooKey = Registry.LocalMachine;
+                    rootKey = Registry.LocalMachine;
                     break;
                 case "HKEY_USERS":
-                    rooKey = Registry.Users;
+                    rootKey = Registry.Users;
                     break;
                 case "HKEY_CURRENT_CONFIG":
-                    rooKey = Registry.CurrentConfig;
+                    rootKey = Registry.CurrentConfig;
                     break;  
             }
+            if (key.Title.Equals(root.Value)) return rootKey;
             var parent = regexpParentKey.Match(key.Key.Name);
-            return !parent.Groups[1].Value.Any() ? rooKey : 
-                rooKey.OpenSubKey(parent.Groups[1].Value.Remove(0, 1), true/*open with writable*/);
+            if (!isParentKey)
+            {
+                 return !parent.Groups[1].Value.Any() 
+                     ? rootKey.OpenSubKey(key.Title, true /*open writable*/)
+                : rootKey.OpenSubKey(parent.Groups[1].Value.Remove(0, 1))
+                        .OpenSubKey(key.Title, true /*open writable*/);
+            }
+
+            return !parent.Groups[1].Value.Any()
+                ? rootKey
+                : rootKey.OpenSubKey(parent.Groups[1].Value.Remove(0, 1), true /*open writable*/);         
         }
 
-	    public void CreateKey(TreeItem key)
+	    public void CreateKey(TreeItem key, string keyName)
+	    {
+	        var curent = OpenCurentKeyWithWriteAccess(key);
+	        curent.CreateSubKey(keyName);
+	    }
+
+	    public void CreateKeyValue(TreeItem key, RegistryValue value)
+	    {
+	        var curent = OpenCurentKeyWithWriteAccess(key);
+            curent.SetValue(value.Name, value.Value, value.Type);
+	    }
+
+	    public void UpdateKeyValue(TreeItem key, RegistryValue newValue, string oldValueName)
+	    {
+	        var curent = OpenCurentKeyWithWriteAccess(key);
+            if (curent == null) return;
+            curent.DeleteValue(oldValueName);
+            curent.SetValue(newValue.Name, newValue.Value, newValue.Type);
+	    }
+
+        public void UpdateKey(TreeItem key, string newKeyName)
         {
-            try
+            var parent = OpenCurentKeyWithWriteAccess(key,true);
+            CopyKey(parent, key.Title, newKeyName);
+            parent.DeleteSubKeyTree(key.Title);
+        }
+
+	    private void RenameSubKey(RegistryKey parentKey,
+          string subKeyName, string newSubKeyName)
+        {
+            CopyKey(parentKey, subKeyName, newSubKeyName);
+            parentKey.DeleteSubKeyTree(subKeyName);
+        }
+
+        /// <summary>
+        /// Copy a registry key.  The parentKey must be writeable.
+        /// </summary>
+        private void CopyKey(RegistryKey parentKey,
+            string keyNameToCopy, string newKeyName)
+        {
+            //Create new key
+            var destinationKey = parentKey.CreateSubKey(newKeyName);
+
+            //Open the sourceKey we are copying from
+            var sourceKey = parentKey.OpenSubKey(keyNameToCopy);
+
+            RecurseCopyKey(sourceKey, destinationKey);
+        }
+
+        private void RecurseCopyKey(RegistryKey sourceKey, RegistryKey destinationKey)
+        {
+            //copy all the values
+            foreach (var valueName in sourceKey.GetValueNames())
             {
-              //  key.CreateSubKey("WWW123");
+                object objValue = sourceKey.GetValue(valueName);
+                RegistryValueKind valKind = sourceKey.GetValueKind(valueName);
+                destinationKey.SetValue(valueName, objValue, valKind);
             }
-            catch (Exception e)
+
+            //For Each subKey 
+            //Create a new subKey in destinationKey 
+            //Call myself 
+            foreach (string sourceSubKeyName in sourceKey.GetSubKeyNames())
             {
-                MessageBox.Show(e.Message);
+                var sourceSubKey = sourceKey.OpenSubKey(sourceSubKeyName);
+                var destSubKey = destinationKey.CreateSubKey(sourceSubKeyName);
+                RecurseCopyKey(sourceSubKey, destSubKey);
             }
         }
-	    public void DeleteKey(TreeItem key, string keyValue = null)
+
+	    public void DeleteKeyValue(TreeItem key, string keyValue)
 	    {
-            var curent = OpenCurentKeyWithWriteAccess(key).OpenSubKey(key.Title, true/*open writable*/);
-            if (curent == null) return;
-            if (keyValue != null)
-            {
-                curent.DeleteValue(keyValue);
-                return;
-            }
-            if (!curent.GetSubKeyNames().Contains(key.Title)) return;
-            var curentChild = curent.OpenSubKey(key.Title, true);
+            var curent = OpenCurentKeyWithWriteAccess(key);
+            if (curent == null || keyValue == null) return;
+	        curent.DeleteValue(keyValue);
+	    }
+
+	    public void DeleteRegistryKey(TreeItem key)
+	    {
+            var parent = OpenCurentKeyWithWriteAccess(key, true /*Get parent key in curent key*/);
+            var curentChild = parent.OpenSubKey(key.Title);
             if (curentChild != null && curentChild.SubKeyCount > 0)
             {
-                curent.DeleteSubKeyTree(key.Title);
+                parent.DeleteSubKeyTree(key.Title);
             }
             else
             {
-                curent.DeleteSubKey(key.Title);
+                parent.DeleteSubKey(key.Title);
             }
 	    }
 	}
