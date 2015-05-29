@@ -19,13 +19,13 @@ namespace RegEditor.Usercontol
             cbKeyType.SelectedIndex = 0;
         }
 
-        public RegistryValuesControl(RegistryValue value)
+        public RegistryValuesControl(RegistryValue? value)
         {
             InitializeComponent();
-            tbKeyName.Text = value.Name;
+            tbKeyName.Text = value.Value.Name;
             cbKeyType.ItemsSource = _typesKind;
-            cbKeyType.SelectedValue = value.Type.ToString();
-            tbKeyValue.Text = value.Value.ToString();
+            cbKeyType.SelectedValue = value.Value.Type.ToString();
+            tbKeyValue.Text = value.Value.Value.ToString();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
