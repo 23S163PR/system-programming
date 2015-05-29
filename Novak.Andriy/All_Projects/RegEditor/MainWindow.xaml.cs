@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -80,7 +81,14 @@ namespace RegEditor
         {
             var treeItem = RegistryKeys.SelectedItem as TreeItem;
             if (treeItem == null) return;
-            if (_registryValue != null) _registryEditor.DeleteKey(treeItem, _registryValue.Value.Name);
+            try
+            {
+                if (_registryValue != null) _registryEditor.DeleteKey(treeItem, _registryValue.Value.Name);
+            }
+            catch (ArgumentOutOfRangeException m)
+            {
+                MessageBox.Show(m.Message);
+            }           
         }
 
 	    #endregion

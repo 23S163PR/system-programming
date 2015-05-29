@@ -101,7 +101,8 @@ namespace RegEditor
                     break;  
             }
             var parent = regexpParentKey.Match(key.Key.Name);
-            return rooKey.OpenSubKey(parent.Groups[1].Value.Remove(0, 1), true/*open with writable*/);
+            return !parent.Groups[1].Value.Any() ? rooKey : 
+                rooKey.OpenSubKey(parent.Groups[1].Value.Remove(0, 1), true/*open with writable*/);
         }
 
 	    public void CreateKey(TreeItem key)
@@ -117,29 +118,22 @@ namespace RegEditor
         }
 	    public void DeleteKey(TreeItem key, string keyValue = null)
 	    {
-	        try
-	        {
-                var curent = OpenCurentKeyWithWriteAccess(key).OpenSubKey(key.Title, true/*open writable*/);
-	            if (curent == null) return;
-	            if (keyValue != null)
-	            {
-                    curent.DeleteValue(keyValue);
-	                return;
-	            }
-	            if (!curent.GetSubKeyNames().Contains(key.Title)) return;
-	            var curentChild = curent.OpenSubKey(key.Title, true);
-	            if (curentChild != null && curentChild.SubKeyCount > 0)
-	            {
-	                curent.DeleteSubKeyTree(key.Title);
-	            }
-	            else
-	            {
-	                curent.DeleteSubKey(key.Title);
-	            }
-	        }
-	        catch (Exception e)
+            var curent = OpenCurentKeyWithWriteAccess(key).OpenSubKey(key.Title, true/*open writable*/);
+            if (curent == null) return;
+            if (keyValue != null)
             {
-                MessageBox.Show(e.Message);
+                curent.DeleteValue(keyValue);
+                return;
+            }
+            if (!curent.GetSubKeyNames().Contains(key.Title)) return;
+            var curentChild = curent.OpenSubKey(key.Title, true);
+            if (curentChild != null && curentChild.SubKeyCount > 0)
+            {
+                curent.DeleteSubKeyTree(key.Title);
+            }
+            else
+            {
+                curent.DeleteSubKey(key.Title);
             }
 	    }
 	}
