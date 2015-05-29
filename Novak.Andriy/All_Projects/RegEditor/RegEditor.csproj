@@ -56,9 +56,13 @@
     <Compile Include="ComandsContextMenu.cs" />
     <Compile Include="RegistryEditor.cs" />
     <Compile Include="TreeItem.cs" />
-    <Compile Include="Usercontol\UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
+    <Compile Include="Usercontol\RegistryKeyControl.xaml.cs">
+      <DependentUpon>RegistryKeyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Usercontol\RegistryValuesControl.xaml.cs">
+      <DependentUpon>RegistryValuesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowOperator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -71,7 +75,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Usercontol\UserControl1.xaml">
+    <Page Include="Usercontol\RegistryKeyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Usercontol\RegistryValuesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
