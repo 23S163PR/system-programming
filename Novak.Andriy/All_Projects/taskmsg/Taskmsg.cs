@@ -1,24 +1,27 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Management;
+using System.Threading.Tasks;
 
 namespace taskmsg
 {
 	class Taskmsg
 	{
-		private readonly ObservableCollection<ProcessModel> _procs;
+        private readonly ObservableCollection<ProcessModel> _procs;
 
 		public int CurentProcessId { get; set; }
 
 		public Taskmsg()
 		{
-			_procs = new ObservableCollection<ProcessModel>();
+            _procs = new ObservableCollection<ProcessModel>();
 			RefreshProcesses();
 		}
 
-		public ObservableCollection<ProcessModel> Processes
+        public ObservableCollection<ProcessModel> Processes
 		{
 			get
 			{
@@ -52,17 +55,20 @@ namespace taskmsg
 	        }
 	    }
 
-		public void RefreshProcesses()
-		{
+        public void RefreshProcesses()
+        {
             var proc = Process.GetProcesses();
-            var res = proc.Where(t => t.ProcessName != "Idle").OrderBy(p=>p.ProcessName).ThenBy(p=>p.Id);
-		    ClearOld(res);
+            var res = proc.Where(t => t.ProcessName != "Idle").OrderBy(p => p.ProcessName).ThenBy(p => p.Id);
+            ClearOld(res);
+            var task = new Task<ICollection<KeyValuePair<int, string>>>(GetProcessList, TaskCreationOptions.LongRunning);
+            task.Start();
             foreach (var p in res)
             {
                 var curent = _procs.FirstOrDefault(c => c.Id == p.Id);
+                var persentLoad = task.Result.First(t => t.Key == p.Id).Value;
                 if (curent != null)
                 {
-                    curent = ProcessModel.CompareChanger(curent, p);
+                    curent = ProcessModel.CompareChanger(curent, p, persentLoad);
                 }
                 else
                 {
@@ -73,16 +79,28 @@ namespace taskmsg
                         , (p.WorkingSet64 / 1024f) / 1024f
                         , p.Threads.Count
                         , GetProcessTime(p.Id)
-                        //, p.PersentProcessorTime()
+                        ,persentLoad
                         );
                     _procs.Add(process);
                 }
             }
+        }
+
+        private static ICollection<KeyValuePair<int,string>> GetProcessList()
+		{
+            var searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfProc_Process");
+			var collection = new ConcurrentDictionary<int,string>();
+
+            Parallel.ForEach(searcher.Get().Cast<ManagementObject>()
+                .Where(obj => obj["Name"].ToString() != "Idle")
+			,(obj =>
+            {
+                 collection.TryAdd(int.Parse(obj["IDProcess"].ToString()),
+			        string.Format("{0}%", obj["PercentProcessorTime"].ToString()));
+            })); 
+			return collection;
 		}
-
-		//(увеличение CPU time за минуту)/(1 минута)*100% = средняя загрузка CPU процессом за последнюю минуту.
 		
-
 		private static Process GetProcess(int id)
 		{
 			return Process.GetProcessById(id);
