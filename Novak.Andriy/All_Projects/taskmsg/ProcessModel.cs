@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using taskmsg.Annotations;
+using System.Linq.Expressions;
+
 
 namespace taskmsg
 {
@@ -20,9 +21,7 @@ namespace taskmsg
 		{
 			private set
 			{
-				if (_id == value) return;
-				_id = value;
-				ProrertyChange();
+                Set(ref _id, value, () => Id);
 			}
 			get { return _id; }
 		}
@@ -31,9 +30,7 @@ namespace taskmsg
 		{
 			private set
 			{
-				if (_name == value) return;
-				_name = value;
-				ProrertyChange();
+                Set(ref _name, value, () => Name);
 			}
 			get { return _name; }
 		}
@@ -42,9 +39,7 @@ namespace taskmsg
 		{
 			private set
 			{
-				if (_memory == value) return;
-				_memory = value;
-				ProrertyChange();
+                Set(ref _memory, value, () => Memory);
 			}
 			get { return _memory; }
 		}
@@ -53,9 +48,7 @@ namespace taskmsg
 		{
 			private set
 			{
-				if (_treads == value) return;
-				_treads = value;
-				ProrertyChange();
+                Set(ref _treads, value, ()=> Treads);
 			}
 			get { return _treads; }
 		}
@@ -64,61 +57,55 @@ namespace taskmsg
 		{
 			private set
 			{
-				if (_cpuTime == value) return;
-				_cpuTime = value;
-				ProrertyChange();
+                Set(ref _cpuTime, value, () => CpuTime);
 			}
-			get { return _cpuTime; }
+		    get { return _cpuTime; }
 		}
 
 		public string CpuTimePersent
 		{
 			private set
 			{
-				if (_cpuTimePersent == value) return;
-				_cpuTimePersent = value;
-				ProrertyChange();
+                Set(ref _cpuTimePersent, value, () => CpuTimePersent);
 			}
 			get { return _cpuTimePersent; }
 		}
 		#endregion
 
-        public ProcessModel(int id, string name, double memory, int treads, string ms/*, string cputime*/)
+        public ProcessModel(int id, string name, double memory, int treads, string ms, string cputime)
 		{
 			Id = id;
 			Name = name;
 			Memory = Math.Round(memory, 3);
 			Treads = treads;
 		    CpuTime = ms;
-			//CpuTimePersent = cputime;
+			CpuTimePersent = cputime;
 		}
 
-        public static ProcessModel CompareChanger(ProcessModel dest, Process sourse)
+        private void Set<T, TProperty>(ref T field, T newValue, Expression<Func<TProperty>> property)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, newValue)) return;
+            var memberExpression = property.Body as MemberExpression;
+            field = newValue;
+            OnPropertyChanged(memberExpression.Member.Name);
+        }
+
+        public static ProcessModel CompareChanger(ProcessModel dest, Process sourse, string persentload)
 		{
 			dest.Id	= sourse.Id;
             dest.Name = sourse.ProcessName;
 		    dest.Memory =  Math.Round((sourse.WorkingSet64/1024f)/1024f,3);
             dest.Treads = sourse.Threads.Count;
             dest.CpuTime = Taskmsg.GetProcessTime(sourse.Id);
-			//dest.CpuTimePersent 
+            dest.CpuTimePersent = persentload;
             return dest;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		[NotifyPropertyChangedInvocator]
-		private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        
+		private void OnPropertyChanged(string propertyName = null)
 		{
-			var handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
-		private void ProrertyChange([CallerMemberName] string member = null)
-		{
-			if(PropertyChanged == null) return;
-			PropertyChanged(this, new PropertyChangedEventArgs(member));
-		}
-
-
 	}
 }
