@@ -15,8 +15,6 @@ namespace RegEditor
 	        Title = title;
 			Key = key;
             ListItems = new ObservableCollection<TreeItem>();
-	    }
-
-	    
+	    }  
 	}
 }
