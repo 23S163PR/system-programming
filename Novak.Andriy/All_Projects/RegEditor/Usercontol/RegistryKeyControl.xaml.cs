@@ -6,6 +6,7 @@ namespace RegEditor.Usercontol
 {
     public partial class RegistryKeyControl : UserControl
     {
+        public bool DialogResult { get; private set; }
         public string KeyName { get; private set; }
         public RegistryKeyControl()
         {
@@ -22,6 +23,7 @@ namespace RegEditor.Usercontol
         {
             if(!tbKeyName.Text.Any())return;
             KeyName = tbKeyName.Text;
+            DialogResult = true;
             WindowOperator.Cancel_Click(this);
         }
     }

@@ -12,6 +12,8 @@ namespace RegEditor.Usercontol
         private readonly IEnumerable<string> _typesKind = Enum.GetNames(typeof (RegistryValueKind));
         public RegistryValue RegistryValue { get; private set; }
 
+        public bool DialogResult { get; private set; }
+
         public RegistryValuesControl()
         {
             InitializeComponent();
@@ -38,6 +40,7 @@ namespace RegEditor.Usercontol
                 ,Value = tbKeyValue.Text
                 ,Type = type
             };
+            DialogResult = true;
             WindowOperator.Cancel_Click(this);
         }
     }
