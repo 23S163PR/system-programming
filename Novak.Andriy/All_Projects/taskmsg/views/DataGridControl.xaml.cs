@@ -9,8 +9,7 @@ namespace taskmsg.views
 {
 	public partial class DataGridControl : UserControl
 	{
-		private readonly Taskmsg _tmsg;
-
+	    private readonly Taskmsg _tmsg;
 		public DataGridControl()
 		{
 			InitializeComponent();
@@ -23,7 +22,7 @@ namespace taskmsg.views
 
 		private void OnDispatcherTimerOnTick(object sender, EventArgs args)
 		{
-			_tmsg.RefreshProcesses();
+            _tmsg.RefreshProcesses();
 			LbCount.Content = string.Format("Processes: {0}", _tmsg.Processes.Count());
 		}
 
