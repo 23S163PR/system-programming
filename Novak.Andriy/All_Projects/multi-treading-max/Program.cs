@@ -13,13 +13,18 @@ namespace multi_treading_max
              
             var arr = new List<int>();
             var rnd = new Random();
-            for (var i = 0; i < 100000000; i++)
+            for (var i = 0; i < 100000; i++)
             {
                 arr.Add(rnd.Next(1000000000));
             }
 
             var max = 0;
-            Parallel.For(0, arr.Count, i => Maximum(ref max, arr[i]));
+            Volatile.Write(ref max,0);
+            
+            Parallel.For(0, arr.Count, i =>
+            {
+                Maximum(ref max, arr[i]);
+            });
 
             Console.WriteLine("\nmax in arr - {0}", arr.Max());
             Console.WriteLine("max in multimax - {0}", max);
@@ -27,9 +32,9 @@ namespace multi_treading_max
 
         static void Maximum(ref int max, int value)
         {
-            if (max < value)
+            if (Volatile.Read(ref max) == max && Volatile.Read(ref max) < value)
             {
-                Interlocked.Exchange(ref max, value);
+                Volatile.Write(ref max, value);
             }
         }
     }
