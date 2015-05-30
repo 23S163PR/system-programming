@@ -10,7 +10,10 @@ namespace RegEditor
 	public partial class MainWindow : Window
 	{
 		private readonly RegistryEditor _registryEditor;
+
 	    private RegistryValue? _registryValue;
+
+	    private TreeItem _ctxSelectedItem;
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -25,17 +28,17 @@ namespace RegEditor
 
 		private void RegistryKeys_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-            var item = RegistryKeys.SelectedItem as TreeItem;
-            if (item == null) return;
-            item.ListItems.Clear();
-            var res = RegistryEditor.GetChildKeys(item);
+            _ctxSelectedItem = RegistryKeys.SelectedItem as TreeItem;
+            if (_ctxSelectedItem == null) return;
+            _ctxSelectedItem.ListItems.Clear();
+            var res = RegistryEditor.GetChildKeys(_ctxSelectedItem);
             if (res == null) return;
-             item.ListItems.Clear();
+            
             foreach (var bar in res)
 		    {
-                item.ListItems.Add(bar);
+                _ctxSelectedItem.ListItems.Add(bar);
 		    }
-            DataGridInfo(item.Key);
+            DataGridInfo(_ctxSelectedItem.Key);
 		}
 
 	    private void DataGridInfo(RegistryKey key)
@@ -83,31 +86,21 @@ namespace RegEditor
         
         private void CreateKeyValue_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var treeItem = RegistryKeys.SelectedItem as TreeItem;
-            if (treeItem == null) return;
+            if (_ctxSelectedItem == null) return;
             var control = new RegistryValuesControl();
             WindowOperator.Create_Window(control, "Create Key Value", true /*is Modal window*/);
-            _registryEditor.CreateKeyValue(treeItem, control.RegistryValue);
-        }
-
-        private void CreateKey_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-           
-        }
-        
-        private void UpdateKey_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-           
+            if (!control.DialogResult) return;
+            _registryEditor.CreateKeyValue(_ctxSelectedItem, control.RegistryValue);
         }
 
         private void UpdateKeyValue_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
-        }
-
-        private void DeleteKey_Execute(object sender, ExecutedRoutedEventArgs e)
-        {
-
+            var treeItem = RegistryKeys.SelectedItem as TreeItem;
+            if (treeItem == null || _registryValue == null) return;
+            var control = new RegistryValuesControl(_registryValue);
+            WindowOperator.Create_Window(control, "Create Key Value", true /*is Modal window*/);
+            if (!control.DialogResult) return;
+            _registryEditor.UpdateKeyValue(treeItem, control.RegistryValue, _registryValue.Value.Name);
         }
 
         private void DeleteKeyValue_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -121,7 +114,31 @@ namespace RegEditor
             catch (ArgumentOutOfRangeException m)
             {
                 MessageBox.Show(m.Message);
-            }           
+            }
+        }
+
+        private void CreateKey_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_ctxSelectedItem == null) return;
+            var control = new RegistryKeyControl();
+            WindowOperator.Create_Window(control, "Create Registry Key", true /*is Modal window*/);
+            if (!control.DialogResult) return;
+            _registryEditor.CreateKey(_ctxSelectedItem, control.KeyName);
+        }
+        
+        private void UpdateKey_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_ctxSelectedItem == null) return;
+            var control = new RegistryKeyControl(_ctxSelectedItem.Title);
+            WindowOperator.Create_Window(control, "Rename Registry Key", true /*is Modal window*/);
+            if (!control.DialogResult) return;
+            _registryEditor.UpdateKey(_ctxSelectedItem, control.KeyName);  
+        }
+
+        private void DeleteKey_Execute(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_ctxSelectedItem == null) return;
+            _registryEditor.DeleteRegistryKey(_ctxSelectedItem);
         }
 
 	    #endregion
@@ -133,5 +150,6 @@ namespace RegEditor
                 _registryValue = (InfoDataGrid.SelectedItem as RegistryValue?);
 	        }    
 	    }
+       
 	}
 }

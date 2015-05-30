@@ -19,7 +19,7 @@
 		</Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3"/>
         <TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Stretch" 
-				  SelectedItemChanged="RegistryKeys_OnSelectedItemChanged" MouseRightButtonDown="RegistryKeys_OnMouseRightButtonDown">    
+				  SelectedItemChanged="RegistryKeys_OnSelectedItemChanged">    
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate DataType="{x:Type self:TreeItem}" ItemsSource="{Binding ListItems}">
                     <TextBlock Text="{Binding Title}"/>
@@ -28,7 +28,7 @@
             <TreeView.ContextMenu>
                 <ContextMenu Name="ctxMenuTree">
                     <MenuItem Header="Create Key" Command="self:ComandsContextMenu.CreateKey"/>
-                    <MenuItem Header="Update Key" Command="self:ComandsContextMenu.UpdateKey"/>
+                    <MenuItem Header="Rename Key" Command="self:ComandsContextMenu.UpdateKey"/>
                     <MenuItem Header="Delete Key" Command="self:ComandsContextMenu.DeleteKey"/>
                 </ContextMenu>
             </TreeView.ContextMenu>
