@@ -2,7 +2,7 @@
 {
 	public static class Sorts
 	{
-		public static int[] BubleSort(int[] array)
+		public static string BubleSort(int[] array)
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -16,13 +16,14 @@
 					}
 				}
 			}
-
-			return array;
+			return "Buble Sort";
 		}
 
-		public static int[] QuickSort(int[] array, int left, int right)
+		public static string QuickSort(int[] array, int left, int right)
 		{
-			if (left == right) return array;
+			if (left == right)
+				return "Qucik Sort";
+
 			int i = left + 1;
 			int j = right;
 			int pivot = array[left];
@@ -51,36 +52,33 @@
 				QuickSort(array, left, i - 1);
 				QuickSort(array, i, right);
 			}
-
-			return array;
+			return "Qucik Sort";
 		}
 
-		public static int[] SelectionSort(int[] array)
+		public static string SelectionSort(int[] array)
 		{
-			int pos_min, temp;
-
 			for (int i = 0; i < array.Length - 1; i++)
 			{
-				pos_min = i;
+				var posMin = i;
 
 				for (int j = i + 1; j < array.Length; j++)
 				{
-					if (array[j] < array[pos_min])
+					if (array[j] < array[posMin])
 					{
-						pos_min = j;
+						posMin = j;
 					}
 				}
 
-				if (pos_min != i)
+				if (posMin != i)
 				{
-					temp = array[i];
-					array[i] = array[pos_min];
-					array[pos_min] = temp;
+					var temp = array[i];
+					array[i] = array[posMin];
+					array[posMin] = temp;
 				}
 			}
 
-			return array;
-		}
+			return "Selection Sort";
+        }
 
 		private static void MergeArray(int[] arr, int start, int mid, int end)
 		{
@@ -128,17 +126,17 @@
 			}
 		}
 
-		public static int[] MergeSort(int[] array, int start, int end)
+		public static string MergeSort(int[] array, int start, int end)
 		{
 			if (start < end)
 			{
-				int mid = (end + start) / 2;
+				var mid = (end + start) / 2;
 				MergeSort(array, start, mid);
 				MergeSort(array, mid + 1, end);
 				MergeArray(array, start, mid, end);
 			}
 
-			return array;
+			return "Merge Sort";
 		}
 	}
 }

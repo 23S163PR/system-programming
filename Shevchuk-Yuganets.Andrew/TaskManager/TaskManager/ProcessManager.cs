@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace TaskManager
 {
@@ -59,7 +58,7 @@ namespace TaskManager
 
 			foreach (var processId in closedProcess)
 			{
-				dispather.Invoke(() => _processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId)));				;
+				dispather.Invoke(() => _processList.Remove(_processList.FirstOrDefault(pr => pr.ProcessId == processId)));
 			}
 		}
 

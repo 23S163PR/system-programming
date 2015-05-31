@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sorts
 {
+	struct Result
+	{
+		public string Name;
+		public double Time;
+	}
+
 	internal class Program
 	{
 		private static void Main(string[] args)
 		{
-			var bubble = GetRandomArray(1000); // 10000 - size of int array
+			var bubble = GetRandomArray(10000); // 10000 - size of int array
 			var quick = (int[])bubble.Clone();
 			var selection = (int[])bubble.Clone();
 			var merge = (int[])bubble.Clone();
@@ -25,19 +32,24 @@ namespace Sorts
 				taskFactory.StartNew(() => GetRuntime(() => Sorts.MergeSort(merge,0,merge.Length-1)))
 			};
 
-			foreach (var time in tasks)
+            foreach (var res in tasks.OrderBy(res => res.Result.Time))
 			{
-				Console.WriteLine("\t{0, -10} Miliseconds \n", time.Result);
+				Console.WriteLine("{0, -20} : {1, -10} Miliseconds", res.Result.Name, res.Result.Time);
 			}
 		}
 
-		static double GetRuntime(Func<int[]> sortMethod)
+		static Result GetRuntime(Func<string> sortMethod)
 		{
-			var stopWotch = new Stopwatch();
-			stopWotch.Start();
-			sortMethod();
-			stopWotch.Stop();
-			return stopWotch.Elapsed.TotalMilliseconds;
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			var sortMethodName = sortMethod();
+			stopWatch.Stop();
+
+			return new Result
+			{
+				Name = sortMethodName,
+				Time = stopWatch.Elapsed.TotalMilliseconds
+			};
 		}
 
 		private static int[] GetRandomArray(int size)
@@ -49,14 +61,6 @@ namespace Sorts
 				array[i] = random.Next(0, 1000);
 			}
 			return array;
-		}
-
-		private static void Print(int[] array)
-		{
-			foreach (var number in array)
-			{
-				Console.Write("{0} ", number);
-			}
 		}
 	}
 }
