@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cancellation-token-source", "cancellation-token-source\cancellation-token-source.csproj", "{92490B69-7067-4CC3-A5D4-ADC97A4C3B99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "foreground-thread", "foreground-thread\foreground-thread.csproj", "{0CABB537-F49B-46D1-8C34-6B278165CF75}"
@@ -47,6 +45,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "autoresetevent-performance-demo", "autoresetevent-performance-demo\autoresetevent-performance-demo.csproj", "{FD16E27C-5277-46F8-A196-FA5AE40B449B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "recursive-autoresetevent", "recursive-autoresetevent\recursive-autoresetevent.csproj", "{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hybrid-sync-monitor", "hybrid-sync-monitor\hybrid-sync-monitor.csproj", "{9773277C-B053-404A-B0A0-1D47470764C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +130,10 @@ Global
 		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55FAA3A4-57C9-4A30-93FC-AF0B79635C7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9773277C-B053-404A-B0A0-1D47470764C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9773277C-B053-404A-B0A0-1D47470764C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9773277C-B053-404A-B0A0-1D47470764C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9773277C-B053-404A-B0A0-1D47470764C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
