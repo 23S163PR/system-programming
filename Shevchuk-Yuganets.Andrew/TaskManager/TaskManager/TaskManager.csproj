@@ -68,6 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="PriorityMenuItem.cs" />
     <Compile Include="ProcessModel.cs" />
     <Compile Include="ProcessManager.cs" />
     <Compile Include="WmiManager.cs" />

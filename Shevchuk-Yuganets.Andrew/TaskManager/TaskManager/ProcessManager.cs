@@ -9,7 +9,7 @@ namespace TaskManager
 {
 	public class ProcessManager
 	{
-		private ObservableCollection<ProcessModel> _processList;
+		private readonly ObservableCollection<ProcessModel> _processList;
 
 		public ObservableCollection<ProcessModel> ProcessList
 		{
@@ -26,6 +26,8 @@ namespace TaskManager
 
 		public void UpdateList()
 		{
+			// TODO: dispatcher must be in MainWindow.xaml.cs - UI
+			// TODO: need implement events for "add", "delete", "update"
 			var dispather = Application.Current.Dispatcher;
 			var wmiProcessList = WmiManager.GetProcessList();
 
@@ -80,7 +82,7 @@ namespace TaskManager
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				ExceptionHandler.HandleError(OperationType.ChangeProcessPriorityClass, ex);
 			}
 		}
 
@@ -93,6 +95,30 @@ namespace TaskManager
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message);
+			}
+		}
+	}
+
+	public enum OperationType
+	{
+		ChangeProcessPriorityClass
+	}
+
+	// TODO: need special exceptions for "GetProcess", "GetProcessPriority", "SetProcessPriority"
+	public class ExceptionHandler
+	{
+		public static void HandleError(OperationType operation, Exception exception)
+		{
+			switch (operation)
+			{
+				case OperationType.ChangeProcessPriorityClass:
+					if (exception is ArgumentException)
+					{
+						MessageBox.Show(exception.Message);
+					}
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(operation), operation, null);
 			}
 		}
 	}

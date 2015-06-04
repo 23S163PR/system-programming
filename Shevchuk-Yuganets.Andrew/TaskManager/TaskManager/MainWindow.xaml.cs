@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace TaskManager
 {
@@ -48,43 +46,19 @@ namespace TaskManager
 
 		private void ChangePriority_Click(object sender, RoutedEventArgs e)
 		{
-			var priorityName = (sender as MenuItem).Name;
-			ProcessPriorityClass res;
-			priorityName = priorityName.Replace("PriorityMenuItem", "");
-			Enum.TryParse(priorityName, out res);
-
-			_processManager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), res);
+			// This is guaranteed to be PriorityMenuItem
+			var priorityMenuItem = (PriorityMenuItem)sender;
+			_processManager.SetProcessPriority(ProcessDataGrid.GetSelectedProcessId(), priorityMenuItem.PriorityValue);
 		}
 
 		private void ContextMenu_Opening(object sender, RoutedEventArgs e)
 		{
 			_timer.Stop();
 
-			foreach (MenuItem menuItem in PriorityMenuItem.Items)
+			var currentPriority = _processManager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId());
+            foreach (PriorityMenuItem menuItem in PriorityMenuItem.Items)
 			{
-				menuItem.IsChecked = false;
-			}
-
-			switch (_processManager.GetProcessPriority(ProcessDataGrid.GetSelectedProcessId()))
-			{
-				case ProcessPriorityClass.RealTime:
-					RealtimePriorityMenuItem.IsChecked = true;
-					break;
-				case ProcessPriorityClass.High:
-					HighPriorityMenuItem.IsChecked = true;
-					break;
-				case ProcessPriorityClass.AboveNormal:
-					AboveNormalPriorityMenuItem.IsChecked = true;
-					break;
-				case ProcessPriorityClass.Normal:
-					NormalPriorityMenuItem.IsChecked = true;
-					break;
-				case ProcessPriorityClass.BelowNormal:
-					BelowNormalPriorityMenuItem.IsChecked = true;
-					break;
-				case ProcessPriorityClass.Idle:
-					LowPriorityMenuItem.IsChecked = true;
-					break;
+				menuItem.IsChecked = menuItem.PriorityValue == currentPriority;
 			}
 		}
 
