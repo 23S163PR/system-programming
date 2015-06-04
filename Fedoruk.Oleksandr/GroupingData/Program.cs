@@ -37,23 +37,23 @@ namespace grouping_data
         }
         static void Serrialization(List<Group> listGroups)
         {
-            Parallel.For(0, listGroups.Count, i =>
+            for (int i = 0; i < listGroups.Count; i++)
             {
                 try
                 {
                     var xmlSerializer = new XmlSerializer(listGroups[i].GetType());
                     var path = @"files/group" + (i + 1) + ".xml";
-                    using (var fstream = new FileStream(path, FileMode.OpenOrCreate))
+                    using (var fs = new FileStream(path, FileMode.OpenOrCreate))
                     {
-                        xmlSerializer.Serialize(fstream, listGroups[i]);
-                        fstream.Flush();
+                        xmlSerializer.Serialize(fs, listGroups[i]);
+                        fs.Flush();
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
-            });
+            }
         }
 
         static void Main(string[] args)
