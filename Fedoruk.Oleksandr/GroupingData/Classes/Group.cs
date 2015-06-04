@@ -8,6 +8,7 @@ namespace grouping_data.Classes
     {
         [XmlArray("employees"), XmlArrayItem("employee")]
         public List<Employee> list { get; set; }
+
         public Group()
         {
             list = new List<Employee>();
