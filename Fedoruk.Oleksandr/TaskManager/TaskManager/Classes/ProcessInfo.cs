@@ -14,7 +14,7 @@ namespace TaskManager.Classes
         private double _workingSetInKb;
         private double _workingSetInMb;
         private PerformanceCounter _cpuUssingCounter;
-        private float _cpuUssingInPercent;
+        private int _cpuUssingInPercent;
 
         public int ProcessId
         {
@@ -85,7 +85,7 @@ namespace TaskManager.Classes
                 NotifyPropertyChanged();
             }
         }
-        public float CpuUssingInPercent
+        public int CpuUssingInPercent
         {
             get { return _cpuUssingInPercent; }
             set
@@ -112,7 +112,7 @@ namespace TaskManager.Classes
             WorkingSetInKb = WorkingSetInB / 1024;
             WorkingSetInMb = WorkingSetInKb / 1024;
             CpuUssingCounter = cpuUssingCounter;
-            CpuUssingInPercent = CpuUssingCounter.NextValue();
+            CpuUssingInPercent = (int)(CpuUssingCounter.NextValue() / Environment.ProcessorCount);
         }
 
         public void UpdateInfo( int numThreads
@@ -122,12 +122,9 @@ namespace TaskManager.Classes
             WorkingSetInB = workingSetInB;
             WorkingSetInKb = WorkingSetInB / 1024;
             WorkingSetInMb = WorkingSetInKb / 1024;
-            CpuUssingInPercent = CpuUssingCounter.NextValue();
+            CpuUssingInPercent = (int)(CpuUssingCounter.NextValue() / Environment.ProcessorCount);
         }
-        public String OutputFormatData<T>(T data)
-        {
-            return String.Format("{0, 3}", data);
-        }
+
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             if (PropertyChanged != null)

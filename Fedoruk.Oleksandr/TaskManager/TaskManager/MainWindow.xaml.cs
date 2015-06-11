@@ -1,24 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using TaskManager.Classes;
 using System.Linq;
 using System;
-using System.Threading;
 using System.Collections.ObjectModel;
-using System.Timers;
 
 namespace TaskManager
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TaskManagerWindow.xaml
     /// </summary>
     public partial class TaskManagerWindow : Window
     {
-        private System.Timers.Timer _timer;
-        private List<ProcessInfo> _processes;
+        private ObservableCollection<ProcessInfo> _processes;
 
-        public List<ProcessInfo> Processes
+        public ObservableCollection<ProcessInfo> Processes
         {
             get { return _processes; }
             private set
@@ -35,21 +31,15 @@ namespace TaskManager
             this.DataContext = this;
             Processes = GetProcesses();
 
-            //System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            //dispatcherTimer.Tick += (s, e) => UpdateProcessesInfo();
-            //dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            //dispatcherTimer.Start();
-
-            //new Thread(UpdateProcessesInfo).Start();
-            _timer = new System.Timers.Timer(1000);
-            _timer.Elapsed += (s, e) => UpdateProcessesInfo();
-            _timer.Enabled = true;
-            _timer.Start();
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += (s, e) => UpdateProcessesInfo();
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
         }
 
-        private List<ProcessInfo> GetProcesses()
+        private ObservableCollection<ProcessInfo> GetProcesses()
         {
-            var collection = new List<ProcessInfo>();
+            var collection = new ObservableCollection<ProcessInfo>();
             foreach (var el in Process.GetProcesses())
             {
                 try
@@ -62,9 +52,8 @@ namespace TaskManager
                                              , workingSetInB
                                              , cpuUssingCounter));
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    MessageBox.Show(e.Message);
                 }
             }
             return collection;
@@ -80,7 +69,7 @@ namespace TaskManager
                     var workingSetInB = new PerformanceCounter("Process", "Working Set - Private", el.ProcessName).RawValue;
                     if (proc == null)
                     {
-                        var cpuUssingCounter = new PerformanceCounter("Process", "% Processor Time", el.ProcessName);
+                        var cpuUssingCounter = new PerformanceCounter("Process", "%Processor Time", el.ProcessName);
                         Processes.Add(new ProcessInfo(el.Id
                                                       , el.ProcessName
                                                       , el.Threads.Count
@@ -93,11 +82,9 @@ namespace TaskManager
                                         , workingSetInB);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    MessageBox.Show(e.Message);
                 }
-
             }
             for (int i = Processes.Count - 1; i >= 0; i--)
             {
