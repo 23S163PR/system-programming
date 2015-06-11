@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using RegEditor.Usercontol;
 
@@ -9,22 +11,32 @@ namespace RegEditor
 {
 	public partial class MainWindow : Window
 	{
-		private readonly RegistryEditor _registryEditor;
+		private  RegistryEditor _registryEditor;
 
 	    private RegistryValue? _registryValue;
+
 
 	    private TreeItem _ctxSelectedItem;
 		public MainWindow()
 		{
 			InitializeComponent();
 		    _registryValue = null;
-			_registryEditor = new RegistryEditor();
+		    LoadKeys();
+		}
 
-            foreach (var item in _registryEditor.Items)
+	    private void LoadKeys()
+	    {
+            Action append = () =>
             {
-                RegistryKeys.Items.Add(item);
-            }
-		} 
+                _registryEditor = new RegistryEditor();
+                foreach (var item in _registryEditor.Items)
+                {
+                    RegistryKeys.Items.Add(item);
+                }
+            };
+            RegistryKeys.Dispatcher.BeginInvoke(DispatcherPriority.Background, append);
+           
+	    }
 
 		private void RegistryKeys_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
@@ -45,7 +57,7 @@ namespace RegEditor
 	    {
             var res = key.GetValueNames().Select(p => new RegistryValue
 	        {
-	            Name = p//.Any() ? p : "default"
+	            Name = p
                 ,Type = key.GetValueKind(p)
                 ,Value=key.GetValue(p)
 	        });
@@ -88,7 +100,7 @@ namespace RegEditor
         {
             if (_ctxSelectedItem == null) return;
             var control = new RegistryValuesControl();
-            WindowOperator.Create_Window(control, "Create Key Value", true /*is Modal window*/);
+            WindowOperator.Create_Window(control, "Create Key Value");
             if (!control.DialogResult) return;
             _registryEditor.CreateKeyValue(_ctxSelectedItem, control.RegistryValue);
         }
@@ -98,7 +110,7 @@ namespace RegEditor
             var treeItem = RegistryKeys.SelectedItem as TreeItem;
             if (treeItem == null || _registryValue == null) return;
             var control = new RegistryValuesControl(_registryValue);
-            WindowOperator.Create_Window(control, "Create Key Value", true /*is Modal window*/);
+            WindowOperator.Create_Window(control, "Create Key Value");
             if (!control.DialogResult) return;
             _registryEditor.UpdateKeyValue(treeItem, control.RegistryValue, _registryValue.Value.Name);
         }
@@ -121,7 +133,7 @@ namespace RegEditor
         {
             if (_ctxSelectedItem == null) return;
             var control = new RegistryKeyControl();
-            WindowOperator.Create_Window(control, "Create Registry Key", true /*is Modal window*/);
+            WindowOperator.Create_Window(control, "Create Registry Key");
             if (!control.DialogResult) return;
             _registryEditor.CreateKey(_ctxSelectedItem, control.KeyName);
         }
@@ -130,7 +142,7 @@ namespace RegEditor
         {
             if (_ctxSelectedItem == null) return;
             var control = new RegistryKeyControl(_ctxSelectedItem.Title);
-            WindowOperator.Create_Window(control, "Rename Registry Key", true /*is Modal window*/);
+            WindowOperator.Create_Window(control, "Rename Registry Key");
             if (!control.DialogResult) return;
             _registryEditor.UpdateKey(_ctxSelectedItem, control.KeyName);  
         }
@@ -150,6 +162,5 @@ namespace RegEditor
                 _registryValue = (InfoDataGrid.SelectedItem as RegistryValue?);
 	        }    
 	    }
-       
-	}
+	}   
 }

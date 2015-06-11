@@ -20,11 +20,6 @@
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3"/>
         <TreeView Name="RegistryKeys" Grid.Column="0" VerticalAlignment="Stretch" 
 				  SelectedItemChanged="RegistryKeys_OnSelectedItemChanged">    
-			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate DataType="{x:Type self:TreeItem}" ItemsSource="{Binding ListItems}">
-                    <TextBlock Text="{Binding Title}"/>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate> 
             <TreeView.ContextMenu>
                 <ContextMenu Name="ctxMenuTree">
                     <MenuItem Header="Create Key" Command="self:ComandsContextMenu.CreateKey"/>
@@ -42,9 +37,6 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu Name="ctxMenu" Opened="CtxMenu_OnOpened">
-                    <!--<MenuItem Header="Create Key" Command="self:ComandsContextMenu.CreateKey"/>
-                    <MenuItem Header="Update Key" Command="self:ComandsContextMenu.UpdateKey"/>
-                    <MenuItem Header="Delete Key" Command="self:ComandsContextMenu.DeleteKey"/>-->
                     <MenuItem Header="Create Key Value" Command="self:ComandsContextMenu.CreateKeyValue"/>
                     <MenuItem Header="Update Key Value" Command="self:ComandsContextMenu.UpdateKeyValue"/>
                     <MenuItem Header="Delete Key Value" Command="self:ComandsContextMenu.DeleteKeyValue"/>

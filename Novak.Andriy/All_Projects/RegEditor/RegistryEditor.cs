@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.Win32;
 
 namespace RegEditor
@@ -21,20 +20,18 @@ namespace RegEditor
 		private readonly ObservableCollection<TreeItem> _items;
         public IEnumerable<TreeItem> Items { get { return _items; } }
 
-		public RegistryEditor()
-		{
-		  _items = new ObservableCollection<TreeItem>();
-			ReadRegistry();
-		}
+        public RegistryEditor()
+        {
+            _items = new ObservableCollection<TreeItem>();
 
-		private void ReadRegistry()
-		{
-			RegistryKeys(Registry.ClassesRoot);
-			RegistryKeys(Registry.CurrentUser);
-			RegistryKeys(Registry.LocalMachine);
-			RegistryKeys(Registry.Users);
-			RegistryKeys(Registry.CurrentConfig);
-		}
+            //read registry keys
+            RegistryKeys(Registry.ClassesRoot);
+            RegistryKeys(Registry.CurrentUser);
+            RegistryKeys(Registry.LocalMachine);
+            RegistryKeys(Registry.Users);
+            RegistryKeys(Registry.CurrentConfig);
+        }
+
         
 		private void RegistryKeys(RegistryKey registryKey)
 		{
@@ -48,36 +45,36 @@ namespace RegEditor
 
         public static IEnumerable<TreeItem> GetChildKeys(TreeItem key)
         {
-            var task = new Task<ObservableCollection<TreeItem>>(() =>
+            var items = new ObservableCollection<TreeItem>();
+            foreach (var name in key.Key.GetSubKeyNames())
             {
-                var items = new ObservableCollection<TreeItem>();
-                foreach (var name in key.Key.GetSubKeyNames())
+                try
                 {
-                    try
-                    {
-                        var childKey = key.Key.OpenSubKey(name);
+                    var childKey = key.Key.OpenSubKey(name);
                         var item = new TreeItem(childKey, name);
-                        if (childKey != null)
-                        {
-                            foreach (var citem in childKey.GetSubKeyNames())
-                            {
-                                var subchild = childKey.OpenSubKey(citem);
-                                var sybitem = new TreeItem(subchild, citem);
-                                item.ListItems.Add(sybitem);
-                                item.ListItems.Add(sybitem);
-                            }
-                        }
-                        items.Add(item);
-                    }
-                    catch (Exception)
+                    if (childKey != null)
                     {
-                        //this exception may be if dont access to system registry keys 
+                        foreach (var citem in childKey.GetSubKeyNames())
+                        {
+                            var subchild = childKey.OpenSubKey(citem);
+                            var sybitem = new TreeItem(subchild, citem);
+                            item.ListItems.Add(sybitem);
+                            item.ListItems.Add(sybitem);
+                        }
                     }
+                    items.Add(item);
                 }
-                return items;
-            });
-            task.Start(TaskScheduler.Current);
-            return task.Result;
+                catch (IOException)
+                {
+                    //this exception may be if dont access to system registry keys 
+                    continue;
+                }
+                catch (SecurityException)
+                {
+                    continue;
+                }
+            }
+            return items;
         }
 
         private static RegistryKey OpenKeyWithWriteAccess(TreeItem key, bool isParentKey = false)
@@ -105,19 +102,27 @@ namespace RegEditor
                     break;  
             }
             if (key.Title.Equals(root.Value)) return rootKey;
+
             var parent = regexpParentKey.Match(key.Key.Name);
+            var corectParent = TrimFirstBackSlash(parent.Value);
+
             if (!isParentKey)
             {
                  return !parent.Groups[1].Value.Any() 
                      ? rootKey.OpenSubKey(key.Title, true /*open writable*/)
-                : rootKey.OpenSubKey(parent.Value.Remove(0, 1))
+                : rootKey.OpenSubKey(corectParent)
                         .OpenSubKey(key.Title, true /*open writable*/);
             }
 
             return !parent.Groups[1].Value.Any()
                 ? rootKey
-                : rootKey.OpenSubKey(parent.Value.Remove(0, 1), true /*open writable*/);         
+                : rootKey.OpenSubKey(corectParent, true /*open writable*/);         
         }
+
+	    private static string TrimFirstBackSlash(string text)
+	    {
+	       return text.Remove(0, 1);
+	    }
 
 	    public void CreateKey(TreeItem key, string keyName)
 	    {
@@ -180,7 +185,7 @@ namespace RegEditor
             //For Each subKey 
             //Create a new subKey in destinationKey 
             //Call myself 
-            foreach (string sourceSubKeyName in sourceKey.GetSubKeyNames())
+            foreach (var sourceSubKeyName in sourceKey.GetSubKeyNames())
             {
                 var sourceSubKey = sourceKey.OpenSubKey(sourceSubKeyName);
                 var destSubKey = destinationKey.CreateSubKey(sourceSubKeyName);
