@@ -14,7 +14,7 @@ namespace sort
             Random rnd = new Random();
             Graphic grafic = new Graphic(rnd);
 
-            var bubble = new int[1000];
+            var bubble = new int[10000];
 
             for (int i = 0; i < bubble.Length; i++)
             {
@@ -40,7 +40,7 @@ namespace sort
 
             foreach (var time in tasks)
             {
-                grafic.time += time.Result;
+                grafic.TotalTime += time.Result;
             }
 
             foreach (var time in tasks)
@@ -48,9 +48,6 @@ namespace sort
                 grafic.PaintingGraphic(time.Result);
             }
 
-
-            Console.SetCursorPosition(0, 110);
-            Console.ReadLine();
         }
 
         static double GetRuntime(Func<int[]> sortMethod)

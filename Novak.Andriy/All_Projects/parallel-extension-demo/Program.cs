@@ -10,7 +10,7 @@ using Faker.Extensions;
 
 namespace parallel_extension_demo
 {
-	class Program
+    static class Program
 	{
 		static void Main(string[] args)
 		{
@@ -38,7 +38,6 @@ namespace parallel_extension_demo
 		   var res = people.OrderBy(p=>p.AgeInYears);
            var groups = new Dictionary<string, Groups>();
            groups.Add("firstGroup.xml", new Groups(res.Where(p => p.AgeInYears > 21 && p.Salary > 15000)));
-
            groups.Add("secondGroup.xml", new Groups(res.Where(p => p.Gender == Gender.Woman && p.Name.StartsWith("A"))));
            groups.Add("thirdGroup.xml", new Groups(res.Where(p => p.Gender == Gender.Men && p.Salary > 20000)));
            groups.Add("fourthGroup.xml", new Groups(res.Where(p => p.Gender == Gender.Transgender && p.AgeInYears > 50)));

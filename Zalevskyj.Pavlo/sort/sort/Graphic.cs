@@ -8,103 +8,83 @@ namespace sort
 {
     public class Graphic
     {
-        private int _startposx;
-        private int _startposy;
+        private int _xStartPos = 20;
+        private int _yStartPos = 100;
+
+        private int _yPositionNameSord = 104;
+        private int _yPositionTimeSord = 105;
+        private int _yPositionInterest = 102;
+
+        private int _xPositionScale = 10;
+        private int _xPositionNumberScale = 7;
+
+        private int _distanceBetweenColumns = 18;
+        private int _columnWidth = 3;
+
         private Random _rnd;
         private List<string> _nameSort;
-        private int _index;
-        public double time { set; get; }
+        private int _numberNameSortList = 0;
+
+        public double TotalTime { set; get; }
 
         public Graphic(Random rnd)
         {
-            _index = 0;
             _rnd = rnd;
-            _startposx = 20;
-            _startposy = 100;
             _nameSort = new List<string> { "Buble Sort", "Quick Sort", "Selection Sort", "Merge Sort" };
 
             Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < 51; i++)
             {
-                Console.SetCursorPosition(10, _startposy - i);
-                Console.Write("-");
-            }
-            for (int i = 0; i < 51; i++)
-            {
-                Console.SetCursorPosition(7, _startposy - i);
-                Console.Write("{0}", i * 2);
+                Console.SetCursorPosition(_xPositionScale, _yStartPos - i);
+                Console.Write("-"); // шкала
+                Console.SetCursorPosition(_xPositionNumberScale, _yStartPos - i);
+                Console.Write("{0}", i * 2);  // цифри шкали
             }
         }
 
-        public void PaintingGraphic(double Result)
+        public void PaintingGraphic(double timeSort)
         {
             Console.ForegroundColor = RandColor();
-            double x = (Result / time) * 100; // знахожу відцоток 2 числв від 1 
 
-            Console.SetCursorPosition(_startposx - (_nameSort[_index].Length / 2) + 1, _startposy + 4);
-            Console.Write(_nameSort[_index]); // водиться імя сортіровкі
-            Console.SetCursorPosition(_startposx - (_nameSort[_index].Length / 2) + 1, _startposy + 5);
-            Console.Write("{0} мм", Result); // виводиться час в мм
-            _index++;
+            double interestSort = (timeSort / TotalTime) * 100/* % */;  // знаходжу відсоток числа від
 
-            if (x > 2)
+            for (int y = 0; y < ((int)interestSort / 2) + 1; y++)
             {
-                for (int y = 0; y < ((int)x / 2) + 1; y++)
+                for (int i = 0; i < _columnWidth; i++)
                 {
-                    Console.SetCursorPosition(_startposx, _startposy - y);
-                    Console.Write(Encoding.GetEncoding(437).GetChars(new byte[] { 219 })[0]);
-                    Console.SetCursorPosition(_startposx + 1, _startposy - y);
-                    Console.Write(Encoding.GetEncoding(437).GetChars(new byte[] { 219 })[0]);
-                    Console.SetCursorPosition(_startposx + 2, _startposy - y);
-                    Console.Write(Encoding.GetEncoding(437).GetChars(new byte[] { 219 })[0]);
+                    Console.SetCursorPosition(_xStartPos + i, _yStartPos - y);
+                    Console.Write(Encoding.GetEncoding(437 /* █ */).GetChars(new byte[] { 219 })[0]); 
                 }
             }
-            else
-            {
-                Console.SetCursorPosition(_startposx, _startposy);
-                Console.Write(Encoding.GetEncoding(437).GetChars(new byte[] { 219 })[0]);
-                Console.SetCursorPosition(_startposx + 1, _startposy);
-                Console.Write(Encoding.GetEncoding(437).GetChars(new byte[] { 219 })[0]);
-                Console.SetCursorPosition(_startposx + 2, _startposy);
-                Console.Write(Encoding.GetEncoding(437).GetChars(new byte[] { 219 })[0]);
-            }
 
-            Console.SetCursorPosition(_startposx, _startposy + 2);
-            Console.WriteLine("{0} %", x.ToString("0.00"));
+            Console.SetCursorPosition(_xStartPos, _yPositionInterest);
+            Console.WriteLine("{0} %", interestSort.ToString("0.00"));
 
-            _startposx += 18;
+            Console.SetCursorPosition(_xStartPos - (_nameSort[_numberNameSortList].Length / 2) + 1, _yPositionNameSord);
+            Console.Write(_nameSort[_numberNameSortList]); // водиться імя сортіровкі
+
+            Console.SetCursorPosition(_xStartPos - (_nameSort[_numberNameSortList].Length / 2) + 1, _yPositionTimeSord);
+            Console.WriteLine("{0} мs", timeSort); // виводиться час в мs
+
+            _numberNameSortList++;
+
+            _xStartPos += _distanceBetweenColumns;
+
         }
+        List<int> randomList = new List<int>();
 
         private ConsoleColor RandColor()
         {
+            int numberColor = 0;
             ConsoleColor color;
 
-            int i = _rnd.Next(0, 5);
-            switch (i)
+            do
             {
-                case 0:
-                    color = ConsoleColor.Magenta;
-                    break;
-                case 1:
-                    color = ConsoleColor.Cyan;
-                    break;
-                case 2:
-                    color = ConsoleColor.Green;
-                    break;
-                case 3:
-                    color = ConsoleColor.Red;
-                    break;
-                case 4:
-                    color = ConsoleColor.Yellow;
-                    break;
-                case 5:
-                    color = ConsoleColor.White;
-                    break;
-                default:
-                    color = ConsoleColor.White;
-                    break;
+                numberColor = _rnd.Next(9, 16);
+            } while (randomList.Contains(numberColor));
 
-            }
+            randomList.Add(numberColor);
+            Enum.TryParse(numberColor.ToString(), out color);
 
             return color;
         }

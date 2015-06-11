@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:taskManager="clr-namespace:TaskManager"
         mc:Ignorable="d"
         Title="Task Manager" Height="600" Width="525" WindowStartupLocation="CenterScreen" Loaded="MainWindow_OnLoaded">
 	<DataGrid Name="ProcessDataGrid"
@@ -38,12 +39,12 @@
 			<ContextMenu Opened="ContextMenu_Opening" Closed="ContextMenu_OnClosed">
 				<MenuItem Header="End Proces" Click="EndProcess_Click" />
 				<MenuItem Header="Set Priority" Name="PriorityMenuItem">
-					<MenuItem Header="RealTime" Click="ChangePriority_Click" IsCheckable="true" Name="RealtimePriorityMenuItem" />
-					<MenuItem Header="High" Click="ChangePriority_Click" IsCheckable="true" Name="HighPriorityMenuItem" />
-					<MenuItem Header="Above Normal" Click="ChangePriority_Click" IsCheckable="true" Name="AboveNormalPriorityMenuItem" />
-					<MenuItem Header="Normal" Click="ChangePriority_Click" IsCheckable="true" Name="NormalPriorityMenuItem" />
-					<MenuItem Header="Below Normal" Click="ChangePriority_Click" IsCheckable="true" Name="BelowNormalPriorityMenuItem" />
-					<MenuItem Header="Low" Click="ChangePriority_Click" IsCheckable="true" Name="LowPriorityMenuItem" />
+					<taskManager:PriorityMenuItem PriorityValue="RealTime" Header="RealTime" Click="ChangePriority_Click" IsCheckable="true"  />
+					<taskManager:PriorityMenuItem PriorityValue="High" Header="High" Click="ChangePriority_Click" IsCheckable="true"  />
+					<taskManager:PriorityMenuItem PriorityValue="AboveNormal" Header="Above Normal" Click="ChangePriority_Click" IsCheckable="true" />
+					<taskManager:PriorityMenuItem PriorityValue="Normal" Header="Normal" Click="ChangePriority_Click" IsCheckable="true" />
+					<taskManager:PriorityMenuItem PriorityValue="BelowNormal" Header="Below Normal" Click="ChangePriority_Click" IsCheckable="true" />
+					<taskManager:PriorityMenuItem PriorityValue="Idle" Header="Low" Click="ChangePriority_Click" IsCheckable="true" />
 				</MenuItem>
 			</ContextMenu>
 		</DataGrid.ContextMenu>

@@ -34,6 +34,9 @@ namespace SortingArray
                 /*inclusive samples 30%*/
                 ,task.StartNew(() => GetTime(() => SortArray.MergeSort(mergArr,0,mergArr.Length-1)))   
             };
+            task.ContinueWhenAny(tasks,
+                t => { Console.WriteLine("\nFirst - {0}\t{1} Miliseconds\n", t.Result.Name, t.Result.Time); });
+           
 
             foreach (var t in tasks)
             {

@@ -1,0 +1,70 @@
+﻿<Window x:Class="SortAlgorithm.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        Title="MainWindow"
+        Height="650"
+        Width="500"
+        ResizeMode="NoResize">
+    <Grid>
+        <Grid Name="ParrentProgressBar">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150" />
+                <RowDefinition Height="450"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="Beige">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Label Margin="10,0,0,0" FontSize="16">Number of elements</Label>
+                    <ComboBox Name="SizeArray"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Bottom"
+                              Width="300" Margin="10,20,0,10"
+                              SelectionChanged="Selector_OnSelectionChanged"
+                              FontSize="25"
+                              Height="40"></ComboBox>
+                    <Button Name="GenerateArray"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom" 
+                            Margin="330,10,0,10" 
+                            Width="150" Height="40" 
+                            IsEnabled="False" 
+                            FontSize="16"
+                            Click="GenerateArray_OnClick">Generate array</Button>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Button Name="StartSorting"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="10,0,0,0"
+                            Width="250" 
+                            Height="50"
+                            IsEnabled="False"
+                            FontSize="16"
+                            Click="StartSorting_OnClick">Sort</Button>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1">
+                <chartingToolkit:Chart 
+                            Name="PieChart1"
+                            Title="Sorting"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch">
+                    <chartingToolkit:PieSeries
+                       VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                            DependentValuePath="Value"
+                            IndependentValuePath="Key"
+                            ItemsSource="{Binding}"
+                            IsSelectionEnabled="True" />
+                </chartingToolkit:Chart>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
