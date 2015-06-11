@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace taskmsg
 {
-	class Taskmsg
+	class TaskManager
 	{
         private readonly ObservableCollection<ProcessModel> _procs;
 
 		public int CurentProcessId { get; set; }
 
-		public Taskmsg()
+		public TaskManager()
 		{
             _procs = new ObservableCollection<ProcessModel>();
 			RefreshProcesses();
@@ -60,15 +60,15 @@ namespace taskmsg
             var proc = Process.GetProcesses();
             var res = proc.Where(t => t.ProcessName != "Idle").OrderBy(p => p.ProcessName).ThenBy(p => p.Id);
             ClearOld(res);
-            var task = new Task<ICollection<KeyValuePair<int, string>>>(GetProcessList, TaskCreationOptions.LongRunning);
-            task.Start();
+            //var task = new Task<ICollection<KeyValuePair<int, string>>>(GetProcessList, TaskCreationOptions.DenyChildAttach);
+            //task.Start();
             foreach (var p in res)
             {
                 var curent = _procs.FirstOrDefault(c => c.Id == p.Id);
-                var persentLoad = task.Result.First(t => t.Key == p.Id).Value;
+               // var persentLoad = task.Result.First(t => t.Key == p.Id).Value;
                 if (curent != null)
                 {
-                    curent = ProcessModel.CompareChanger(curent, p, persentLoad);
+                    curent = ProcessModel.CompareChanger(curent, p, ""/*persentLoad*/);
                 }
                 else
                 {
@@ -79,7 +79,7 @@ namespace taskmsg
                         , (p.WorkingSet64 / 1024f) / 1024f
                         , p.Threads.Count
                         , GetProcessTime(p.Id)
-                        ,persentLoad
+                        ,""//persentLoad
                         );
                     _procs.Add(process);
                 }

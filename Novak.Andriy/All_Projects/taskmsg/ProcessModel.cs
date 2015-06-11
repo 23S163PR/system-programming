@@ -85,9 +85,9 @@ namespace taskmsg
         private void Set<T, TProperty>(ref T field, T newValue, Expression<Func<TProperty>> property)
         {
             if (EqualityComparer<T>.Default.Equals(field, newValue)) return;
-            var memberExpression = property.Body as MemberExpression;
+            //var memberExpression = property.Body as MemberExpression;
             field = newValue;
-            OnPropertyChanged(memberExpression.Member.Name);
+            OnPropertyChanged(/*memberExpression.Member.Name*/);
         }
 
         public static ProcessModel CompareChanger(ProcessModel dest, Process sourse, string persentload)
@@ -96,7 +96,7 @@ namespace taskmsg
             dest.Name = sourse.ProcessName;
 		    dest.Memory =  Math.Round((sourse.WorkingSet64/1024f)/1024f,3);
             dest.Treads = sourse.Threads.Count;
-            dest.CpuTime = Taskmsg.GetProcessTime(sourse.Id);
+            dest.CpuTime = TaskManager.GetProcessTime(sourse.Id);
             dest.CpuTimePersent = persentload;
             return dest;
 		}

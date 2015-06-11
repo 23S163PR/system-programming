@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SortingArray
 {
-    class Program
+    static class Program
     {
         struct TestResult
         {
@@ -22,26 +22,22 @@ namespace SortingArray
             var task = new TaskFactory(
                 TaskCreationOptions.AttachedToParent,
                 TaskContinuationOptions.None);
-            //inclusive 40%
+
             var tasks = new[]
             {
-                /*inclusive samples 20%*/
-                 task.StartNew(() => GetTime(() => SortArray.BubleSort(bubleArr)))
-                 /*inclusive samples 10%*/  
-                 ,task.StartNew(() => GetTime(() => SortArray.QuickSort(quickArr,0,quickArr.Length-1)))
-                //samples 14.29
+                task.StartNew(() => GetTime(() => SortArray.BubleSort(bubleArr)))
+                ,task.StartNew(() => GetTime(() => SortArray.QuickSort(quickArr,0,quickArr.Length-1)))
                 ,task.StartNew(() => GetTime(() => SortArray.SelectionSort(selectionArr)))
-                /*inclusive samples 30%*/
                 ,task.StartNew(() => GetTime(() => SortArray.MergeSort(mergArr,0,mergArr.Length-1)))   
             };
-            task.ContinueWhenAny(tasks,
-                t => { Console.WriteLine("\nFirst - {0}\t{1} Miliseconds\n", t.Result.Name, t.Result.Time); });
-           
 
+            task.ContinueWhenAny(tasks,
+                first => { Console.WriteLine("\nFirst - {0}\t{1} Miliseconds\n", first.Result.Name, first.Result.Time); });
+            
             foreach (var t in tasks)
             {
                 Console.WriteLine("\nMethod - {0}\t{1} Miliseconds", t.Result.Name, t.Result.Time);
-            }
+            }  
         }
 
         static TestResult  GetTime(Func<string> func)

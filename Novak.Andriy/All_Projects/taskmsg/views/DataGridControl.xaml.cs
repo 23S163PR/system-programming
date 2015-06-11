@@ -9,11 +9,11 @@ namespace taskmsg.views
 {
 	public partial class DataGridControl : UserControl
 	{
-	    private readonly Taskmsg _tmsg;
+	    private readonly TaskManager _tmsg;
 		public DataGridControl()
 		{
 			InitializeComponent();
-			_tmsg = new Taskmsg();
+			_tmsg = new TaskManager();
 			ProcessGrid.DataContext = _tmsg.Processes;
 			var dispatcherTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 1) };
 			dispatcherTimer.Tick += OnDispatcherTimerOnTick;
@@ -72,7 +72,7 @@ namespace taskmsg.views
 			try
 			{
 				if (_tmsg.CurentProcessId < 0) return;
-			    Taskmsg.SetProcessPrioruty(_tmsg.CurentProcessId, res);
+			    TaskManager.SetProcessPrioruty(_tmsg.CurentProcessId, res);
 			}
 			catch (Exception){}	
 		}
