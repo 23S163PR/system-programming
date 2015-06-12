@@ -7,38 +7,26 @@ namespace TaskManager.Classes
 {
     public class ProcessInfo : INotifyPropertyChanged
     {
-        private int _processId;
-        private String _name;
         private int _numThreads;
         private long _workingSetInB;
         private double _workingSetInKb;
         private double _workingSetInMb;
-        private PerformanceCounter _cpuUssingCounter;
         private int _cpuUssingInPercent;
 
         public int ProcessId
         {
-            get { return _processId; }
-            private set
-            {
-                if (_processId == value) return;
-                _processId = value;
-            }
+            get;
+            private set;
         }
         public String Name
         {
-            get { return _name; }
-            set
-            {
-                if (_name == value) return;
-                _name = value;
-                NotifyPropertyChanged();
-            }
+            get;
+            private set;
         }
         public int NumThreads
         {
             get { return _numThreads; }
-            set
+            private set
             {
                 if (_numThreads == value) return;
                 _numThreads = value;
@@ -48,7 +36,7 @@ namespace TaskManager.Classes
         public long WorkingSetInB
         {
             get { return _workingSetInB; }
-            set
+            private set
             {
                 if (_workingSetInB == value) return;
                 _workingSetInB = value;
@@ -58,7 +46,7 @@ namespace TaskManager.Classes
         public double WorkingSetInKb
         {
             get { return _workingSetInKb; }
-            set
+            private set
             {
                 if (_workingSetInKb == value) return;
                 _workingSetInKb = value;
@@ -68,7 +56,7 @@ namespace TaskManager.Classes
         public double WorkingSetInMb
         {
             get { return _workingSetInMb; }
-            set
+            private set
             {
                 if (_workingSetInMb == value) return;
                 _workingSetInMb = value;
@@ -77,18 +65,13 @@ namespace TaskManager.Classes
         }
         public PerformanceCounter CpuUssingCounter
         {
-            get { return _cpuUssingCounter; }
-            set
-            {
-                if (_cpuUssingCounter == value) return;
-                _cpuUssingCounter = value;
-                NotifyPropertyChanged();
-            }
+            get;
+            private set;
         }
         public int CpuUssingInPercent
         {
             get { return _cpuUssingInPercent; }
-            set
+            private set
             {
                 if (_cpuUssingInPercent == value) return;
                 _cpuUssingInPercent = value;
@@ -107,12 +90,8 @@ namespace TaskManager.Classes
         {
             ProcessId = processId;
             Name = name;
-            NumThreads = numThreads;
-            WorkingSetInB = workingSetInB;
-            WorkingSetInKb = WorkingSetInB / 1024;
-            WorkingSetInMb = WorkingSetInKb / 1024;
             CpuUssingCounter = cpuUssingCounter;
-            CpuUssingInPercent = (int)(CpuUssingCounter.NextValue() / Environment.ProcessorCount);
+            UpdateInfo(numThreads, workingSetInB);
         }
 
         public void UpdateInfo( int numThreads
