@@ -8,6 +8,8 @@ namespace MaximumMethod
 {
 	class Program
 	{
+		private static object _syncObj = new object();
+
 		static void Main(string[] args)
 		{
 			var arr = new List<int>();
@@ -17,7 +19,7 @@ namespace MaximumMethod
 				arr.Add(rnd.Next(100000));
 			}
 
-			var max = 0;
+			long max = 0;
 			Parallel.ForEach(arr, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 10 }, i =>
 			{
 				Maximum(ref max, i);
@@ -27,12 +29,14 @@ namespace MaximumMethod
 			Console.WriteLine("max in Maximum method - {0}", max);
 		}
 
-		static void Maximum(ref int oldValue, int newValue)
+		static void Maximum(ref long oldValue, int newValue)
 		{
-			if (Volatile.Read(ref oldValue) < Volatile.Read(ref newValue))
+			lock (_syncObj)
 			{
-				// Interlocked.Exchange(ref oldValue, newValue);
-				Volatile.Write(ref oldValue, newValue);
+				if (newValue > Interlocked.Read(ref oldValue))
+				{
+					Interlocked.Exchange(ref oldValue, newValue);
+				}
 			}
 		}
 	}
