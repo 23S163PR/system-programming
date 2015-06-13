@@ -14,7 +14,12 @@ namespace SortingArray
 
         static void Main(string[] args)
         {
+            SortArrays();
+            Console.ReadKey();
+        }
 
+        async static void SortArrays()
+        {
             var bubleArr = RandArr(10000, new Random());
             var quickArr = (int[])bubleArr.Clone();
             var selectionArr = (int[])bubleArr.Clone();
@@ -31,13 +36,16 @@ namespace SortingArray
                 ,task.StartNew(() => GetTime(() => SortArray.MergeSort(mergArr,0,mergArr.Length-1)))   
             };
 
-            task.ContinueWhenAny(tasks,
+            await task.ContinueWhenAny(tasks,
                 first => { Console.WriteLine("\nFirst - {0}\t{1} Miliseconds\n", first.Result.Name, first.Result.Time); });
-            
-            foreach (var t in tasks)
+           
+            await task.ContinueWhenAll(tasks,p =>
             {
-                Console.WriteLine("\nMethod - {0}\t{1} Miliseconds", t.Result.Name, t.Result.Time);
-            }  
+                foreach (var t in tasks)
+                {
+                    Console.WriteLine("\nMethod - {0}\t{1} Miliseconds", t.Result.Name, t.Result.Time);
+                }
+            });
         }
 
         static TestResult  GetTime(Func<string> func)
