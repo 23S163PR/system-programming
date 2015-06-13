@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace taskmsg
+namespace TaskManager
 {
 	
 	public partial class App : Application

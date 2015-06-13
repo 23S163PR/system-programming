@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+using TaskManager;
 
-namespace taskmsg
+namespace ProcessManager
 {
 	class TaskManager
 	{
-        private readonly ObservableCollection<ProcessModel> _procs;
-
+        private readonly ObservableCollection<ProcessModel> _processes;
+	    private static readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
 		public int CurentProcessId { get; set; }
 
 		public TaskManager()
 		{
-            _procs = new ObservableCollection<ProcessModel>();
+            _processes = new ObservableCollection<ProcessModel>();
 			RefreshProcesses();
 		}
 
@@ -25,7 +27,7 @@ namespace taskmsg
 		{
 			get
 			{
-				return _procs;
+				return _processes;
 			}
 		}
 
@@ -44,60 +46,64 @@ namespace taskmsg
             return time.ToString(@"hh\:mm\:ss"); 
 		}
 
-	    private void ClearOld(IEnumerable<Process> processes)
+	    private void ClearOldProcesses(IEnumerable<ProcessModel> processes)
 	    {
             var id = processes.Select(t => t.Id);
-	        var dels =  _procs.Where(p => !id.Contains(p.Id)).ToList();
-	        if (!dels.Any()) return;
-	        foreach (var item in dels)
+	        var deletes =  _processes.Where(p => !id.Contains(p.Id)).ToList();
+	        if (!deletes.Any()) return;
+	        
+	        foreach (var item in deletes)
 	        {
-	            _procs.Remove(item);
+	           _dispatcher.Invoke(() => _processes.Remove(item));
 	        }
 	    }
 
         public void RefreshProcesses()
         {
-            var proc = Process.GetProcesses();
-            var res = proc.Where(t => t.ProcessName != "Idle").OrderBy(p => p.ProcessName).ThenBy(p => p.Id);
-            ClearOld(res);
-            //var task = new Task<ICollection<KeyValuePair<int, string>>>(GetProcessList, TaskCreationOptions.DenyChildAttach);
-            //task.Start();
-            foreach (var p in res)
+            var getProcessTask = new Task<ObservableCollection<ProcessModel>>(GetProcessList);
+            getProcessTask.Start();
+
+            var processList =  getProcessTask.Result;
+            ClearOldProcesses(processList);
+            foreach (var process in processList)
             {
-                var curent = _procs.FirstOrDefault(c => c.Id == p.Id);
-               // var persentLoad = task.Result.First(t => t.Key == p.Id).Value;
+                var curent = _processes.FirstOrDefault(c => c.Id == process.Id);
+            
                 if (curent != null)
                 {
-                    curent = ProcessModel.CompareChanger(curent, p, ""/*persentLoad*/);
+                    curent = ProcessModel.CompareChanger(curent, process);
                 }
                 else
                 {
-                    var process = new ProcessModel
-                        (
-                        p.Id
-                        , p.ProcessName
-                        , (p.WorkingSet64 / 1024f) / 1024f
-                        , p.Threads.Count
-                        , GetProcessTime(p.Id)
-                        ,""//persentLoad
-                        );
-                    _procs.Add(process);
+                    _dispatcher.Invoke(() => _processes.Add(process));
                 }
             }
         }
 
-        private static ICollection<KeyValuePair<int,string>> GetProcessList()
+        private static ObservableCollection<ProcessModel> GetProcessList()
 		{
-            var searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfProc_Process");
-			var collection = new ConcurrentDictionary<int,string>();
+			var searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfProc_Process");
 
-            Parallel.ForEach(searcher.Get().Cast<ManagementObject>()
-                .Where(obj => obj["Name"].ToString() != "Idle")
-			,(obj =>
-            {
-                 collection.TryAdd(int.Parse(obj["IDProcess"].ToString()),
-			        string.Format("{0}%", obj["PercentProcessorTime"].ToString()));
-            })); 
+			var collection = new ObservableCollection<ProcessModel>();
+
+			foreach (var obj in searcher.Get()
+				.Cast<ManagementObject>()
+				.Where(obj => obj["Name"].ToString() != "Idle")
+                .Where(obj => obj["Name"].ToString() != "_Total").OrderBy(obj => obj["Name"])
+                .ThenBy(obj => obj["IDProcess"]))
+			{
+                var id = int.Parse(obj["IDProcess"].ToString());
+			    var process = Process.GetProcessById(id);
+			    var c=process.Threads.Count;
+			    collection.Add(new ProcessModel
+			        (   id
+			            , obj["Name"].ToString()
+			            , process.WorkingSet64 
+			            , process.Threads.Count
+			            , GetProcessTime(id)
+			            , string.Format("{0}%", obj["PercentProcessorTime"])
+			        ));
+			}
 			return collection;
 		}
 		
@@ -111,30 +117,16 @@ namespace taskmsg
 			return GetProcess(id).PriorityClass;
 		}
 
-		public static void SetProcessPrioruty(int id, ProcessPriorityClass priority)
-		{
-		    try
-		    {
-		        GetProcess(id).PriorityClass = priority;
-		    }
-		    catch (Exception)
-		    {
-		        //if not acsees to system process
-		    }
+        public static void SetProcessPrioruty(int id, ProcessPriorityClass priority)
+		{	    
+		    GetProcess(id).PriorityClass = priority;
 		}
 
 		public void CloseProcess(int id)
 		{
-			try
-			{
-				GetProcess(id).Kill();
-				var item = _procs.FirstOrDefault(p => p.Id == id);
-				_procs.Remove(item);
-			}
-			catch(Exception)
-            {
-                //if not acsees to system process
-            }
-		}
+			GetProcess(id).Kill();
+			var item = _processes.FirstOrDefault(p => p.Id == id);
+			_processes.Remove(item);
+         }
 	}
 }

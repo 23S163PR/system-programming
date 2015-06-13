@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using taskmsg.views;
+using ProcessManager.views;
 
-namespace taskmsg
+namespace TaskManager
 {
 	public partial class MainWindow : Window
 	{

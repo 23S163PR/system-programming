@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq.Expressions;
 
-
-namespace taskmsg
+namespace ProcessManager
 {
 	public sealed class ProcessModel : INotifyPropertyChanged
 	{
 		private int		_id;
 		private string  _name;
 		private double	_memory;
-		private int		_treads;
+		private int		_threads;
 		private string	_cpuTime;   
 		private string	_cpuTimePersent;
 
@@ -44,13 +42,13 @@ namespace taskmsg
 			get { return _memory; }
 		}
 
-		public int Treads
+		public int Threads
 		{
 			private set
 			{
-                Set(ref _treads, value, ()=> Treads);
+                Set(ref _threads, value, ()=> Threads);
 			}
-			get { return _treads; }
+			get { return _threads; }
 		}
 
 		public string CpuTime
@@ -72,13 +70,13 @@ namespace taskmsg
 		}
 		#endregion
 
-        public ProcessModel(int id, string name, double memory, int treads, string ms, string cputime)
+        public ProcessModel(int id, string name, long memory, int treads, string time, string cputime)
 		{
 			Id = id;
 			Name = name;
-			Memory = Math.Round(memory, 3);
-			Treads = treads;
-		    CpuTime = ms;
+			Memory = Math.Round((memory / 1024f) / 1024f, 3); // memory in kilobytes
+			Threads = treads;
+		    CpuTime = time;
 			CpuTimePersent = cputime;
 		}
 
@@ -90,14 +88,14 @@ namespace taskmsg
             OnPropertyChanged(/*memberExpression.Member.Name*/);
         }
 
-        public static ProcessModel CompareChanger(ProcessModel dest, Process sourse, string persentload)
+        public static ProcessModel CompareChanger(ProcessModel dest, ProcessModel sourse)
 		{
 			dest.Id	= sourse.Id;
-            dest.Name = sourse.ProcessName;
-		    dest.Memory =  Math.Round((sourse.WorkingSet64/1024f)/1024f,3);
-            dest.Treads = sourse.Threads.Count;
-            dest.CpuTime = TaskManager.GetProcessTime(sourse.Id);
-            dest.CpuTimePersent = persentload;
+            dest.Name = sourse.Name;
+		    dest.Memory = sourse.Memory;
+            dest.Threads = sourse.Threads;
+            dest.CpuTime = sourse.CpuTime;
+            dest.CpuTimePersent = sourse.CpuTimePersent;
             return dest;
 		}
 

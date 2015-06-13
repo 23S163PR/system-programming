@@ -7,8 +7,8 @@
     <ProjectGuid>{AC6C5C12-4539-4C12-81AB-EED7C5989F23}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>taskmsg</RootNamespace>
-    <AssemblyName>taskmsg</AssemblyName>
+    <RootNamespace>ProcessManager</RootNamespace>
+    <AssemblyName>ProcessManager</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -65,6 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PriorityMenuItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="views\DataGridControl.xaml.cs">
       <DependentUpon>DataGridControl.xaml</DependentUpon>

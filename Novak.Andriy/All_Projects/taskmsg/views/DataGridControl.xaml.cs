@@ -1,86 +1,69 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using TaskManager;
 
-namespace taskmsg.views
+namespace ProcessManager.views
 {
 	public partial class DataGridControl : UserControl
 	{
-	    private readonly TaskManager _tmsg;
+	    private readonly TaskManager _taskManager;
+	    private readonly Timer _timer;
 		public DataGridControl()
 		{
 			InitializeComponent();
-			_tmsg = new TaskManager();
-			ProcessGrid.DataContext = _tmsg.Processes;
-			var dispatcherTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 1) };
-			dispatcherTimer.Tick += OnDispatcherTimerOnTick;
-			dispatcherTimer.Start();
+			_taskManager = new TaskManager();
+            _timer = new Timer(1000); // 1000ms - 1sec
+			ProcessGrid.DataContext = _taskManager.Processes;
+            _timer.Elapsed += TimerOnTick;
+            _timer.Enabled = true;
+            _timer.Start();
 		}
 
-		private void OnDispatcherTimerOnTick(object sender, EventArgs args)
+		private void TimerOnTick(object sender, EventArgs args)
 		{
-            _tmsg.RefreshProcesses();
-			LbCount.Content = string.Format("Processes: {0}", _tmsg.Processes.Count());
+            _taskManager.RefreshProcesses();
+			Application.Current.Dispatcher.Invoke(()=>LbCount.Content
+                = string.Format("Processes: {0}", _taskManager.Processes.Count()));
 		}
 
 		private void TaskContextMenu_OnOpened(object sender, RoutedEventArgs e)
 		{
-			foreach (MenuItem item in PriorityMenu.Items)
-			{
-				item.IsChecked = false;
-			}
+            _timer.Stop();
 			var curent = ProcessGrid.SelectedItem as ProcessModel;
-			_tmsg.CurentProcessId = curent == null ? -1 : curent.Id;
-			if (_tmsg.CurentProcessId < 0)return;
-			try
-			{
-				switch (_tmsg.GetProcesPriorityClass(_tmsg.CurentProcessId))
-				{
-					case ProcessPriorityClass.RealTime:
-						Realtime.IsChecked = true;
-						break;
-					case ProcessPriorityClass.High:
-						High.IsChecked = true;
-						break;
-					case ProcessPriorityClass.AboveNormal:
-						AboveNormal.IsChecked = true;
-						break;
-					case ProcessPriorityClass.Normal:
-						Normal.IsChecked = true;
-						break;
-					case ProcessPriorityClass.BelowNormal:
-						BelowNormal.IsChecked = true;
-						break;
-					case ProcessPriorityClass.Idle:
-						Low.IsChecked = true;
-						break;
-				}
-			}
-			catch (Exception){}
+            _taskManager.CurentProcessId = curent == null ? -1 : curent.Id;
+            if (_taskManager.CurentProcessId < 0) return;
+		    var priority = _taskManager.GetProcesPriorityClass(_taskManager.CurentProcessId);
+            foreach (PriorityMenuItem menuItem in PriorityMenu.Items)
+            {
+                menuItem.IsChecked = menuItem.PriorityValue == priority;
+            }
 		}
 
 		private void ChangePriorityClick(object sender, RoutedEventArgs e)
-		{
-			var menuItem = sender as MenuItem;
-			if (menuItem == null)return;
-			var name = menuItem.Header.ToString().Replace(" ", "");
-			ProcessPriorityClass res;
-			Enum.TryParse(name, out res);
-			try
-			{
-				if (_tmsg.CurentProcessId < 0) return;
-			    TaskManager.SetProcessPrioruty(_tmsg.CurentProcessId, res);
-			}
-			catch (Exception){}	
+		{	
+			if (_taskManager.CurentProcessId < 0) return;
+		    try
+		    {
+		        TaskManager.SetProcessPrioruty(_taskManager.CurentProcessId, ((PriorityMenuItem) sender).PriorityValue);
+		    }
+		    catch (Exception ex)
+		    {
+		        MessageBox.Show(ex.Message);
+		    }            
 		}
 
 		private void KillProcessClick(object sender, RoutedEventArgs e)
 		{
-			if (_tmsg.CurentProcessId < 0) return;
-			_tmsg.CloseProcess(_tmsg.CurentProcessId);
+			if (_taskManager.CurentProcessId < 0) return;
+			_taskManager.CloseProcess(_taskManager.CurentProcessId);
 		}
+
+	    private void TaskContextMenu_OnClosed(object sender, RoutedEventArgs e)
+	    {
+            _timer.Start();
+	    }
 	}
 }
