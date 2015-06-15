@@ -1,0 +1,213 @@
+﻿<Window x:Class="Groups.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:groups="clr-namespace:Groups"
+        Title="MainWindow" Height="500" MinHeight="500" Width="800" MinWidth="500">
+    
+    <Window.Resources>
+        <Style x:Key="ButtonStyleFooter">
+            <Setter Property="Control.Height" Value="40"></Setter>
+            <Setter Property="Control.Width" Value="50"></Setter>
+            <Setter Property="Control.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Control.Padding" Value="5"></Setter>
+            <Setter Property="Control.Margin" Value="5"></Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ToolTip}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="#90004455" />
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal" />
+        </Style>
+
+        <Style x:Key="VirtualizingStyle" x:Shared="False" TargetType="{x:Type ListView}" >
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            <Setter Property="ItemsSource" Value="{Binding}"/>
+            <Setter Property="View">
+                <Setter.Value>
+                    <GridView>
+                        <GridViewColumn Header="Id" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Identity}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Name" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Email" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Email}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Age" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding AgeInYears}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Gender" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Gender}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Salary" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Salary}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="ListView.Cursor" Value="Wait"/>
+                    <Setter Property="ListView.Background" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid x:Name="ParrentGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <TabControl Grid.Row="0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock Text="Group #1" >
+                            <TextBlock.ToolTip>
+                                <ToolTip>
+                                    <StackPanel>
+                                        <TextBlock>Люди старше 21 года И зарплата у которых строго больше 15000</TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </TextBlock.ToolTip>    
+                            </TextBlock>
+                    </TabItem.Header>
+                    <ListView Name="ListViewGroup1" Margin="5" Style="{DynamicResource VirtualizingStyle}"/>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock Text="Group #2" >
+                            <TextBlock.ToolTip>
+                                <ToolTip>
+                                    <StackPanel>
+                                        <TextBlock>Женщины (Gender.Woman) имя которых начинается с "А"</TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </TextBlock.ToolTip>    
+                            </TextBlock>
+                    </TabItem.Header>
+                    <ListView Name="ListViewGroup2" Margin="5" Style="{DynamicResource VirtualizingStyle}"/>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock Text="Group #3" >
+                            <TextBlock.ToolTip>
+                                <ToolTip>
+                                    <StackPanel>
+                                        <TextBlock>Мужчины с заработной платой строго больше 20000</TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </TextBlock.ToolTip>    
+                            </TextBlock>
+                    </TabItem.Header>
+                    <ListView Name="ListViewGroup3" Margin="5" Style="{DynamicResource VirtualizingStyle}"/>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock Text="Group #4" >
+                            <TextBlock.ToolTip>
+                                <ToolTip Background="#90004455">
+                                    <StackPanel>
+                                        <TextBlock Margin="3" Foreground="White">Люди третьего пола (Gender.Transgender) старше 50 лет</TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </TextBlock.ToolTip>    
+                            </TextBlock>
+                    </TabItem.Header>
+                    <ListView Name="ListViewGroup4" Margin="5" Style="{DynamicResource VirtualizingStyle}"/>
+                </TabItem>
+            </TabControl>
+
+            <StatusBar Grid.Row="1">
+                <Button Name="SaveXml" Click="SaveXml_OnClick">
+                    <StackPanel>
+                        <Image Source="{StaticResource Save}" Stretch="Fill"/>
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip >
+                            <StackPanel>
+                                <TextBlock >Save tables to xml</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button Name="LoadXml" Click="LoadXml_OnClick">
+                    <StackPanel>
+                        <Image Source="{StaticResource LoadGroups}" Stretch="Uniform"/>
+                    </StackPanel>
+                    <Button.ToolTip >
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock>Download from xml</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button Name="Generate" Click="Generate_OnClick">
+                    <StackPanel>
+                        <Image Source="{StaticResource Generate}" Stretch="Uniform"/>
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock>Generete Emmloyyes</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button Name="Load" Click="LoadNamesFromSite_OnClick">
+                    <StackPanel>
+                        <Image Source="{StaticResource LoadNames}" Stretch="Uniform"/>
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock>Download names from site</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <DockPanel VerticalAlignment="Center" Margin="10">
+                    <TextBox Name="ValueCountPage" Text="{Binding ElementName=CountPage, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                    <Slider Name="CountPage" Width="500" Minimum="1" Maximum="31885" TickPlacement="BottomRight" TickFrequency="200" IsSnapToTickEnabled="True"  />
+                </DockPanel>
+            </StatusBar>
+        </Grid>
+      
+
+        <groups:Loader x:Name="ModalLoader"/>
+    </Grid>
+</Window>

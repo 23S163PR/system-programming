@@ -1,0 +1,11 @@
+﻿<Application x:Class="Groups.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <BitmapImage x:Key="Save" UriSource="IMG/Save.png"/>
+        <BitmapImage x:Key="LoadNames" UriSource="IMG/Download.png" />
+        <BitmapImage x:Key="LoadGroups" UriSource="IMG/DownloadFromFolder.png"/>
+        <BitmapImage x:Key="Generate" UriSource="IMG/Generate-table.png"/>
+    </Application.Resources>
+</Application>
