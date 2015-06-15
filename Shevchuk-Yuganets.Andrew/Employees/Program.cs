@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Employees.Faker.Extensions;
 using Faker;
@@ -12,8 +11,13 @@ namespace Employees
 	{
 		private static void Main(string[] args)
 		{
-            const int PeopleCount = 1000;
+			const int PeopleCount = 10000;
 			var peopleList = new List<Employee>(PeopleCount);
+			var firstFilterList = new List<Employee>(PeopleCount);
+			var secondFilterList = new List<Employee>(PeopleCount);
+			var thirdFilterList = new List<Employee>(PeopleCount);
+			var fourthFilterList = new List<Employee>(PeopleCount);
+
 
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
@@ -34,33 +38,32 @@ namespace Employees
 				peopleList.Add(employee);
 			});
 
-			// 100 000 - 41055ms Phenom x3 2.7
-			// 1 000 000 - 431803ms Phenom x3 2.7
+			Parallel.ForEach(peopleList, employee =>
+			{
+				if (employee.AgeInYears > 21 && employee.Salary > 15000)
+					firstFilterList.Add(employee);
 
-			// 100 000 - 27489ms i5 3.1
-			// 1 000 000 - 304793ms i5 3.1
-			var firstFilterList =
-				peopleList.AsParallel().Where(employee => employee.AgeInYears > 21 && employee.Salary > 15000)
-					.ToList();
-			var secondFilterList =
-				peopleList.AsParallel().Where(employee => employee.Gender == Gender.Woman && employee.Name.StartsWith("A"))
-					.ToList();
-			var thirdFilterList =
-				peopleList.AsParallel().Where(employee => employee.Gender == Gender.Men && employee.Salary > 20000)
-					.ToList();
-			var fourthFilterList =
-				peopleList.AsParallel().Where(employee => employee.Gender == Gender.Transgender && employee.AgeInYears > 50)
-					.ToList();
+				if (employee.Gender == Gender.Woman && employee.Name.StartsWith("A"))
+					secondFilterList.Add(employee);
 
-			stopWatch.Stop();
+				if (employee.Gender == Gender.Men && employee.Salary > 20000)
+					thirdFilterList.Add(employee);
 
-			Console.WriteLine("Generated and filtered in {0}ms", stopWatch.ElapsedMilliseconds);
+				if (employee.Gender == Gender.Transgender && employee.AgeInYears > 50)
+					fourthFilterList.Add(employee);
+			});
 
 			peopleList.SaveToJsonFile("employees.json");
 			firstFilterList.SaveToJsonFile("first.json");
 			secondFilterList.SaveToJsonFile("second.json");
 			thirdFilterList.SaveToJsonFile("third.json");
 			fourthFilterList.SaveToJsonFile("fourth.json");
+
+			stopWatch.Stop();
+
+			Console.WriteLine("Generated and filtered in {0}ms", stopWatch.ElapsedMilliseconds);
+
+			Console.ReadLine();
 		}
 	}
 }
