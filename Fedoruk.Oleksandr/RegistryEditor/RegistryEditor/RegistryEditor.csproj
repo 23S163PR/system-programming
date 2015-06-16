@@ -61,6 +61,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\RegistryKeyValue.cs" />
     <Compile Include="Classes\RegistryManager.cs" />
     <Compile Include="Classes\TreeViewNode.cs" />
     <Compile Include="MainWindow.xaml.cs">
