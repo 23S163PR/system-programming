@@ -8,21 +8,17 @@ namespace RegistryEditor.Classes
 {
     public class TreeViewNode
     {
-        public String Path { get; set; }
-        public String Name { get; set; }
-        public Nullable<RegistryHive> RootValue { get; set; }
-        public ObservableCollection<TreeViewNode> Items { get; set; }
-        public ObservableCollection<RegistryKeyValue> Values { get; set; }
+        public String Path { get; private set; }
+        public String Name { get; private set; }
+        public Nullable<RegistryHive> RootValue { get; private set; }
+        public ObservableCollection<TreeViewNode> Items { get; private set; }
+        public ObservableCollection<RegistryKeyValue> Values { get; private set; }
 
 
         public TreeViewNode(String path, String name)
         {
             Items = new ObservableCollection<TreeViewNode>();
             Values = new ObservableCollection<RegistryKeyValue>();
-            if (Regex.IsMatch(path, @"(HKEY)\w+\\\\"))
-                path = Regex.Replace(path, @"(HKEY)\w+\\\\", "");
-            else if (Regex.IsMatch(path, @"(HKEY)\w+\\"))
-                path = Regex.Replace(path, @"(HKEY)\w+\\", "");
             Path = path;
             Name = name;
         }
@@ -45,7 +41,8 @@ namespace RegistryEditor.Classes
                 try
                 {
                     var subKey = key.OpenSubKey(el);
-                    var path = subKey.Name;
+                    if (subKey == null) continue;
+                    var path = Regex.Replace(subKey.Name, @"^(HKEY)\w+\\{1,2}", "");
                     Items.Add(new TreeViewNode(path, el, RootValue.Value));
                     subKey.Close();
                 }
@@ -67,9 +64,10 @@ namespace RegistryEditor.Classes
                 foreach (var el in key.GetValueNames())
                 {
                     var type = key.GetValueKind(el);
-                    Values.Add(new RegistryKeyValue(el, type.ToString(), "aa"));
+                    var value = key.GetValue(el);
+                    var name = el == "" ? "{Default}" : el;
+                    Values.Add(new RegistryKeyValue(name, type.ToString(), value.ToString()));
                 }
-
         }
 
         public override string ToString()
