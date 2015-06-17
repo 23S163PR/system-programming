@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Security;
 using System.Text.RegularExpressions;
+using System.Windows.Threading;
 
 namespace RegistryEditor.Classes
 {
@@ -60,14 +61,41 @@ namespace RegistryEditor.Classes
                                                                                 ? RegistryView.Registry64
                                                                                 : RegistryView.Registry32);
 
-                var key = rootKey.OpenSubKey(Path);
-                foreach (var el in key.GetValueNames())
-                {
-                    var type = key.GetValueKind(el);
-                    var value = key.GetValue(el);
-                    var name = el == "" ? "{Default}" : el;
-                    Values.Add(new RegistryKeyValue(name, type.ToString(), value.ToString()));
-                }
+            var key = rootKey.OpenSubKey(Path);
+            foreach (var el in key.GetValueNames())
+            {
+                var type = key.GetValueKind(el);
+                var value = GetValueInString(type, key.GetValue(el));
+                var name = el == "" ? "{Default}" : el;
+                Values.Add(new RegistryKeyValue(name, type.ToString(), value));
+            }
+        }
+
+        public String GetValueInString(RegistryValueKind type, object value)
+        {
+            String valueInString = "";
+            switch (type)
+            {
+                case RegistryValueKind.MultiString:
+                    string[] values = (string[])value;
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        if (i != 0) valueInString += ",";
+                        valueInString += values[i];
+                    }
+                    break;
+                case RegistryValueKind.Binary:
+                    byte[] bytes = (byte[])value;
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        valueInString += String.Format(" {0:X2}", bytes[i]);
+                    }
+                    break;
+                default:
+                    valueInString = value.ToString();
+                    break;
+            }
+            return valueInString;
         }
 
         public override string ToString()

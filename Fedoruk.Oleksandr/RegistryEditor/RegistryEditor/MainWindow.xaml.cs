@@ -1,4 +1,7 @@
 ﻿using RegistryEditor.Classes;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,18 +27,19 @@ namespace RegistryEditor
             var expandedItem = (TreeViewItem)e.OriginalSource;
             var expandedNode = (TreeViewNode)expandedItem.Header;
 
-            foreach (var el in expandedNode.Items)
+            Parallel.ForEach(expandedNode.Items, el => 
             {
                 if (el.Items.Count == 0)
                 {
                     el.AddSubNodes();
                 }
-            }
-            if(expandedNode.Values.Count == 0)
+            });
+            if (expandedNode.Values.Count == 0)
             {
                 expandedNode.AddValues();
             }
             dGrid.ItemsSource = expandedNode.Values;
+
         }
 
         private void treeView_Selected_1(object sender, RoutedEventArgs e)
