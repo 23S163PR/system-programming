@@ -1,9 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using TaskManager;
 
 namespace ProcessManager.views
 {
@@ -35,11 +35,19 @@ namespace ProcessManager.views
 			var curent = ProcessGrid.SelectedItem as ProcessModel;
             _taskManager.CurentProcessId = curent == null ? -1 : curent.Id;
             if (_taskManager.CurentProcessId < 0) return;
-		    var priority = _taskManager.GetProcesPriorityClass(_taskManager.CurentProcessId);
-            foreach (PriorityMenuItem menuItem in PriorityMenu.Items)
-            {
-                menuItem.IsChecked = menuItem.PriorityValue == priority;
-            }
+
+		    try
+		    {
+		        var priority = _taskManager.GetProcesPriorityClass(_taskManager.CurentProcessId);
+                foreach (PriorityMenuItem menuItem in PriorityMenu.Items)
+                {
+                    menuItem.IsChecked = menuItem.PriorityValue == priority;
+                }
+		    }
+		    catch (Win32Exception ex)
+		    {
+		        MessageBox.Show(ex.Message, "Access Denied!", MessageBoxButton.OK, MessageBoxImage.Error);
+		    }           
 		}
 
 		private void ChangePriorityClick(object sender, RoutedEventArgs e)

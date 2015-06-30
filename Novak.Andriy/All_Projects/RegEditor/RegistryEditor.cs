@@ -25,7 +25,7 @@ namespace RegEditor
             _items = new ObservableCollection<TreeItem>();
 
             //read registry keys
-            RegistryKeys(Registry.ClassesRoot);
+           // RegistryKeys(Registry.ClassesRoot);
             RegistryKeys(Registry.CurrentUser);
             RegistryKeys(Registry.LocalMachine);
             RegistryKeys(Registry.Users);

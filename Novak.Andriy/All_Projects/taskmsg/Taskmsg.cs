@@ -7,7 +7,6 @@ using System.Management;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using TaskManager;
 
 namespace ProcessManager
 {
