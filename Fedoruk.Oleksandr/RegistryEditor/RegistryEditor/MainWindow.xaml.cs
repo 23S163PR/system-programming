@@ -34,24 +34,23 @@ namespace RegistryEditor
                     el.AddSubNodes();
                 }
             });
-            if (expandedNode.Values.Count == 0)
-            {
-                expandedNode.AddValues();
-            }
-            dGrid.ItemsSource = expandedNode.Values;
-
+            AddValuesInNode(expandedNode);
         }
 
         private void treeView_Selected_1(object sender, RoutedEventArgs e)
         {
             var expandedItem = (TreeViewItem)e.OriginalSource;
             var expandedNode = (TreeViewNode)expandedItem.Header;
-            if (expandedNode.Values.Count == 0)
-            {
-                expandedNode.AddValues();
-            }
-            dGrid.ItemsSource = expandedNode.Values;
+            AddValuesInNode(expandedNode);
         }
 
+        private void AddValuesInNode(TreeViewNode node)
+        {
+            if (node.Values.Count == 0)
+            {
+                node.AddValues();
+            }
+            dGrid.ItemsSource = node.Values;
+        }
     }
 }

@@ -84,6 +84,7 @@ namespace RegistryEditor.Classes
                         valueInString += values[i];
                     }
                     break;
+
                 case RegistryValueKind.Binary:
                     byte[] bytes = (byte[])value;
                     for (int i = 0; i < bytes.Length; i++)
@@ -91,6 +92,7 @@ namespace RegistryEditor.Classes
                         valueInString += String.Format(" {0:X2}", bytes[i]);
                     }
                     break;
+
                 default:
                     valueInString = value.ToString();
                     break;
