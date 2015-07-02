@@ -20,5 +20,13 @@ namespace RegistryEditor.Classes
             Data = data;
         }
 
+        public void SetName(String name)
+        {
+            if (!String.IsNullOrEmpty(name))
+            {
+                Name = name;
+            }
+        }
+
     }
 }

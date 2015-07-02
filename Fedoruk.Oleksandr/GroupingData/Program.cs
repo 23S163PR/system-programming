@@ -61,13 +61,38 @@ namespace grouping_data
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            const int PeopleCount = 20000;
-            var people = GetEmployees(PeopleCount);
+            const int PeopleCount = 50000;
+            var employees = GetEmployees(PeopleCount);
 
-            var firstGroup  = new Group(people.Where(x => x.AgeInYears > 21 && x.Salary > 15000).OrderBy(x => x.AgeInYears).ToList());
-            var secondGroup = new Group(people.Where(x => x.Gender == Gender.Woman && x.Name[0] == 'A').OrderBy(x => x.AgeInYears).ToList());
-            var thirdGroup  = new Group(people.Where(x => x.Gender == Gender.Men && x.Salary > 20000).OrderBy(x => x.AgeInYears).ToList());
-            var fourthGroup = new Group(people.Where(x => x.Gender == Gender.Transgender && x.AgeInYears > 50).OrderBy(x => x.AgeInYears).ToList());
+            //var firstGroup = new Group(employees.Where(x => x.AgeInYears > 21 && x.Salary > 15000).OrderBy(x => x.AgeInYears).ToList());
+            //var secondGroup = new Group(employees.Where(x => x.Gender == Gender.Woman && x.Name[0] == 'A').OrderBy(x => x.AgeInYears).ToList());
+            //var thirdGroup = new Group(employees.Where(x => x.Gender == Gender.Men && x.Salary > 20000).OrderBy(x => x.AgeInYears).ToList());
+            //var fourthGroup = new Group(employees.Where(x => x.Gender == Gender.Transgender && x.AgeInYears > 50).OrderBy(x => x.AgeInYears).ToList());
+
+            Group firstGroup  = new Group();
+            Group secondGroup = new Group();
+            Group thirdGroup  = new Group();
+            Group fourthGroup = new Group();
+            
+            Parallel.ForEach(employees.OrderBy(x=>x.AgeInYears), el =>
+            {
+                if (el.AgeInYears > 21 && el.Salary > 15000)
+                {
+                    firstGroup.list.Add(el);
+                }
+                else if (el.Gender == Gender.Woman && el.Name[0] == 'A')
+                {
+                    secondGroup.list.Add(el);
+                }
+                else if (el.Gender == Gender.Men && el.Salary > 20000)
+                {
+                    thirdGroup.list.Add(el);
+                }
+                else if (el.Gender == Gender.Transgender && el.AgeInYears > 50)
+                {
+                    fourthGroup.list.Add(el);
+                }
+            });
 
             var listGroups = new List<Group>()
             {
@@ -81,6 +106,7 @@ namespace grouping_data
 
             stopWatch.Stop();
             Console.WriteLine("Data generation completed in {0}ms", stopWatch.ElapsedMilliseconds);
+            Console.ReadLine();
         }
     }
 }
