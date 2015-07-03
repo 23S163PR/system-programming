@@ -7,19 +7,17 @@ namespace PingPong
     {
         static void Main()
         {
-            var isPing = true;
-            var isPong = false;
+            var flag = true;
+            //var isPong = false;
 
             var ping = new Thread(() =>
             {
                 while (true)
                 {
-                    if (isPing)
+                    if (flag)
                     {
                         Console.WriteLine("Ping");
-                        Thread.Sleep(1000);
-                        isPong = true;
-                        isPing = false;
+                        flag = false;
                     }
                 }
 
@@ -29,12 +27,10 @@ namespace PingPong
             {
                 while (true)
                 {
-                    if (isPong)
+                    if (flag == false)
                     {
                         Console.WriteLine("Pong");
-                        Thread.Sleep(1000);
-                        isPing = true;
-                        isPong = false;
+                        flag = true;
                     }
                 }
             }) {IsBackground = false};
@@ -47,7 +43,6 @@ namespace PingPong
 
             while (true)
             {
-                Thread.Sleep(100);
                 if (Console.ReadKey().Key == ConsoleKey.Spacebar)
                 {
                     pong.Abort();
